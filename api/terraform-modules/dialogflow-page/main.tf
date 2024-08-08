@@ -202,8 +202,8 @@ resource "google_dialogflow_cx_page" "main" {
 
   form {
     parameters {
-      display_name = "param1"
-      entity_type  = "projects/-/locations/-/agents/-/entityTypes/sys.date"
+      display_name  = "param1"
+      entity_type   = "projects/-/locations/-/agents/-/entityTypes/sys.date"
       default_value = jsonencode("2000-01-01")
       fill_behavior {
         initial_prompt_fulfillment {
@@ -406,11 +406,11 @@ resource "google_dialogflow_cx_page" "main" {
           }
         }
         reprompt_event_handlers {
-          event = "sys.no-match-2"
+          event       = "sys.no-match-2"
           target_flow = var.agent.start_flow
         }
         reprompt_event_handlers {
-          event = "sys.no-match-3"
+          event       = "sys.no-match-3"
           target_page = google_dialogflow_cx_page.my_page2.id
         }
       }

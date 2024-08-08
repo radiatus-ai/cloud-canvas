@@ -9,7 +9,7 @@ terraform {
 
 
 provider "google" {
-  project = "radiatus-gcp-project"
+  project = "rad-dev-canvas-kwm6"
 }
 
 

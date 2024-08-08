@@ -1,10 +1,10 @@
 build:
-	docker-compose build api-deploy ui-deploy
+	docker compose build api-deploy ui-deploy
 
 tag:
-	docker tag infra-app-api-deploy:latest us-west2-docker.pkg.dev/radiatus-gcp-project/infra-app/api:latest
-	docker tag infra-app-ui-deploy:latest us-west2-docker.pkg.dev/radiatus-gcp-project/infra-app/ui:latest
+	docker tag cloud-canvas-api-deploy:latest us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/api:latest
+	docker tag cloud-canvas-ui-deploy:latest us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/ui:latest
 
 upload: build tag
-	docker push us-west2-docker.pkg.dev/radiatus-gcp-project/infra-app/api:latest
-	docker push us-west2-docker.pkg.dev/radiatus-gcp-project/infra-app/ui:latest
+	docker push us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/api:latest
+	docker push us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/ui:latest

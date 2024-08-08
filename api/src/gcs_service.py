@@ -4,16 +4,18 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any, List, Optional
 
+from config import config
 from google.cloud import storage
 from google.cloud.exceptions import NotFound
 
 logger = logging.getLogger(__name__)
 
 class GCSService:
-    def __init__(self, project_id: str, bucket_name: str):
-        self.client = storage.Client(project=project_id)
-        self.bucket_name = bucket_name
-        self.bucket = self.client.get_bucket(bucket_name)
+    def __init__(self):
+        self.client = storage.Client(project=config.PROJECT_ID)
+        self.bucket_name = config.BUCKET_NAME
+        self.bucket = self.client.get_bucket(self.bucket_name)
+
 
     def read_json_file(self, file_name: str) -> Optional[List[Any]]:
         try:

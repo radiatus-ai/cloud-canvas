@@ -11,6 +11,6 @@ resource "google_dialogflow_cx_agent" "main" {
   speech_to_text_settings {
     enable_speech_adaptation = true
   }
-  project =  "radiatus-gcp-project"
+  project = "rad-dev-canvas-kwm6"
 }
 

@@ -29,7 +29,7 @@ class ProjectUpdate(BaseModel):
     description: Optional[str] = None
 
 PROJECT_FILE = 'projects.json'
-gcs_service = GCSService(project_id='radiatus-gcp-project', bucket_name='radiatus-infra-app-db')
+gcs_service = GCSService()
 
 @router.get("/", response_model=List[Project])
 def list_projects():

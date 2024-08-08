@@ -3,9 +3,10 @@ from typing import Any, Dict
 
 import requests
 import yaml
+from config import config
 
 # Configuration
-API_BASE_URL = "http://localhost:8000"  # Update this to your API's base URL
+API_BASE_URL = config.API_BASE_URL
 MODULES_DIR = "terraform-modules"
 
 def read_yaml_file(file_path: str) -> Dict[str, Any]:

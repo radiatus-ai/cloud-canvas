@@ -12,7 +12,7 @@ router = APIRouter(
     tags=['project connections'],
 )
 
-gcs_service = GCSService(project_id='radiatus-gcp-project', bucket_name='radiatus-infra-app-db')
+gcs_service = GCSService()
 
 class ConnectionData(BaseModel):
     connectionType: str

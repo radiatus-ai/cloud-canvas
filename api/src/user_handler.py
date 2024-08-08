@@ -1,5 +1,6 @@
 from typing import Optional
 
+from config import config
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from google.auth.transport import requests
@@ -10,8 +11,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 security = HTTPBearer()
 
-# Replace this with your Google OAuth 2.0 Client ID
-GOOGLE_CLIENT_ID = "988868445965-<>.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = config.GOOGLE_CLIENT_ID
 
 class UserInfo(BaseModel):
     email: str

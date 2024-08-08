@@ -55,7 +55,7 @@ class ProjectPackageCreate(ProjectPackageBase):
 
 
 
-gcs_service = GCSService(project_id='radiatus-gcp-project', bucket_name='radiatus-infra-app-db')
+gcs_service = GCSService()
 
 def get_project_packages_file_name(project_id: str) -> str:
     return f'project/{project_id}/packages.json'

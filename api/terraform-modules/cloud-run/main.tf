@@ -19,7 +19,7 @@ resource "google_cloud_run_v2_service" "main" {
 
 module "glb-0" {
   source              = "github.com/GoogleCloudPlatform/cloud-foundation-fabric//modules/net-lb-app-ext?ref=v32.0.0"
-  project_id          = "radiatus-gcp-project"
+  project_id          = "rad-dev-canvas-kwm6"
   name                = "glb-test-0"
   use_classic_version = false
   backend_service_configs = {
