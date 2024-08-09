@@ -11,8 +11,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import React, { useEffect, useRef, useState } from 'react';
-import GCPRegionsComponent from './JsonSchema/CustomComponents/GCPRegions';
-import JsonSchemaForm from './JsonSchema/JsonSchemaForm';
+import JsonSchemaForm, { GCPRegionsComponent } from './JsonSchemaForm';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {

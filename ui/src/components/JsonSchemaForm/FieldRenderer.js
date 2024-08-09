@@ -1,17 +1,18 @@
-import React from 'react';
-import {
-  TextField,
-  FormControlLabel,
-  Switch,
-  FormControl,
-  Select,
-  MenuItem,
-  InputLabel,
-  Typography,
-  Tooltip,
-} from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import ArrayField from './ArrayField';
+import {
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  MenuItem,
+  Select,
+  Switch,
+  TextField,
+  Tooltip,
+  Typography,
+} from '@mui/material';
+import React from 'react';
+import ArrayField from './fields/ArrayField';
+import StringField from './fields/StringField';
 
 const FieldRenderer = ({
   name,
@@ -21,6 +22,7 @@ const FieldRenderer = ({
   error,
   onChange,
   onBlur,
+  touched,
   customComponents,
 }) => {
   const isRequired = schema.required && schema.required.includes(name);
@@ -44,9 +46,9 @@ const FieldRenderer = ({
     ),
     value: value !== undefined ? value : '',
     onChange: (e) => onChange(name, e.target.value),
-    onBlur: onBlur,
-    error: !!error,
-    helperText: error,
+    onBlur: () => onBlur(name),
+    error: touched && !!error,
+    helperText: touched && error,
     required: isRequired,
   };
 
@@ -64,7 +66,7 @@ const FieldRenderer = ({
   if (fieldSchema.enum) {
     return (
       <FormControl {...commonProps}>
-        <InputLabel error={!!error}>{commonProps.label}</InputLabel>
+        <InputLabel error={touched && !!error}>{commonProps.label}</InputLabel>
         <Select {...commonProps} label={commonProps.label}>
           {fieldSchema.enum.map((option) => (
             <MenuItem key={option} value={option}>
@@ -78,31 +80,17 @@ const FieldRenderer = ({
 
   switch (fieldSchema.type) {
     case 'string':
-      if (fieldSchema.format === 'date') {
-        return (
-          <TextField
-            {...commonProps}
-            type="date"
-            InputLabelProps={{ shrink: true }}
-          />
-        );
-      }
-      if (fieldSchema.format === 'date-time') {
-        return (
-          <TextField
-            {...commonProps}
-            type="datetime-local"
-            InputLabelProps={{ shrink: true }}
-          />
-        );
-      }
-      if (fieldSchema.format === 'email') {
-        return <TextField {...commonProps} type="email" />;
-      }
-      if (fieldSchema.format === 'uri') {
-        return <TextField {...commonProps} type="url" />;
-      }
-      return <TextField {...commonProps} />;
+      return (
+        <StringField
+          name={name}
+          schema={fieldSchema}
+          value={value}
+          onChange={onChange}
+          onBlur={onBlur}
+          error={error}
+          touched={touched}
+        />
+      );
     case 'number':
     case 'integer':
       return <TextField {...commonProps} type="number" />;

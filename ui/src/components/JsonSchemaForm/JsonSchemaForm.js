@@ -1,20 +1,20 @@
-import React, {
-  useState,
-  useEffect,
-  useImperativeHandle,
-  forwardRef,
-  useCallback,
-} from 'react';
 import {
-  Stack,
+  Alert,
   Button,
   CircularProgress,
   Snackbar,
-  Alert,
+  Stack,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { validateForm } from './validationUtils';
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import FieldRenderer from './FieldRenderer';
+import { validateField, validateForm } from './utils/validationUtils';
 
 const StyledForm = styled('form')(({ theme }) => ({
   '& .MuiFormControl-root': {
@@ -74,12 +74,23 @@ const JsonSchemaForm = forwardRef(
           }
           return newData;
         });
+      },
+      [onChange]
+    );
+
+    const handleBlur = useCallback(
+      (name) => {
         setTouched((prevTouched) => ({
           ...prevTouched,
           [name]: true,
         }));
+        const error = validateField(schema, name, formData[name]);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          [name]: error,
+        }));
       },
-      [onChange]
+      [schema, formData]
     );
 
     const handleSubmit = async (e) => {
@@ -138,9 +149,10 @@ const JsonSchemaForm = forwardRef(
                 schema={schema}
                 fieldSchema={fieldSchema}
                 value={formData[key]}
-                error={touched[key] ? errors[key] : undefined}
+                error={errors[key]}
+                touched={touched[key]}
                 onChange={handleChange}
-                onBlur={() => setTouched((prev) => ({ ...prev, [key]: true }))}
+                onBlur={handleBlur}
                 customComponents={customComponents}
               />
             ))}
