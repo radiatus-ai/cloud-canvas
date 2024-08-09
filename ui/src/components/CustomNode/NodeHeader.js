@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { Box, Typography, IconButton, Tooltip, Modal } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
+import { Box, IconButton, Modal, Tooltip, Typography } from '@mui/material';
+import { blue, yellow } from '@mui/material/colors';
 import { styled } from '@mui/system';
+import React, { useCallback, useEffect, useState } from 'react';
 import apiService from '../../apiService';
-import { blue } from '@mui/material/colors';
 
 const StatusDot = styled('div')(({ theme, status }) => ({
   width: 8,
@@ -20,7 +20,7 @@ const StatusDot = styled('div')(({ theme, status }) => ({
       case 'deploying':
         return blue[500];
       case 'destroying':
-        return blue[500];
+        return yellow[500];
       case 'deployed':
         return theme.palette.success.main;
       case 'failed':
@@ -58,49 +58,72 @@ const ModalDescription = styled(Box)(({ theme }) => ({
   flexGrow: 1,
 }));
 
-const NodeHeader = ({ data, projectId, updateNodeData, onOpenModal }) => {
+const NodeHeader = ({ data, projectId, onOpenModal }) => {
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [localDeployStatus, setLocalDeployStatus] = useState(
+    data.deploy_status
+  );
+  const [commandOutputs, setCommandOutputs] = useState(
+    data.command_outputs || ''
+  );
 
-  const handleOpenStatusModal = () => {
+  useEffect(() => {
+    setLocalDeployStatus(data.deploy_status);
+    setCommandOutputs(data.command_outputs || '');
+  }, [data.deploy_status, data.command_outputs]);
+
+  const handleOpenStatusModal = useCallback(() => {
     setIsStatusModalOpen(true);
-  };
+  }, []);
 
-  const handleCloseStatusModal = () => {
+  const handleCloseStatusModal = useCallback(() => {
     setIsStatusModalOpen(false);
-  };
+  }, []);
 
-  const handleDeploy = async () => {
+  const handleDeploy = useCallback(async () => {
+    setLocalDeployStatus('deploying');
     try {
-      updateNodeData({ deploy_status: 'deploying' });
       const result = await apiService.deployPackage(projectId, data.id);
-      updateNodeData({ deploy_status: 'deployed', ...result });
+      setLocalDeployStatus('deployed');
+      setCommandOutputs(result.command_outputs || '');
     } catch (error) {
       console.error('Deployment failed:', error);
-      updateNodeData({ deploy_status: 'failed' });
+      setLocalDeployStatus('failed');
+      setCommandOutputs(
+        'Deployment failed. Please check the logs for more information.'
+      );
     }
-  };
+  }, [projectId, data.id]);
 
-  const handleDestroy = async () => {
+  const handleDestroy = useCallback(async () => {
+    setLocalDeployStatus('destroying');
     try {
-      updateNodeData({ deploy_status: 'destroying' });
       await apiService.destroyPackage(projectId, data.id);
-      updateNodeData({ deploy_status: 'undeployed' });
+      setLocalDeployStatus('undeployed');
+      setCommandOutputs('Package successfully destroyed.');
     } catch (error) {
       console.error('Destruction failed:', error);
-      updateNodeData({ deploy_status: 'failed' });
+      setLocalDeployStatus('failed');
+      setCommandOutputs(
+        'Destruction failed. Please check the logs for more information.'
+      );
     }
-  };
+  }, [projectId, data.id]);
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     try {
       await apiService.deletePackage(projectId, data.id);
-      updateNodeData(null);
+      // The parent component should handle removing the node from the state
     } catch (error) {
       console.error('Deletion failed:', error);
+      setCommandOutputs(
+        'Deletion failed. Please check the logs for more information.'
+      );
     }
-  };
+  }, [projectId, data.id]);
 
-  const isDeployingOrDestroying = data.deploy_status === 'deploying' || data.deploy_status === 'destroying';
+  const isDeployingOrDestroying =
+    localDeployStatus === 'deploying' || localDeployStatus === 'destroying';
 
   return (
     <Box
@@ -115,9 +138,9 @@ const NodeHeader = ({ data, projectId, updateNodeData, onOpenModal }) => {
         {data.label}
       </Typography>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Tooltip title={`Status: ${data.deploy_status}`}>
+        <Tooltip title={`Status: ${localDeployStatus}`}>
           <StatusDot
-            status={data.deploy_status}
+            status={localDeployStatus}
             onClick={handleOpenStatusModal}
           />
         </Tooltip>
@@ -127,19 +150,27 @@ const NodeHeader = ({ data, projectId, updateNodeData, onOpenModal }) => {
               size="small"
               onClick={onOpenModal}
               disabled={isDeployingOrDestroying}
-              sx={{ ml: 0.5, p: 0.5, opacity: isDeployingOrDestroying ? 0.5 : 1 }}
+              sx={{
+                ml: 0.5,
+                p: 0.5,
+                opacity: isDeployingOrDestroying ? 0.5 : 1,
+              }}
             >
               <EditIcon fontSize="small" />
             </IconButton>
           </span>
         </Tooltip>
-        {data.deploy_status !== 'deployed' ? (
+        {localDeployStatus !== 'deployed' ? (
           <Tooltip title="Deploy">
             <IconButton
               size="small"
               onClick={handleDeploy}
               disabled={isDeployingOrDestroying}
-              sx={{ ml: 0.5, p: 0.5, opacity: isDeployingOrDestroying ? 0.5 : 1 }}
+              sx={{
+                ml: 0.5,
+                p: 0.5,
+                opacity: isDeployingOrDestroying ? 0.5 : 1,
+              }}
             >
               <PlayArrowIcon fontSize="small" />
             </IconButton>
@@ -150,7 +181,11 @@ const NodeHeader = ({ data, projectId, updateNodeData, onOpenModal }) => {
               size="small"
               onClick={handleDestroy}
               disabled={isDeployingOrDestroying}
-              sx={{ ml: 0.5, p: 0.5, opacity: isDeployingOrDestroying ? 0.5 : 1 }}
+              sx={{
+                ml: 0.5,
+                p: 0.5,
+                opacity: isDeployingOrDestroying ? 0.5 : 1,
+              }}
             >
               <StopIcon fontSize="small" />
             </IconButton>
@@ -162,7 +197,11 @@ const NodeHeader = ({ data, projectId, updateNodeData, onOpenModal }) => {
               size="small"
               onClick={handleDelete}
               disabled={isDeployingOrDestroying}
-              sx={{ ml: 0.5, p: 0.5, opacity: isDeployingOrDestroying ? 0.5 : 1 }}
+              sx={{
+                ml: 0.5,
+                p: 0.5,
+                opacity: isDeployingOrDestroying ? 0.5 : 1,
+              }}
             >
               <DeleteIcon fontSize="small" />
             </IconButton>
@@ -181,7 +220,7 @@ const NodeHeader = ({ data, projectId, updateNodeData, onOpenModal }) => {
           </ModalTitle>
           <ModalDescription>
             <Typography id="status-modal-description">
-              {data.command_outputs || 'No logs available.'}
+              {commandOutputs || 'No logs available.'}
             </Typography>
           </ModalDescription>
         </ModalContent>
@@ -190,4 +229,4 @@ const NodeHeader = ({ data, projectId, updateNodeData, onOpenModal }) => {
   );
 };
 
-export default NodeHeader;
+export default React.memo(NodeHeader);

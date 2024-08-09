@@ -21,8 +21,7 @@ app.include_router(router=user_handler.router)
 allowed_origins = [
     "http://localhost",
     "http://localhost:3000",
-    "https://infra.containerlabs.io",
-    "https://infra-api.containerlabs.io"
+    "https://ui-xe7ty6qn7a-uc.a.run.app",
 ]
 
 # Configure CORS

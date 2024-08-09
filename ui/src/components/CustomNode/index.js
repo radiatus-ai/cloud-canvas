@@ -1,26 +1,23 @@
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import 'reactflow/dist/style.css';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import NodeHeader from './NodeHeader';
+import React, { memo, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import 'reactflow/dist/style.css';
 import HandleComponent from './HandleComponent';
-import NodeStatistics from './NodeStatistics';
+import NodeHeader from './NodeHeader';
 
 const NodeContainer = styled(Box)(({ theme }) => ({
   padding: theme.spacing(1.5),
   border: `1px solid ${theme.palette.divider}`,
   borderRadius: theme.shape.borderRadius,
   background: theme.palette.background.paper,
-  // minWidth: '220px', // Increased width to accommodate statistics
-  // minHeight: '120px', // Increased height to accommodate statistics
   minWidth: '180px',
   minHeight: '80px',
   position: 'relative',
   boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
 }));
 
-const CustomNode = ({ data, updateNodeData }) => {
+const CustomNode = memo(({ data, updateNodeData }) => {
   const { projectId } = useParams();
 
   useEffect(() => {
@@ -71,12 +68,10 @@ const CustomNode = ({ data, updateNodeData }) => {
       <Typography variant="caption" color="text.secondary">
         {data.type}
       </Typography>
-      {/* TODO: populate these with data, make collapsible */}
-      {/* <NodeStatistics data={data} /> */}
       {inputHandles}
       {outputHandles}
     </NodeContainer>
   );
-};
+});
 
 export default CustomNode;

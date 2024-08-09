@@ -42,11 +42,36 @@ const NodeOperations = ({
               : n
           )
         );
+
+        // Start polling for status updates
+        const pollInterval = setInterval(async () => {
+          const status = await apiService.getPackageStatus(projectId, nodeId);
+          setNodes((nds) =>
+            nds.map((n) =>
+              n.id === nodeId
+                ? {
+                    ...n,
+                    data: { ...n.data, deploy_status: status.deploy_status },
+                  }
+                : n
+            )
+          );
+
+          if (
+            status.deploy_status === 'deployed' ||
+            status.deploy_status === 'failed'
+          ) {
+            clearInterval(pollInterval);
+          }
+        }, 2000); // Poll every 2 seconds
+
         const updatedPackage = await apiService.deployPackage(
           projectId,
           node.data.id,
           node.data.parameters
         );
+
+        clearInterval(pollInterval); // Clear interval after deployment is complete
 
         setNodes((nds) =>
           nds.map((n) =>

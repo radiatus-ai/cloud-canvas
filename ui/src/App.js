@@ -36,7 +36,7 @@ const App = () => {
   };
 
   return (
-    <GoogleOAuthProvider clientId="988868445965-unqe5mu92nu921ev18c9fbrdhvqj21se.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="1018921851541-kja9q7h1e3f1ah00c1v0pifu9n3mqbj8.apps.googleusercontent.com">
       <ThemeProvider theme={theme}>
         <CssBaseline />
         {!isAuthenticated ? (

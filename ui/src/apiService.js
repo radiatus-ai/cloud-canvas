@@ -6,7 +6,7 @@
 const getApiUrl = () => {
   switch (process.env.REACT_APP_ENV) {
     case 'production':
-      return 'https://infra-api.containerlabs.io';
+      return 'https://api-xe7ty6qn7a-uc.a.run.app';
     case 'development':
     default:
       return 'http://localhost:8000';

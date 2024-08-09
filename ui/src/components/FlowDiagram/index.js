@@ -1,38 +1,38 @@
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from '@mui/material';
 import React, {
-  useState,
   useCallback,
   useEffect,
-  useRef,
   useMemo,
+  useRef,
+  useState,
 } from 'react';
 import { useParams } from 'react-router-dom';
 import ReactFlow, {
   addEdge,
-  Controls,
   Background,
-  useNodesState,
-  useEdgesState,
+  Controls,
   ReactFlowProvider,
+  useEdgesState,
+  useNodesState,
 } from 'reactflow';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Box,
-} from '@mui/material';
 import 'reactflow/dist/style.css';
-import CustomNode from '../CustomNode';
-import CustomEdge from '../CustomEdge';
-import CustomConnectionLine from '../CustomConnectionLine';
-import Sidebar from '../Sidebar';
 import apiService from '../../apiService';
 import CreatePackageModal from '../CreatePackageModal';
-import ProjectDataFetcher from './ProjectDataFetcher';
-import NodeOperations from './NodeOperations';
-import EdgeOperations from './EdgeOperations';
+import CustomConnectionLine from '../CustomConnectionLine';
+import CustomEdge from '../CustomEdge';
+import CustomNode from '../CustomNode/index';
 import DynamicModalForm from '../DynamicModalForm';
+import Sidebar from '../Sidebar';
+import EdgeOperations from './EdgeOperations';
+import NodeOperations from './NodeOperations';
+import ProjectDataFetcher from './ProjectDataFetcher';
 
 const nodeTypes = {
   custom: CustomNode,
