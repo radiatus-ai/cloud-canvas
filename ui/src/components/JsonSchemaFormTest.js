@@ -8,12 +8,12 @@ import {
 } from '@mui/material';
 import yaml from 'js-yaml';
 import React, { useRef, useState } from 'react';
-import CIDRBlockSelector from './CIDRBlockSelector';
-import DynamicStoryGenerator from './DynamicStoryGenerator';
-import GCPRegionsComponent from './GCPRegions';
+import CIDRBlockSelector from './JsonSchema/CustomComponents/CIDRBlockSelector';
+import DynamicStoryGenerator from './JsonSchema/CustomComponents/DynamicStoryGenerator';
+import GCPRegionsComponent from './JsonSchema/CustomComponents/GCPRegions';
+import RichCodeEditor from './JsonSchema/CustomComponents/RichCodeEditor';
+import WeatherCityComponent from './JsonSchema/CustomComponents/WeatherCity';
 import JsonSchemaForm from './JsonSchema/JsonSchemaForm';
-import RichCodeEditor from './RichCodeEditor';
-import WeatherCityComponent from './WeatherCity';
 
 const JsonSchemaFormTest = () => {
   const [schema, setSchema] = useState({
