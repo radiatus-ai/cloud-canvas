@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import React, { memo, useEffect } from 'react';
+import React, { memo } from 'react';
 import { useParams } from 'react-router-dom';
 import 'reactflow/dist/style.css';
 import HandleComponent from './HandleComponent';
@@ -20,9 +20,9 @@ const NodeContainer = styled(Box)(({ theme }) => ({
 const CustomNode = memo(({ data, updateNodeData }) => {
   const { projectId } = useParams();
 
-  useEffect(() => {
-    console.log('Node data updated:', data);
-  }, [data]);
+  // useEffect(() => {
+  //   console.log('Node data updated:', data);
+  // }, [data]);
 
   if (data.inputs.properties === undefined) {
     data.inputs.properties = {};
@@ -64,6 +64,7 @@ const CustomNode = memo(({ data, updateNodeData }) => {
         projectId={projectId}
         updateNodeData={data.updateNodeData}
         onOpenModal={data.onOpenModal}
+        onDeleteNode={data.onDelete}
       />
       <Typography variant="caption" color="text.secondary">
         {data.type}

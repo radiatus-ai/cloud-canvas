@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from 'react';
 import {
+  Box,
+  CircularProgress,
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
-  TextField,
-  CircularProgress,
-  Box,
+  Select,
   Typography,
 } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 
-const API_KEY = 'a9dd621080cfd47535b48c4c732c49cb'; // Replace with your actual API key
+const API_KEY = ''; // Replace with your actual API key
 
 const WeatherCityComponent = ({
   label,

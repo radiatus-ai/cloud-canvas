@@ -5,7 +5,7 @@ import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import React, { useEffect, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { apiService, setIdToken } from './apiService';
-import FlowDiagram from './components/FlowDiagram';
+import FlowDiagram from './components/FlowDiagram/index';
 import JsonSchemaFormTest from './components/JsonSchemaFormTest';
 import Navigation from './components/Navigation';
 import Projects from './components/Projects';

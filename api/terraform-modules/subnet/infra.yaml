@@ -7,8 +7,16 @@ parameters:
     name:
       type: string
       title: Name
+    region:
+      type: string
+      title: Region
+    cidr:
+      type: string
+      title: CIDR Block
   required:
     - name
+    - region
+    - cidr
 
 inputs:
   type: object

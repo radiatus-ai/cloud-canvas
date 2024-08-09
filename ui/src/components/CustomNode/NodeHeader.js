@@ -12,6 +12,7 @@ const StatusDot = styled('div')(({ theme, status }) => ({
   width: 8,
   height: 8,
   borderRadius: '50%',
+  marginLeft: '4px',
   cursor: 'pointer',
   backgroundColor: (() => {
     switch (status) {
@@ -58,7 +59,7 @@ const ModalDescription = styled(Box)(({ theme }) => ({
   flexGrow: 1,
 }));
 
-const NodeHeader = ({ data, projectId, onOpenModal }) => {
+const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [localDeployStatus, setLocalDeployStatus] = useState(
     data.deploy_status
@@ -110,17 +111,20 @@ const NodeHeader = ({ data, projectId, onOpenModal }) => {
     }
   }, [projectId, data.id]);
 
-  const handleDelete = useCallback(async () => {
-    try {
-      await apiService.deletePackage(projectId, data.id);
-      // The parent component should handle removing the node from the state
-    } catch (error) {
-      console.error('Deletion failed:', error);
-      setCommandOutputs(
-        'Deletion failed. Please check the logs for more information.'
-      );
-    }
-  }, [projectId, data.id]);
+  // const handleDelete = useCallback(async () => {
+  //   try {
+  //     await apiService.deletePackage(projectId, data.id);
+  //     // The parent component should handle removing the node from the state
+  //     // Call the onDeleteNode callback to remove the node from the parent component
+  //     // todo: redo when moving to real backend
+  //     onDeleteNode(data.id);
+  //   } catch (error) {
+  //     console.error('Deletion failed:', error);
+  //     setCommandOutputs(
+  //       'Deletion failed. Please check the logs for more information.'
+  //     );
+  //   }
+  // }, [projectId, data.id]);
 
   const isDeployingOrDestroying =
     localDeployStatus === 'deploying' || localDeployStatus === 'destroying';
@@ -195,7 +199,7 @@ const NodeHeader = ({ data, projectId, onOpenModal }) => {
           <span>
             <IconButton
               size="small"
-              onClick={handleDelete}
+              onClick={onDeleteNode}
               disabled={isDeployingOrDestroying}
               sx={{
                 ml: 0.5,

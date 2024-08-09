@@ -46,6 +46,8 @@ const DynamicModalForm = ({
 
   const customComponents = {
     gcpRegions: GCPRegionsComponent,
+    // uncomment to test region dropdown
+    // region: GCPRegionsComponent,
   };
 
   return (

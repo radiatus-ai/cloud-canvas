@@ -68,6 +68,8 @@ async def get_package(package_id: str):
 
 @router.delete("/{package_id}")
 async def delete_package(package_id: str):
+    print("HI"*2)
+    print(package_id)
     if gcs_service.delete_item_from_json_file(PACKAGE_FILE, package_id):
         return {"message": "Package deleted successfully"}
     raise HTTPException(status_code=404, detail="Package not found")
