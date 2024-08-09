@@ -25,11 +25,11 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import apiService from '../../apiService';
 import CreatePackageModal from '../CreatePackageModal';
-import CustomConnectionLine from '../CustomConnectionLine';
-import CustomEdge from '../CustomEdge';
 import CustomNode from '../CustomNode/index';
 import DynamicModalForm from '../DynamicModalForm';
 import Sidebar from '../Sidebar';
+import CustomConnectionLine from './CustomConnectionLine';
+import CustomEdge from './CustomEdge';
 import EdgeOperations from './EdgeOperations';
 import NodeOperations from './NodeOperations';
 import ProjectDataFetcher from './ProjectDataFetcher';

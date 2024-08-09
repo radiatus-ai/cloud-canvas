@@ -1,7 +1,16 @@
 import { Autocomplete, CircularProgress, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
-const ApiAutocomplete = ({ label, value, onChange, onBlur, error, helperText, required, apiEndpoint }) => {
+const ApiAutocomplete = ({
+  label,
+  value,
+  onChange,
+  onBlur,
+  error,
+  helperText,
+  required,
+  apiEndpoint,
+}) => {
   const [options, setOptions] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -49,7 +58,9 @@ const ApiAutocomplete = ({ label, value, onChange, onBlur, error, helperText, re
             ...params.InputProps,
             endAdornment: (
               <>
-                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {loading ? (
+                  <CircularProgress color="inherit" size={20} />
+                ) : null}
                 {params.InputProps.endAdornment}
               </>
             ),
