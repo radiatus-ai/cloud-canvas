@@ -1,0 +1,57 @@
+deployments/*
+
+# Python cache files
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.py[cod]
+*$py.class
+
+# Poetry cache and virtual environments
+.venv
+.poetry
+
+# Python coverage and test files
+.pytest_cache
+.coverage
+htmlcov/
+
+# Ruff cache
+.ruff_cache
+
+# Development and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Version control
+.git
+.gitignore
+
+# Project specific
+tests/
+docs/
+
+# Log files
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Build files
+dist/
+build/
+*.egg-info/
+
+# Temporary files
+tmp/
+temp/
