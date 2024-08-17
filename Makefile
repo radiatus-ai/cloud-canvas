@@ -1,3 +1,6 @@
+gen-clients:
+	openapi-generator-cli generate -i data/openapi-spec.yaml -g javascript -o ./ui/canvas-client
+
 build:
 	docker compose build api-deploy ui-deploy
 

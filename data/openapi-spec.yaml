@@ -1,0 +1,700 @@
+---
+openapi: 3.1.0
+info:
+  title: Platform API
+  version: 0.1.0
+paths:
+  "/projects/{project_id}/connections/":
+    get:
+      summary: List Connections
+      operationId: list_connections_projects__project_id__connections__get
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Project Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Connection"
+                title: Response List Connections Projects  Project Id  Connections  Get
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    post:
+      summary: Create Connection
+      operationId: create_connection_projects__project_id__connections__post
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Project Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ConnectionCreate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Connection"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/projects/{project_id}/connections/{connection_id}":
+    delete:
+      summary: Delete Connection
+      operationId: delete_connection_projects__project_id__connections__connection_id__delete
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Project Id
+        - name: connection_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Connection Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Connection"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/packages/":
+    get:
+      summary: List All Packages
+      operationId: list_all_packages_packages__get
+      parameters:
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            title: Skip
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 100
+            title: Limit
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Package"
+                title: Response List All Packages Packages  Get
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/projects/{project_id}/packages/":
+    get:
+      summary: List Packages
+      operationId: list_packages_projects__project_id__packages__get
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Project Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Package"
+                title: Response List Packages Projects  Project Id  Packages  Get
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    post:
+      summary: Create Package
+      operationId: create_package_projects__project_id__packages__post
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Project Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PackageCreate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Package"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/projects/{project_id}/packages/{package_id}":
+    patch:
+      summary: Update Package
+      operationId: update_package_projects__project_id__packages__package_id__patch
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Project Id
+        - name: package_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Package Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/PackageUpdate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Package"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    delete:
+      summary: Delete Package
+      operationId: delete_package_projects__project_id__packages__package_id__delete
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Project Id
+        - name: package_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Package Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Package"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/projects/{project_id}/packages/{package_id}/deploy":
+    post:
+      summary: Deploy Package
+      operationId: deploy_package_projects__project_id__packages__package_id__deploy_post
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Project Id
+        - name: package_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Package Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              title: Deploy Data
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Package"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/projects/{project_id}/packages/{package_id}/destroy":
+    delete:
+      summary: Destroy Package
+      operationId: destroy_package_projects__project_id__packages__package_id__destroy_delete
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Project Id
+        - name: package_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Package Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Package"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/projects/":
+    get:
+      summary: List Projects
+      operationId: list_projects_projects__get
+      parameters:
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            title: Skip
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 100
+            title: Limit
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Project"
+                title: Response List Projects Projects  Get
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    post:
+      summary: Create Project
+      operationId: create_project_projects__post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ProjectCreate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Project"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+  "/projects/{project_id}":
+    patch:
+      summary: Update Project
+      operationId: update_project_projects__project_id__patch
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Project Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ProjectUpdate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Project"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+    delete:
+      summary: Delete Project
+      operationId: delete_project_projects__project_id__delete
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Project Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Project"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    Connection:
+      properties:
+        source_package_id:
+          type: string
+          format: uuid4
+          title: Source Package Id
+        target_package_id:
+          type: string
+          format: uuid4
+          title: Target Package Id
+        source_handle:
+          type: string
+          title: Source Handle
+        target_handle:
+          type: string
+          title: Target Handle
+        id:
+          type: string
+          format: uuid4
+          title: Id
+        project_id:
+          type: string
+          format: uuid4
+          title: Project Id
+      type: object
+      required:
+        - source_package_id
+        - target_package_id
+        - source_handle
+        - target_handle
+        - id
+        - project_id
+      title: Connection
+    ConnectionCreate:
+      properties:
+        source_package_id:
+          type: string
+          format: uuid4
+          title: Source Package Id
+        target_package_id:
+          type: string
+          format: uuid4
+          title: Target Package Id
+        source_handle:
+          type: string
+          title: Source Handle
+        target_handle:
+          type: string
+          title: Target Handle
+        project_id:
+          type: string
+          format: uuid4
+          title: Project Id
+      type: object
+      required:
+        - source_package_id
+        - target_package_id
+        - source_handle
+        - target_handle
+        - project_id
+      title: ConnectionCreate
+    DeployStatus:
+      type: string
+      enum:
+        - NOT_DEPLOYED
+        - DEPLOYING
+        - DEPLOYED
+        - FAILED
+      title: DeployStatus
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            "$ref": "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    Package:
+      properties:
+        name:
+          type: string
+          title: Name
+        type:
+          type: string
+          title: Type
+        inputs:
+          type: object
+          title: Inputs
+        outputs:
+          type: object
+          title: Outputs
+        parameters:
+          type: object
+          title: Parameters
+        id:
+          type: string
+          format: uuid4
+          title: Id
+        project_id:
+          type: string
+          format: uuid4
+          title: Project Id
+        deploy_status:
+          "$ref": "#/components/schemas/DeployStatus"
+        output_data:
+          anyOf:
+            - type: object
+            - type: "null"
+          title: Output Data
+        parameter_data:
+          anyOf:
+            - type: object
+            - type: "null"
+          title: Parameter Data
+      type: object
+      required:
+        - name
+        - type
+        - inputs
+        - outputs
+        - parameters
+        - id
+        - project_id
+        - deploy_status
+      title: Package
+    PackageCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        type:
+          type: string
+          title: Type
+        inputs:
+          type: object
+          title: Inputs
+        outputs:
+          type: object
+          title: Outputs
+        parameters:
+          type: object
+          title: Parameters
+        project_id:
+          type: string
+          format: uuid4
+          title: Project Id
+      type: object
+      required:
+        - name
+        - type
+        - inputs
+        - outputs
+        - parameters
+        - project_id
+      title: PackageCreate
+    PackageUpdate:
+      properties:
+        name:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Name
+        type:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Type
+        inputs:
+          anyOf:
+            - type: object
+            - type: "null"
+          title: Inputs
+        outputs:
+          anyOf:
+            - type: object
+            - type: "null"
+          title: Outputs
+        parameters:
+          anyOf:
+            - type: object
+            - type: "null"
+          title: Parameters
+      type: object
+      title: PackageUpdate
+    Project:
+      properties:
+        name:
+          type: string
+          title: Name
+        is_user_default:
+          type: boolean
+          title: Is User Default
+          default: false
+        id:
+          type: string
+          format: uuid4
+          title: Id
+        organization_id:
+          type: string
+          format: uuid4
+          title: Organization Id
+      type: object
+      required:
+        - name
+        - id
+        - organization_id
+      title: Project
+    ProjectCreate:
+      properties:
+        name:
+          type: string
+          title: Name
+        is_user_default:
+          type: boolean
+          title: Is User Default
+          default: false
+        organization_id:
+          anyOf:
+            - type: string
+              format: uuid4
+            - type: "null"
+          title: Organization Id
+      type: object
+      required:
+        - name
+      title: ProjectCreate
+    ProjectUpdate:
+      properties:
+        name:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Name
+      type: object
+      title: ProjectUpdate
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
