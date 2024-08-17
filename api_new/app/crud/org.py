@@ -3,7 +3,7 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.base import CRUDBase
-from app.models.organization import OrganizationReference
+from app.models.organization_reference import OrganizationReference
 from app.schemas.organization import (
     OrganizationReferenceCreate,
     OrganizationReferenceUpdate,

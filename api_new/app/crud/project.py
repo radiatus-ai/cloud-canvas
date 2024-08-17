@@ -6,8 +6,6 @@ from sqlalchemy.future import select
 
 from app.crud.base import CRUDBase
 from app.models.project import Project
-
-# from app.models.user import User, UserOrganization
 from app.schemas.project import ProjectCreate, ProjectUpdate
 
 
@@ -50,7 +48,7 @@ class CRUDProject(CRUDBase[Project, ProjectCreate, ProjectUpdate]):
         self, db: AsyncSession, organization_id: UUID
     ) -> Optional[Project]:
         query = select(Project).where(
-            Project.organization_id == organization_id, Project.is_user_default == True
+            Project.organization_id == organization_id, Project.is_user_default is True
         )
         result = await db.execute(query)
         return result.scalar_one_or_none()
@@ -60,7 +58,7 @@ class CRUDProject(CRUDBase[Project, ProjectCreate, ProjectUpdate]):
     ) -> Project:
         stmt = select(self.model).where(
             self.model.organization_id == organization_id,
-            self.model.is_user_default == True,
+            self.model.is_user_default is True,
         )
         result = await db.execute(stmt)
         default_project = result.scalar_one_or_none()

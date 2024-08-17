@@ -103,7 +103,7 @@ async def create_default_project(db: AsyncSession, organization_id: UUID) -> Pro
 
 
 from app.crud.project import project as crud_project
-from app.models.organization import OrganizationReference
+from app.models.organization_reference import OrganizationReference
 
 
 async def ensure_organization_reference(
@@ -135,7 +135,7 @@ async def initialize_user_session(db: AsyncSession, user_data: dict):
 
     # Check if the user already has a default project
     stmt = select(Project).where(
-        Project.organization_id == org_ref.id, Project.is_user_default == True
+        Project.organization_id == org_ref.id, Project.is_user_default is True
     )
     result = await db.execute(stmt)
     default_project = result.scalar_one_or_none()

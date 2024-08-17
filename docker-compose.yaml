@@ -1,4 +1,14 @@
 services:
+  database:
+    image: pgvector/pgvector:pg16
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=canvasdb
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=testpwd
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
   api:
     build:
       dockerfile: ./Dockerfile

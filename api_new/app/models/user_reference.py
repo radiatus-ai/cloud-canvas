@@ -14,3 +14,4 @@ class UserReference(Base):
     google_id = Column(String, unique=True, index=True)
 
     api_tokens = relationship("APIToken", back_populates="user")
+    projects = relationship("Project", back_populates="user")

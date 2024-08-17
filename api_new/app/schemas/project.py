@@ -16,7 +16,7 @@ class ProjectCreate(ProjectBase):
 
 
 class ProjectUpdate(BaseModel):
-    name: str | None = None
+    name: Optional[str] = None
 
 
 class Project(ProjectBase):

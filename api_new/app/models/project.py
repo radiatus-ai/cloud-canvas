@@ -15,4 +15,9 @@ class Project(Base):
     organization_id = Column(
         UUID(as_uuid=True), ForeignKey("organization_references.id")
     )
-    organization = relationship("OrganizationReference")
+    user_id = Column(UUID(as_uuid=True), ForeignKey("user_references.id"))
+
+    organization = relationship("OrganizationReference", back_populates="projects")
+    user = relationship("UserReference", back_populates="projects")
+    packages = relationship("Package", back_populates="project")
+    connections = relationship("Connection", back_populates="project")
