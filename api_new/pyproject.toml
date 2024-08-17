@@ -29,9 +29,6 @@ opentelemetry-instrumentation-fastapi = "^0.46b0"
 opentelemetry-instrumentation-logging = "^0.46b0"
 opentelemetry-instrumentation-sqlalchemy = "^0.46b0"
 httpx = "^0.27.0"
-ada-python = "^0.5.0"
-# ada-python = {path = "../../ada-python", develop = true}
-google-generativeai = "^0.7.2"
 
 [tool.poetry.dev-dependencies]
 pytest = "^8.1.1"

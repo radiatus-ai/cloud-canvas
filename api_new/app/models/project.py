@@ -16,4 +16,3 @@ class Project(Base):
         UUID(as_uuid=True), ForeignKey("organization_references.id")
     )
     organization = relationship("OrganizationReference")
-    chats = relationship("Chat", back_populates="project")

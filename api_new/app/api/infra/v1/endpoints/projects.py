@@ -72,7 +72,7 @@ async def create(
     body: ProjectCreate = Body(...), deps: dict = Depends(get_db_and_current_user)
 ):
     db = deps["db"]
-    current_user = deps["current_user"]
+    deps["current_user"]
     # default_org = await crud_user.get_default_organization(db, user_id=current_user.id)
     default_org = "foobar"
     # TODO: replace with _current_ user organization
@@ -92,7 +92,7 @@ async def create_chat(
     deps: dict = Depends(get_db_and_current_user),
 ):
     db = deps["db"]
-    current_user = deps["current_user"]
+    deps["current_user"]
     project = await crud_project.get(db, id=project_id)
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -113,7 +113,7 @@ async def read_chats(
     deps: dict = Depends(get_db_and_current_user),
 ):
     db = deps["db"]
-    current_user = deps["current_user"]
+    deps["current_user"]
     project = await crud_project.get(db, id=project_id)
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
