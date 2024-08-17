@@ -1,27 +1,62 @@
 import { Box, Container, Typography } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
-import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import React, { useEffect, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { apiService, setIdToken } from './apiService';
+import AuthenticationComponent from './components/Authentication';
 import FlowDiagram from './components/FlowDiagram/index';
 import JsonSchemaFormTest from './components/JsonSchemaFormTest';
 import Navigation from './components/Navigation';
 import Projects from './components/Projects';
+import { useAuth } from './contexts/Auth';
 import theme from './theme';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { token, login, logout } = useAuth();
 
   useEffect(() => {
     // Check authentication status on component mount
-    setIsAuthenticated(apiService.isAuthenticated());
+    // setIsAuthenticated(apiService.isAuthenticated());
   }, []);
 
-  const handleLoginSuccess = async (credentialResponse) => {
-    await setIdToken(credentialResponse.credential);
-    setIsAuthenticated(true);
+  // const handleLoginSuccess = async (credentialResponse) => {
+  //   await setIdToken(credentialResponse.credential);
+  //   setIsAuthenticated(true);
+  // };
+
+  const onLogin = async (decodedToken, authToken) => {
+    // const testGoogleLogin = async function(googleToken) {
+    const apiUrl = 'http://localhost:8080'; // Adjust this to your API's URL
+    const endpoint = '/login/google';
+
+    try {
+      const response = await fetch(`${apiUrl}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: authToken }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      login(data.user, data.token);
+      console.log('Login successful:', data);
+
+      // You can handle the successful login here, e.g., storing the token
+      // localStorage.setItem('authToken', data.token);
+
+      return data;
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
   };
 
   const handleLoginError = () => {
@@ -48,10 +83,14 @@ const App = () => {
               Please sign in to continue
             </Typography>
             <Box mt={4}>
-              <GoogleLogin
-                onSuccess={handleLoginSuccess}
+              {/* <GoogleLogin
+                onSuccess={onLogin}
                 onError={handleLoginError}
                 auto_select
+              /> */}
+              <AuthenticationComponent
+                onLogin={onLogin}
+                onError={handleLoginError}
               />
             </Box>
           </Container>
@@ -64,7 +103,10 @@ const App = () => {
                 minHeight: '100vh',
               }}
             >
-              <Navigation onLogout={handleLogout} />
+              <Navigation
+                isAuthenticated={isAuthenticated}
+                onLogout={handleLogout}
+              />
               <Box
                 component="main"
                 sx={{ flexGrow: 1, p: 0, overflow: 'hidden' }}

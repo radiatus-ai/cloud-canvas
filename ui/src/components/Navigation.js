@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import FolderIcon from '@mui/icons-material/Folder';
+import MenuIcon from '@mui/icons-material/Menu';
 import {
   AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
+  Avatar,
+  Box,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Box,
-  Avatar,
   Menu,
   MenuItem,
+  Toolbar,
   Tooltip,
+  Typography,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import FolderIcon from '@mui/icons-material/Folder';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import React, { useEffect, useState } from 'react';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import apiService from '../apiService';
 
-const Navigation = ({ onLogout }) => {
+const Navigation = ({ isAuthenticated, onLogout }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [projects, setProjects] = useState([]);
@@ -52,7 +52,7 @@ const Navigation = ({ onLogout }) => {
       }
     };
 
-    if (apiService.isAuthenticated()) {
+    if (isAuthenticated) {
       fetchUserInfo();
       fetchProjects();
     }

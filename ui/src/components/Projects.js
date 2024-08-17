@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import {
-  Container,
-  Typography,
+  Alert,
+  Box,
   Button,
+  CircularProgress,
+  Container,
+  IconButton,
+  Link,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
-  Link,
-  IconButton,
-  Box,
-  Alert,
-  CircularProgress,
+  Typography,
 } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
+import React, { useEffect, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import apiService from '../apiService';
+import useApi from '../hooks/useAPI';
 import DynamicModalForm from './DynamicModalForm';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -50,6 +51,7 @@ const Projects = () => {
   const [error, setError] = useState(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editProject, setEditProject] = useState({});
+  const { projects: projectsApi } = useApi();
 
   useEffect(() => {
     fetchProjects();
