@@ -47,10 +47,14 @@ export const useFlowDiagram = () => {
 
   useEffect(() => {
     if (projectData) {
-      setNodes(projectData.nodes || []);
-      setEdges(projectData.edges || []);
+      if (JSON.stringify(nodes) !== JSON.stringify(projectData.nodes)) {
+        setNodes(projectData.nodes || []);
+      }
+      if (JSON.stringify(edges) !== JSON.stringify(projectData.edges)) {
+        setEdges(projectData.edges || []);
+      }
     }
-  }, [projectData, setNodes, setEdges]);
+  }, [projectData, nodes, edges, setNodes, setEdges]);
 
   const onInit = useCallback((instance) => {
     setReactFlowInstance(instance);
