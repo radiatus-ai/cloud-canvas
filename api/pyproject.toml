@@ -1,32 +1,84 @@
 [tool.poetry]
-name = "infra-app-api"
+name = "canvas-api"
 version = "0.1.0"
 description = ""
 authors = ["Will Beebe"]
-packages = [
-  {include = "*", from="src"},
-]
+readme = "README.md"
+packages = [{include = "*", from="app"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-pydantic = "^2.7.0"
-fastapi = "^0.111.0"
-google-cloud-storage = "^2.17.0"
+fastapi = "^0.110.0"
+pydantic = {extras = ["email"], version = "^2.8.2"}
+uvicorn = "^0.30.1"
+pydantic-settings = "^2.3.4"
 python-jose = "^3.3.0"
-google-auth = "^2.31.0"
-jsonschema = "^4.22.0"
-
+google-auth = "^2.32.0"
+google-auth-oauthlib = "^1.2.1"
+google-auth-httplib2 = "^0.2.0"
+sqlalchemy = "^2.0.31"
+asyncpg = "^0.29.0"
+greenlet = "^3.0.3"
+alembic = "^1.13.2"
+psycopg2-binary = "^2.9.9"
+cryptography = "^42.0.8"
+gunicorn = "^22.0.0"
+opentelemetry-distro = "^0.46b0"
+opentelemetry-exporter-otlp = "^1.25.0"
+opentelemetry-instrumentation-fastapi = "^0.46b0"
+opentelemetry-instrumentation-logging = "^0.46b0"
+opentelemetry-instrumentation-sqlalchemy = "^0.46b0"
+httpx = "^0.27.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^8.1.1"
+pytest-asyncio = "^0.23.7"
+
+# [tool.poetry.scripts]
+# start = "src.app:start"
+
+[tool.poetry.group.dev.dependencies]
+pytest-dotenv = "^0.5.2"
+pytest = "^8.2.2"
+pytest-asyncio = "^0.23.7"
+httpx = "^0.27.0"
+aiosqlite = "^0.20.0"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
+[tool.pytest]
+env_files = [ ".env"]
+asyncio_mode = "auto"
+
 [tool.ruff]
-select = ["E", "F", "W", "I001"]
-ignore = ["E501", "F541"]
-fixable = ["W", "I001"]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "C",   # flake8-comprehensions
+    "B",   # flake8-bugbear
+]
+ignore = ["E501", "B008"]  # line length violations
+
+# Enable Pyflakes `F401` rule to detect unused imports
+extend-select = ["F401"]
+
+# Same as Black.
+line-length = 88
+
+# Assume Python 3.11
+target-version = "py311"
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.isort]
+known-first-party = ["app"]
+
+[tool.ruff.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.params.Depends", "fastapi.Query", "fastapi.params.Query"]
 
 [build-system]
 requires = ["poetry-core"]

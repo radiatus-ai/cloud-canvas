@@ -1,4 +1,26 @@
 services:
+  auth-database:
+    image: pgvector/pgvector:pg16
+    ports:
+      - 6432:5432
+    environment:
+      - POSTGRES_DB=userdb
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=testpwd
+
+  auth-service:
+    image: us-central1-docker.pkg.dev/rad-containers-hmed/shared/auth-service:latest
+    ports:
+      - 8080:8080
+    environment:
+      - POSTGRES_DB=userdb
+      - POSTGRES_SERVER=auth-database
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=testpwd
+      - LOCAL_DB=true
+    depends_on:
+      - auth-database
+
   database:
     image: pgvector/pgvector:pg16
     ports:
@@ -7,7 +29,6 @@ services:
       - POSTGRES_DB=canvasdb
       - POSTGRES_USER=testuser
       - POSTGRES_PASSWORD=testpwd
-      - POSTGRES_HOST_AUTH_METHOD=trust
 
   api:
     build:

@@ -1,16 +1,13 @@
-FROM python:3.11-slim
+# Build stage
+FROM python:3.12-slim as builder
 
 # install system dependencies
 RUN apt-get update && apt-get install -y \
-  wget \
-  unzip
+    wget \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN wget https://releases.hashicorp.com/terraform/1.9.1/terraform_1.9.1_linux_amd64.zip && \
-  unzip terraform_1.9.1_linux_amd64.zip && \
-  mv terraform /usr/local/bin/terraform && \
-  rm terraform_1.9.1_linux_amd64.zip
-
-RUN pip install poetry
+RUN pip install --no-cache-dir poetry
 
 WORKDIR /app
 
@@ -18,16 +15,27 @@ WORKDIR /app
 COPY pyproject.toml poetry.lock ./
 
 # Install dependencies
-RUN poetry config virtualenvs.create false && \
-    poetry install --no-interaction --no-ansi --no-root
+RUN poetry config virtualenvs.create false \
+    && poetry install --no-interaction --no-ansi --no-root --only main
 
-# Copy the rest of the application code
 COPY . .
+RUN poetry config virtualenvs.create false \
+  && poetry install --no-interaction --no-ansi --only main
 
-# Install the project itself
-RUN poetry install --no-interaction --no-ansi
+# Final stage
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Copy installed packages from builder stage
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+COPY --from=builder /app /app
 
 ENV PORT=8000
 EXPOSE $PORT
 
-CMD ["sh", "-c", "poetry run uvicorn main:app --app-dir=src --host=0.0.0.0 --port=${PORT}"]
+COPY ada-cli /usr/local/bin/ada
+
+# Use gunicorn with multiple workers and enable preload
+CMD ["sh", "-c", "gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker --preload --bind 0.0.0.0:${PORT}"]
