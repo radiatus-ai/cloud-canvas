@@ -2,8 +2,8 @@ import { context, propagation, trace } from '@opentelemetry/api';
 import { useCallback, useState } from 'react';
 import {
   createApi,
+  DefaultApi,
   handleApiError,
-  Project as ProjectsApi,
 } from '../clients/canvas-client';
 
 const useApi = () => {
@@ -44,57 +44,107 @@ const useApi = () => {
   const projects = {
     list: (token, parentSpan) =>
       apiCall(
-        ProjectsApi,
-        'listProjectsInfraV1ProjectsGet',
-        [],
+        DefaultApi,
+        'listProjectsProjectsGet',
+        [{ skip: 0, limit: 100 }],
         token,
         parentSpan
       ),
     create: (data, token, parentSpan) =>
       apiCall(
-        ProjectsApi,
-        'createInfraV1ProjectsPost',
+        DefaultApi,
+        'createProjectProjectsPost',
         [data],
-        token,
-        parentSpan
-      ),
-    createChat: (id, data, token, parentSpan) =>
-      apiCall(
-        ProjectsApi,
-        'createChatInfraV1ProjectsProjectIdChatsPost',
-        [id, data],
         token,
         parentSpan
       ),
     get: (id, token, parentSpan) =>
       apiCall(
-        ProjectsApi,
-        'getProjectInfraV1ProjectsProjectIdGet',
+        DefaultApi,
+        'getProjectProjectsProjectIdGet',
         [id],
         token,
         parentSpan
       ),
     update: (id, data, token, parentSpan) =>
       apiCall(
-        ProjectsApi,
-        'updateProjectInfraV1ProjectsProjectIdPut',
+        DefaultApi,
+        'updateProjectProjectsProjectIdPatch',
         [id, data],
         token,
         parentSpan
       ),
     delete: (id, token, parentSpan) =>
       apiCall(
-        ProjectsApi,
-        'deleteProjectInfraV1ProjectsProjectIdDelete',
+        DefaultApi,
+        'deleteProjectProjectsProjectIdDelete',
         [id],
         token,
         parentSpan
       ),
-    listRecentChats: (id, token, parentSpan) =>
+    // New methods for packages
+    listPackages: (projectId, token, parentSpan) =>
       apiCall(
-        ProjectsApi,
-        'readChatsInfraV1ProjectsProjectIdChatsGet',
-        [id],
+        DefaultApi,
+        'listPackagesProjectsProjectIdPackagesGet',
+        [projectId],
+        token,
+        parentSpan
+      ),
+    createPackage: (projectId, data, token, parentSpan) =>
+      apiCall(
+        DefaultApi,
+        'createPackageProjectsProjectIdPackagesPost',
+        [projectId, data],
+        token,
+        parentSpan
+      ),
+    updatePackage: (projectId, packageId, data, token, parentSpan) =>
+      apiCall(
+        DefaultApi,
+        'updatePackageProjectsProjectIdPackagesPackageIdPatch',
+        [projectId, packageId, data],
+        token,
+        parentSpan
+      ),
+    deletePackage: (projectId, packageId, token, parentSpan) =>
+      apiCall(
+        DefaultApi,
+        'deletePackageProjectsProjectIdPackagesPackageIdDelete',
+        [projectId, packageId],
+        token,
+        parentSpan
+      ),
+    deployPackage: (projectId, packageId, data, token, parentSpan) =>
+      apiCall(
+        DefaultApi,
+        'deployPackageProjectsProjectIdPackagesPackageIdDeployPost',
+        [projectId, packageId, data],
+        token,
+        parentSpan
+      ),
+    // New methods for connections
+    listConnections: (projectId, token, parentSpan) =>
+      apiCall(
+        DefaultApi,
+        'listConnectionsProjectsProjectIdConnectionsGet',
+        [projectId],
+        token,
+        parentSpan
+      ),
+    createConnection: (projectId, data, token, parentSpan) =>
+      apiCall(
+        DefaultApi,
+        'createConnectionProjectsProjectIdConnectionsPost',
+        [projectId, data],
+        token,
+        parentSpan
+      ),
+    deleteConnection: (projectId, connectionId, token, parentSpan) =>
+      apiCall(
+        DefaultApi,
+        'deleteConnectionProjectsProjectIdConnectionsConnectionIdDelete',
+        [projectId, connectionId],
         token,
         parentSpan
       ),

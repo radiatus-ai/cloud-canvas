@@ -1,67 +1,51 @@
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import {
-  Alert,
   Box,
   Button,
+  Card,
+  CardActions,
+  CardContent,
   CircularProgress,
   Container,
+  Grid,
   IconButton,
-  Link,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import apiService from '../apiService';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/Auth';
 import useApi from '../hooks/useAPI';
 import DynamicModalForm from './DynamicModalForm';
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  fontWeight: 'bold',
-  borderBottom: `1px solid ${theme.palette.divider}`,
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:hover': {
-    backgroundColor: theme.palette.action.hover,
-  },
-}));
-
-const ActionButton = styled(IconButton)(({ theme }) => ({
-  padding: theme.spacing(0.5),
-}));
-
-const StyledLink = styled(Link)({
-  textDecoration: 'none',
-  '&:hover': {
-    textDecoration: 'underline',
-  },
-});
+import CreateProjectModal from './ProjectCreate';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [editProject, setEditProject] = useState({});
+  const [editProject, setEditProject] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState(null);
+  const [createProjectModalOpen, setCreateProjectModalOpen] = useState(false);
   const { projects: projectsApi } = useApi();
+  const { token } = useAuth();
+  const navigate = useNavigate();
+
+  const projectsApiRef = useRef(projectsApi);
+  const tokenRef = useRef(token);
 
   useEffect(() => {
-    fetchProjects();
-  }, []);
+    projectsApiRef.current = projectsApi;
+    tokenRef.current = token;
+  }, [projectsApi, token]);
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
+    const currentToken = tokenRef.current;
+    if (!currentToken) return;
     setIsLoading(true);
     try {
-      const data = await apiService.fetchProjects();
-      setProjects(data);
+      const response = await projectsApiRef.current.list(currentToken);
+      setProjects(response.body);
       setError(null);
     } catch (err) {
       setError('Failed to load projects. Please try again later.');
@@ -69,61 +53,80 @@ const Projects = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const createProject = async () => {
-    const newProject = {
-      name: `New Project ${projects.length + 1}`,
-      created_at: new Date().toISOString(),
-    };
+  useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
+  const handleCreateProject = async (projectData) => {
     try {
-      const createdProject = await apiService.createProject(newProject);
-      setProjects([...projects, createdProject]);
+      const response = await projectsApi.create(
+        {
+          ...projectData,
+          organization_id: '2320a0d6-8cbb-4727-8f33-6573d017d980',
+        },
+        token
+      );
+      setProjects([...projects, response.body]);
     } catch (err) {
       setError('Failed to create project. Please try again.');
       console.error('Error creating project:', err);
     }
   };
 
-  const openEditDialog = (project) => {
+  const handleEditProject = (project) => {
     setEditProject(project);
     setEditDialogOpen(true);
   };
 
-  const closeEditDialog = () => {
+  const handleCloseEditDialog = () => {
     setEditDialogOpen(false);
     setEditProject(null);
   };
 
-  const editProjectHandler = async (updatedData) => {
+  const handleUpdateProject = async (updatedData) => {
     try {
-      const updatedProject = await apiService.updateProject(
+      const response = await projectsApi.update(
         editProject.id,
-        updatedData
+        updatedData,
+        token
       );
       setProjects(
-        projects.map((project) =>
-          project.id === editProject.id ? updatedProject : project
-        )
+        projects.map((p) => (p.id === response.body.id ? response.body : p))
       );
-      closeEditDialog();
+      handleCloseEditDialog();
     } catch (err) {
       setError('Failed to update project. Please try again.');
       console.error('Error updating project:', err);
     }
   };
 
-  const deleteProject = async (id) => {
+  const handleDeleteDialogOpen = (project) => {
+    setProjectToDelete(project);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteDialogClose = () => {
+    setDeleteDialogOpen(false);
+    setProjectToDelete(null);
+  };
+
+  const handleDeleteProject = async () => {
+    if (!projectToDelete) return;
     try {
-      await apiService.deleteProject(id);
-      setProjects(projects.filter((project) => project.id !== id));
+      await projectsApi.delete(projectToDelete.id, token);
+      setProjects(projects.filter((p) => p.id !== projectToDelete.id));
+      handleDeleteDialogClose();
     } catch (err) {
       setError('Failed to delete project. Please try again.');
       console.error('Error deleting project:', err);
     }
   };
 
-  const formatDate = apiService.formatDate;
+  const handleProjectClick = (projectId) => {
+    navigate(`/flow/${projectId}`);
+  };
 
   if (isLoading) {
     return (
@@ -140,13 +143,6 @@ const Projects = () => {
     );
   }
 
-  const editSchema = {
-    type: 'object',
-    properties: {
-      name: { type: 'string', title: 'Project Name' },
-    },
-  };
-
   return (
     <Container maxWidth="lg">
       <Box sx={{ mt: 4, mb: 4 }}>
@@ -162,69 +158,85 @@ const Projects = () => {
             Projects
           </Typography>
           <Button
-            variant="outlined"
+            variant="contained"
             color="primary"
-            onClick={createProject}
-            size="small"
+            onClick={() => setCreateProjectModalOpen(true)}
           >
-            Create
+            Create Project
           </Button>
         </Box>
         {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
+          <Typography color="error" sx={{ mb: 2 }}>
             {error}
-          </Alert>
+          </Typography>
         )}
-        <TableContainer component={Paper} elevation={0}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <StyledTableCell>Name</StyledTableCell>
-                <StyledTableCell>Created At</StyledTableCell>
-                <StyledTableCell align="right">Actions</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {projects.map((project) => (
-                <StyledTableRow key={project.id}>
-                  <TableCell>
-                    <StyledLink
-                      component={RouterLink}
-                      to={`/flow/${project.id}`}
-                      color="primary"
-                    >
-                      {project && project.name}
-                    </StyledLink>
-                  </TableCell>
-                  <TableCell>{formatDate(project.created_at)}</TableCell>
-                  <TableCell align="right">
-                    <ActionButton
-                      onClick={() => openEditDialog(project)}
-                      size="small"
-                    >
-                      <EditIcon fontSize="small" />
-                    </ActionButton>
-                    <ActionButton
-                      onClick={() => deleteProject(project.id)}
-                      size="small"
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </ActionButton>
-                  </TableCell>
-                </StyledTableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Grid container spacing={3}>
+          {projects.map((project) => (
+            <Grid item xs={12} sm={6} md={4} key={project.id}>
+              <Card
+                onClick={() => handleProjectClick(project.id)}
+                sx={{ cursor: 'pointer' }}
+              >
+                <CardContent>
+                  <Typography variant="h6" component="h2">
+                    {project.name}
+                  </Typography>
+                </CardContent>
+                <CardActions onClick={(e) => e.stopPropagation()}>
+                  <IconButton
+                    onClick={() => handleEditProject(project)}
+                    size="small"
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => handleDeleteDialogOpen(project)}
+                    size="small"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
+
+      <CreateProjectModal
+        isOpen={createProjectModalOpen}
+        onClose={() => setCreateProjectModalOpen(false)}
+        onSubmit={handleCreateProject}
+      />
 
       <DynamicModalForm
         isOpen={editDialogOpen}
-        onClose={closeEditDialog}
-        schema={editSchema}
-        onSubmit={editProjectHandler}
+        onClose={handleCloseEditDialog}
+        schema={{
+          type: 'object',
+          properties: {
+            name: { type: 'string', title: 'Project Name' },
+          },
+        }}
+        onSubmit={handleUpdateProject}
         initialData={editProject}
         title="Edit Project"
+      />
+
+      <DynamicModalForm
+        isOpen={deleteDialogOpen}
+        onClose={handleDeleteDialogClose}
+        schema={{
+          type: 'object',
+          properties: {
+            confirm: {
+              type: 'boolean',
+              title: 'Are you sure you want to delete this project?',
+              default: false,
+            },
+          },
+        }}
+        onSubmit={({ confirm }) => confirm && handleDeleteProject()}
+        title="Delete Project"
       />
     </Container>
   );

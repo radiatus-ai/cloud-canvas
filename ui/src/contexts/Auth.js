@@ -1,43 +1,48 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [apiClient, setApiClient] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem('authToken'));
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('authToken');
-    if (storedToken) {
-      setToken(storedToken);
-      // Uncomment the following line if you want to set up the API client on initial load
-      // setApiClient(createApi(null, storedToken));
-    } else {
-      setApiClient(null);
-    }
-  }, []);
+    console.log('AuthProvider: token changed', token);
+  }, [token]);
 
-  const login = (userData, authToken) => {
+  const login = useCallback((userData, authToken) => {
+    console.log('AuthProvider: login called');
     localStorage.setItem('authToken', authToken);
     setToken(authToken);
     setUser(userData);
-    // Uncomment the following line if you want to set up the API client on login
-    // setApiClient(createApi(null, authToken));
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
+    console.log('AuthProvider: logout called');
     localStorage.removeItem('authToken');
     setUser(null);
     setToken(null);
-    setApiClient(null);
-  };
+  }, []);
 
-  return (
-    <AuthContext.Provider value={{ user, token, login, logout, apiClient }}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({ user, token, login, logout }),
+    [user, token, login, logout]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

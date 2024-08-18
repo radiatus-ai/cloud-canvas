@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import UUID4
 
 from app.core.dependencies import get_db_and_current_user
-from app.crud import connection as crud_connection
+from app.crud.connection import connection as crud_connection
 from app.schemas.connection import Connection, ConnectionCreate
 
 router = APIRouter()

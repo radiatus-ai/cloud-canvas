@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import JsonSchemaForm, { GCPRegionsComponent } from './JsonSchemaForm';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -34,20 +34,29 @@ const DynamicModalForm = ({
   const [formData, setFormData] = useState(initialData);
   const formRef = useRef();
 
+  // Memoize the schema and initialData
+  const memoizedSchema = useMemo(() => schema, [schema]);
+  const memoizedInitialData = useMemo(() => initialData, [initialData]);
+
   useEffect(() => {
-    setFormData(initialData);
-  }, [initialData, schema, isOpen]);
+    if (isOpen) {
+      setFormData(memoizedInitialData);
+    }
+  }, [isOpen, memoizedInitialData]);
 
   const handleSubmit = (data) => {
     onSubmit(data);
     onClose();
   };
 
-  const customComponents = {
-    gcpRegions: GCPRegionsComponent,
-    // uncomment to test region dropdown
-    // region: GCPRegionsComponent,
-  };
+  const customComponents = useMemo(
+    () => ({
+      gcpRegions: GCPRegionsComponent,
+      // uncomment to test region dropdown
+      // region: GCPRegionsComponent,
+    }),
+    []
+  );
 
   return (
     <StyledDialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
@@ -67,7 +76,7 @@ const DynamicModalForm = ({
       <DialogContent>
         <JsonSchemaForm
           ref={formRef}
-          schema={schema}
+          schema={memoizedSchema}
           initialData={formData}
           onSubmit={handleSubmit}
           customComponents={customComponents}
@@ -89,4 +98,4 @@ const DynamicModalForm = ({
   );
 };
 
-export default DynamicModalForm;
+export default React.memo(DynamicModalForm);

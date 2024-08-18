@@ -11,6 +11,7 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useState,
 } from 'react';
 import FieldRenderer from './FieldRenderer';
@@ -45,25 +46,36 @@ const JsonSchemaForm = forwardRef(
       severity: 'success',
     });
 
-    useEffect(() => {
-      const newFormData = { ...initialData };
-      if (schema) {
-        Object.entries(schema.properties).forEach(([key, fieldSchema]) => {
-          if (
-            fieldSchema.default !== undefined &&
-            initialData[key] === undefined
-          ) {
-            newFormData[key] = fieldSchema.default;
+    // Memoize the schema and initialData
+    const memoizedSchema = useMemo(() => schema, [schema]);
+    const memoizedInitialData = useMemo(() => initialData, [initialData]);
+
+    // Memoize the default values calculation
+    const defaultValues = useMemo(() => {
+      const newFormData = { ...memoizedInitialData };
+      if (memoizedSchema) {
+        Object.entries(memoizedSchema.properties).forEach(
+          ([key, fieldSchema]) => {
+            if (
+              fieldSchema.default !== undefined &&
+              memoizedInitialData[key] === undefined
+            ) {
+              newFormData[key] = fieldSchema.default;
+            }
+            if (fieldSchema.type === 'array' && !newFormData[key]) {
+              newFormData[key] = [];
+            }
           }
-          if (fieldSchema.type === 'array' && !newFormData[key]) {
-            newFormData[key] = [];
-          }
-        });
+        );
       }
-      setFormData(newFormData);
+      return newFormData;
+    }, [memoizedSchema, memoizedInitialData]);
+
+    useEffect(() => {
+      setFormData(defaultValues);
       setErrors({});
       setTouched({});
-    }, [initialData, schema]);
+    }, [defaultValues]);
 
     const handleChange = useCallback(
       (name, value) => {
@@ -84,26 +96,29 @@ const JsonSchemaForm = forwardRef(
           ...prevTouched,
           [name]: true,
         }));
-        const error = validateField(schema, name, formData[name]);
+        const error = validateField(memoizedSchema, name, formData[name]);
         setErrors((prevErrors) => ({
           ...prevErrors,
           [name]: error,
         }));
       },
-      [schema, formData]
+      [memoizedSchema, formData]
     );
 
     const handleSubmit = async (e) => {
       if (e && e.preventDefault) {
         e.preventDefault();
       }
-      const touchedAll = Object.keys(schema.properties).reduce((acc, key) => {
-        acc[key] = true;
-        return acc;
-      }, {});
+      const touchedAll = Object.keys(memoizedSchema.properties).reduce(
+        (acc, key) => {
+          acc[key] = true;
+          return acc;
+        },
+        {}
+      );
       setTouched(touchedAll);
 
-      const validationResult = validateForm(schema, formData);
+      const validationResult = validateForm(memoizedSchema, formData);
       if (validationResult.isValid) {
         setIsSubmitting(true);
         try {
@@ -134,28 +149,30 @@ const JsonSchemaForm = forwardRef(
 
     useImperativeHandle(ref, () => ({
       submit: handleSubmit,
-      validate: () => validateForm(schema, formData),
+      validate: () => validateForm(memoizedSchema, formData),
       getData: () => formData,
     }));
 
     return (
       <StyledForm onSubmit={(e) => e.preventDefault()}>
         <Stack spacing={2}>
-          {schema &&
-            Object.entries(schema.properties).map(([key, fieldSchema]) => (
-              <FieldRenderer
-                key={key}
-                name={key}
-                schema={schema}
-                fieldSchema={fieldSchema}
-                value={formData[key]}
-                error={errors[key]}
-                touched={touched[key]}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                customComponents={customComponents}
-              />
-            ))}
+          {memoizedSchema &&
+            Object.entries(memoizedSchema.properties).map(
+              ([key, fieldSchema]) => (
+                <FieldRenderer
+                  key={key}
+                  name={key}
+                  schema={memoizedSchema}
+                  fieldSchema={fieldSchema}
+                  value={formData[key]}
+                  error={errors[key]}
+                  touched={touched[key]}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  customComponents={customComponents}
+                />
+              )
+            )}
         </Stack>
         {!ref && (
           <Button
@@ -189,4 +206,4 @@ const JsonSchemaForm = forwardRef(
   }
 );
 
-export default JsonSchemaForm;
+export default React.memo(JsonSchemaForm);

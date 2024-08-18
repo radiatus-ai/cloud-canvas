@@ -1,4 +1,4 @@
-import { ApiClient, Project } from 'canvas-client';
+import { ApiClient, DefaultApi } from 'canvas-client';
 
 const getApiUrl = () => {
   switch (process.env.REACT_APP_ENV) {
@@ -99,4 +99,4 @@ export const handleApiError = (error) => {
   // You can add custom error handling logic here, such as showing a notification to the user
 };
 
-export { Project };
+export { DefaultApi };

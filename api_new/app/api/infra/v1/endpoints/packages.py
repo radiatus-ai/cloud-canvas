@@ -4,12 +4,13 @@ from fastapi import APIRouter, Body, Depends, HTTPException
 from pydantic import UUID4
 
 from app.core.dependencies import get_db_and_current_user
-from app.crud import package as crud_package
+from app.crud.package import package as crud_package
 from app.schemas.package import Package, PackageCreate, PackageUpdate
 
 router = APIRouter()
 
 
+# lists all packages available
 @router.get("/packages/", response_model=List[Package])
 async def list_all_packages(
     skip: int = 0, limit: int = 100, deps: dict = Depends(get_db_and_current_user)
@@ -18,6 +19,7 @@ async def list_all_packages(
     return await crud_package.get_packages(db, skip=skip, limit=limit)
 
 
+# a project package is a copy of the mainline packages. copied when drug to the canvas
 @router.get("/projects/{project_id}/packages/", response_model=List[Package])
 async def list_packages(
     project_id: UUID4, deps: dict = Depends(get_db_and_current_user)

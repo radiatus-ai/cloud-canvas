@@ -8,7 +8,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.logger import get_logger
-from app.crud.org import organization_reference as crud_org_ref
 from app.db.session import get_db
 
 logger = get_logger(__name__)
@@ -39,7 +38,7 @@ async def get_current_user(request: Request):
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     user = response.json()["user"]
-    user["organization_id"] = "21f2a147-212d-415a-b34f-e3ab4bce1d76"
+    user["organization_id"] = "2320a0d6-8cbb-4727-8f33-6573d017d980"
 
     return user
 
@@ -52,22 +51,25 @@ async def get_db_and_current_user(
 ):
     # default_project = await initialize_user_session(db, current_user)
     # Ensure organization reference exists
-    org_ref = await crud_org_ref.get_or_create(
-        db,
-        id=UUID(current_user["organization_id"]),
-        name="Default Organization",  # You might want to get this from the user data
+    # org_ref = await crud_org_ref.get_or_create(
+    #     db,
+    #     id=UUID(current_user["organization_id"]),
+    #     name="Default Organization",  # You might want to get this from the user data
+    # )
+    org_ref = await ensure_organization_reference(
+        db, UUID(current_user["organization_id"])
     )
 
-    # Get or create default project
-    default_project = await crud_project.get_or_create_default(
-        db, organization_id=org_ref.id
-    )
+    # dfault project isn't a part of this api
+    # default_project = await crud_project.get_or_create_default(
+    #     db, organization_id=org_ref.id
+    # )
 
     return {
         "db": db,
         "current_user": current_user,
         "trace_context": trace_context,
-        "default_project": default_project,
+        # "default_project": default_project,
         "organization_id": org_ref,
     }
 
@@ -102,7 +104,6 @@ async def create_default_project(db: AsyncSession, organization_id: UUID) -> Pro
     return new_project
 
 
-from app.crud.project import project as crud_project
 from app.models.organization_reference import OrganizationReference
 
 
