@@ -4,8 +4,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import UUID4
 
 from app.core.dependencies import get_db_and_current_user
+from app.core.logger import get_logger
 from app.crud.project import project as crud_project
 from app.schemas.project import Project, ProjectCreate, ProjectUpdate
+
+logger = get_logger(__name__)
 
 router = APIRouter()
 
@@ -24,7 +27,8 @@ async def list_projects(
     )
 
 
-@router.post("/projects/", response_model=Project)
+# @router.post("/projects/", response_model=Project)
+@router.post("/projects/")
 async def create_project(
     project: ProjectCreate, deps: dict = Depends(get_db_and_current_user)
 ):
@@ -33,6 +37,9 @@ async def create_project(
         name=project.name, organization_id="2320a0d6-8cbb-4727-8f33-6573d017d980"
     )
     prj = await crud_project.create_project(db, obj_in=new_prj)
+    # a little weird we have to do this. def unique to the async setup we have
+    # we may only have to do this in create but I'm not 100% sure yet
+    await db.refresh(prj)
     return prj
 
 

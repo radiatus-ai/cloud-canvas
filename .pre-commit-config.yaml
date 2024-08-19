@@ -11,16 +11,6 @@ repos:
         files: ^api/
         args: [--config, api/.pre-commit-config.yaml]
 
-      - id: api-new-hooks
-        name: API New Hooks
-        stages: [commit]
-        always_run: true
-        pass_filenames: false
-        entry: pre-commit run
-        language: system
-        files: ^api_new/
-        args: [--config, api_new/.pre-commit-config.yaml]
-
       - id: terraform-module-hooks
         name: TF Module Hooks
         stages: [commit]

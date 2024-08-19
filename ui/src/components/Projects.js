@@ -235,7 +235,14 @@ const Projects = () => {
             },
           },
         }}
-        onSubmit={({ confirm }) => confirm && handleDeleteProject()}
+        onSubmit={({ confirm }) => {
+          if (confirm) {
+            handleDeleteProject();
+          } else {
+            setError('You must confirm the deletion.');
+          }
+        }}
+        initialData={{ confirm: false }} // Ensure the switch is initially off
         title="Delete Project"
       />
     </Container>

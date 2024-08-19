@@ -19,5 +19,5 @@ class Project(Base):
 
     organization = relationship("OrganizationReference", back_populates="projects")
     user = relationship("UserReference", back_populates="projects")
-    packages = relationship("Package", back_populates="project")
+    packages = relationship("ProjectPackage", back_populates="project")
     connections = relationship("Connection", back_populates="project")

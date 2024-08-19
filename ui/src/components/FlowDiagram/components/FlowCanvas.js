@@ -36,7 +36,8 @@ const FlowCanvas = ({
         onConnect={onConnect}
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
-        onConnectCheck={onConnectCheck}
+        // not a part of the API
+        // onConnectCheck={onConnectCheck}
         onInit={onInit}
         onDrop={onDrop}
         onDragOver={onDragOver}

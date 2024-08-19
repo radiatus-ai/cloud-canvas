@@ -11,6 +11,7 @@ from app.models import (
     Connection,
     OrganizationReference,
     Package,
+    ProjectPackage,
     Project,
     UserReference,
 )

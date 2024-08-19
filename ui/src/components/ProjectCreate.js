@@ -4,32 +4,41 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  TextField,
 } from '@mui/material';
-import React from 'react';
-import JsonSchemaForm from './JsonSchemaForm';
+import React, { useState } from 'react';
 
 const CreateProjectModal = ({ isOpen, onClose, onSubmit }) => {
-  const schema = {
-    type: 'object',
-    properties: {
-      name: { type: 'string', title: 'Project Name' },
-    },
-    required: ['name'],
+  const [projectName, setProjectName] = useState('');
+
+  const handleInputChange = (event) => {
+    setProjectName(event.target.value);
   };
 
-  const handleSubmit = (data) => {
-    onSubmit(data);
-    onClose();
+  const handleSubmit = () => {
+    if (projectName.trim()) {
+      onSubmit({ name: projectName });
+      onClose();
+    }
   };
 
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <DialogTitle>Create New Project</DialogTitle>
       <DialogContent>
-        <JsonSchemaForm schema={schema} onSubmit={handleSubmit} />
+        <TextField
+          label="Project Name"
+          value={projectName}
+          onChange={handleInputChange}
+          fullWidth
+          required
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
+        <Button onClick={handleSubmit} disabled={!projectName.trim()}>
+          Create
+        </Button>
       </DialogActions>
     </Dialog>
   );

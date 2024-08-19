@@ -21,10 +21,11 @@ class CRUDProject(CRUDBase[Project, ProjectCreate, ProjectUpdate]):
         )
         db_obj = self.model(**obj_in_data)
         db.add(db_obj)
-        await db.flush()
+        await db.flush()  # Sends to the DB and should generate an ID
+        # Ensuring the object is refreshed to get the latest state, including the ID
         await db.refresh(db_obj)
         if auto_commit:
-            await db.commit()
+            await db.commit()  # Finalize transaction
         return db_obj
 
     async def list_projects_for_organization(

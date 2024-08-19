@@ -14,11 +14,15 @@ const App = () => {
   const handleLogin = useCallback(
     async (decodedToken, authToken) => {
       try {
-        const response = await fetch('http://localhost:8080/login/google', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: authToken }),
-        });
+        // todo: add env var / config to set this
+        const response = await fetch(
+          'https://auth-service-razsp32k5q-uc.a.run.app/login/google',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: authToken }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

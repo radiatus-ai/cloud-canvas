@@ -1,8 +1,8 @@
 """init db
 
-Revision ID: b5b95161115f
+Revision ID: af27f922e33a
 Revises:
-Create Date: 2024-08-17 01:07:23.760329
+Create Date: 2024-08-18 23:19:46.958919
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "b5b95161115f"
+revision: str = "af27f922e33a"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -51,6 +51,30 @@ def upgrade() -> None:
         "organization_references",
         ["updated_at"],
         unique=False,
+    )
+    op.create_table(
+        "packages",
+        sa.Column("id", sa.UUID(), nullable=False),
+        sa.Column("name", sa.String(), nullable=True),
+        sa.Column("type", sa.String(), nullable=True),
+        sa.Column("inputs", sa.JSON(), nullable=True),
+        sa.Column("outputs", sa.JSON(), nullable=True),
+        sa.Column("parameters", sa.JSON(), nullable=True),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=True,
+        ),
+        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(
+        op.f("ix_packages_created_at"), "packages", ["created_at"], unique=False
+    )
+    op.create_index(op.f("ix_packages_name"), "packages", ["name"], unique=False)
+    op.create_index(
+        op.f("ix_packages_updated_at"), "packages", ["updated_at"], unique=False
     )
     op.create_table(
         "user_references",
@@ -144,44 +168,6 @@ def upgrade() -> None:
         op.f("ix_projects_updated_at"), "projects", ["updated_at"], unique=False
     )
     op.create_table(
-        "packages",
-        sa.Column("id", sa.UUID(), nullable=False),
-        sa.Column("name", sa.String(), nullable=True),
-        sa.Column("project_id", sa.UUID(), nullable=True),
-        sa.Column("type", sa.String(), nullable=True),
-        sa.Column(
-            "deploy_status",
-            sa.Enum(
-                "NOT_DEPLOYED", "DEPLOYING", "DEPLOYED", "FAILED", name="deploy_status"
-            ),
-            nullable=True,
-        ),
-        sa.Column("inputs", sa.JSON(), nullable=True),
-        sa.Column("outputs", sa.JSON(), nullable=True),
-        sa.Column("output_data", sa.JSON(), nullable=True),
-        sa.Column("parameters", sa.JSON(), nullable=True),
-        sa.Column("parameter_data", sa.JSON(), nullable=True),
-        sa.Column(
-            "created_at",
-            sa.DateTime(timezone=True),
-            server_default=sa.text("now()"),
-            nullable=True,
-        ),
-        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
-        sa.ForeignKeyConstraint(
-            ["project_id"],
-            ["projects.id"],
-        ),
-        sa.PrimaryKeyConstraint("id"),
-    )
-    op.create_index(
-        op.f("ix_packages_created_at"), "packages", ["created_at"], unique=False
-    )
-    op.create_index(op.f("ix_packages_name"), "packages", ["name"], unique=False)
-    op.create_index(
-        op.f("ix_packages_updated_at"), "packages", ["updated_at"], unique=False
-    )
-    op.create_table(
         "connections",
         sa.Column("id", sa.UUID(), nullable=False),
         sa.Column("project_id", sa.UUID(), nullable=True),
@@ -216,18 +202,64 @@ def upgrade() -> None:
     op.create_index(
         op.f("ix_connections_updated_at"), "connections", ["updated_at"], unique=False
     )
+    op.create_table(
+        "project_packages",
+        sa.Column("id", sa.UUID(), nullable=False),
+        sa.Column("name", sa.String(), nullable=True),
+        sa.Column("project_id", sa.UUID(), nullable=True),
+        sa.Column("type", sa.String(), nullable=True),
+        sa.Column(
+            "deploy_status",
+            sa.Enum(
+                "NOT_DEPLOYED", "DEPLOYING", "DEPLOYED", "FAILED", name="deploy_status"
+            ),
+            nullable=True,
+        ),
+        sa.Column("inputs", sa.JSON(), nullable=True),
+        sa.Column("outputs", sa.JSON(), nullable=True),
+        sa.Column("output_data", sa.JSON(), nullable=True),
+        sa.Column("parameters", sa.JSON(), nullable=True),
+        sa.Column("parameter_data", sa.JSON(), nullable=True),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("now()"),
+            nullable=True,
+        ),
+        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
+        sa.ForeignKeyConstraint(
+            ["project_id"],
+            ["projects.id"],
+        ),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(
+        op.f("ix_project_packages_created_at"),
+        "project_packages",
+        ["created_at"],
+        unique=False,
+    )
+    op.create_index(
+        op.f("ix_project_packages_name"), "project_packages", ["name"], unique=False
+    )
+    op.create_index(
+        op.f("ix_project_packages_updated_at"),
+        "project_packages",
+        ["updated_at"],
+        unique=False,
+    )
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
+    op.drop_index(op.f("ix_project_packages_updated_at"), table_name="project_packages")
+    op.drop_index(op.f("ix_project_packages_name"), table_name="project_packages")
+    op.drop_index(op.f("ix_project_packages_created_at"), table_name="project_packages")
+    op.drop_table("project_packages")
     op.drop_index(op.f("ix_connections_updated_at"), table_name="connections")
     op.drop_index(op.f("ix_connections_created_at"), table_name="connections")
     op.drop_table("connections")
-    op.drop_index(op.f("ix_packages_updated_at"), table_name="packages")
-    op.drop_index(op.f("ix_packages_name"), table_name="packages")
-    op.drop_index(op.f("ix_packages_created_at"), table_name="packages")
-    op.drop_table("packages")
     op.drop_index(op.f("ix_projects_updated_at"), table_name="projects")
     op.drop_index(op.f("ix_projects_name"), table_name="projects")
     op.drop_index(op.f("ix_projects_created_at"), table_name="projects")
@@ -241,6 +273,10 @@ def downgrade() -> None:
     op.drop_index(op.f("ix_user_references_email"), table_name="user_references")
     op.drop_index(op.f("ix_user_references_created_at"), table_name="user_references")
     op.drop_table("user_references")
+    op.drop_index(op.f("ix_packages_updated_at"), table_name="packages")
+    op.drop_index(op.f("ix_packages_name"), table_name="packages")
+    op.drop_index(op.f("ix_packages_created_at"), table_name="packages")
+    op.drop_table("packages")
     op.drop_index(
         op.f("ix_organization_references_updated_at"),
         table_name="organization_references",
