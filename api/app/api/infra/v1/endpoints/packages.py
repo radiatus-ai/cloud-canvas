@@ -1,7 +1,6 @@
 from typing import List
 
 from fastapi import APIRouter, Depends
-from pydantic import UUID4
 
 from app.core.dependencies import get_db_and_current_user
 from app.crud.package import package as crud_package
@@ -22,12 +21,11 @@ async def list_all_packages(
 # todo: this needs much more work. a package registry that's org-specific and permissioned
 @router.post("/packages", response_model=Package)
 async def create_global_package(
-    project_id: UUID4,
     package: PackageCreate,
     deps: dict = Depends(get_db_and_current_user),
 ):
     db = deps["db"]
-    return await crud_package.create_package(db, obj_in=package, project_id=project_id)
+    return await crud_package.create_package(db, obj_in=package)
 
 
 # a project package is a copy of the mainline packages. copied when drug to the canvas

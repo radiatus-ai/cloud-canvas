@@ -1,4 +1,3 @@
----
 openapi: 3.1.0
 info:
   title: Platform API
@@ -24,14 +23,16 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/Connection"
-                title: Response List Connections Projects  Project Id  Connections  Get
+                  $ref: "#/components/schemas/Connection"
+                title: >-
+                  Response List Connections Projects  Project Id  Connections
+                  Get
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     post:
       summary: Create Connection
       operationId: create_connection_projects__project_id__connections__post
@@ -48,24 +49,25 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ConnectionCreate"
+              $ref: "#/components/schemas/ConnectionCreate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Connection"
+                $ref: "#/components/schemas/Connection"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
   "/projects/{project_id}/connections/{connection_id}":
     delete:
       summary: Delete Connection
-      operationId: delete_connection_projects__project_id__connections__connection_id__delete
+      operationId: >-
+        delete_connection_projects__project_id__connections__connection_id__delete
       parameters:
         - name: project_id
           in: path
@@ -87,17 +89,17 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Connection"
+                $ref: "#/components/schemas/Connection"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/packages/":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /packages:
     get:
       summary: List All Packages
-      operationId: list_all_packages_packages__get
+      operationId: list_all_packages_packages_get
       parameters:
         - name: skip
           in: query
@@ -121,26 +123,70 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/Package"
-                title: Response List All Packages Packages  Get
+                  $ref: "#/components/schemas/Package"
+                title: Response List All Packages Packages Get
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
+    post:
+      summary: Create Global Package
+      operationId: create_global_package_packages_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PackageCreate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Package"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
   "/projects/{project_id}/packages/":
     get:
-      summary: List Packages
-      operationId: list_packages_projects__project_id__packages__get
+      tags:
+        - project
+        - packages
+      summary: List Project Packages
+      operationId: list_project_packages_projects__project_id__packages__get
       parameters:
         - name: project_id
           in: path
           required: true
           schema:
             type: string
-            format: uuid4
+            format: uuid
+            description: The ID of the project
             title: Project Id
+          description: The ID of the project
+        - name: skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+            title: Skip
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            maximum: 100
+            minimum: 1
+            default: 100
+            title: Limit
       responses:
         "200":
           description: Successful Response
@@ -149,132 +195,200 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/Package"
-                title: Response List Packages Projects  Project Id  Packages  Get
+                  $ref: "#/components/schemas/Package"
+                title: >-
+                  Response List Project Packages Projects  Project Id  Packages
+                  Get
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     post:
-      summary: Create Package
-      operationId: create_package_projects__project_id__packages__post
+      tags:
+        - project
+        - packages
+      summary: Create Project Package
+      operationId: create_project_package_projects__project_id__packages__post
       parameters:
         - name: project_id
           in: path
           required: true
           schema:
             type: string
-            format: uuid4
+            format: uuid
+            description: The ID of the project
             title: Project Id
+          description: The ID of the project
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/PackageCreate"
+              $ref: "#/components/schemas/PackageCreate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Package"
+                $ref: "#/components/schemas/Package"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
   "/projects/{project_id}/packages/{package_id}":
-    patch:
-      summary: Update Package
-      operationId: update_package_projects__project_id__packages__package_id__patch
+    get:
+      tags:
+        - project
+        - packages
+      summary: Get Project Package
+      operationId: get_project_package_projects__project_id__packages__package_id__get
       parameters:
         - name: project_id
           in: path
           required: true
           schema:
             type: string
-            format: uuid4
+            format: uuid
+            description: The ID of the project
             title: Project Id
+          description: The ID of the project
         - name: package_id
           in: path
           required: true
           schema:
             type: string
-            format: uuid4
+            format: uuid
+            description: The ID of the package
             title: Package Id
+          description: The ID of the package
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Package"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+    patch:
+      tags:
+        - project
+        - packages
+      summary: Update Project Package
+      operationId: update_project_package_projects__project_id__packages__package_id__patch
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The ID of the project
+            title: Project Id
+          description: The ID of the project
+        - name: package_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The ID of the package
+            title: Package Id
+          description: The ID of the package
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/PackageUpdate"
+              $ref: "#/components/schemas/PackageUpdate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Package"
+                $ref: "#/components/schemas/Package"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     delete:
-      summary: Delete Package
-      operationId: delete_package_projects__project_id__packages__package_id__delete
+      tags:
+        - project
+        - packages
+      summary: Delete Project Package
+      operationId: >-
+        delete_project_package_projects__project_id__packages__package_id__delete
       parameters:
         - name: project_id
           in: path
           required: true
           schema:
             type: string
-            format: uuid4
+            format: uuid
+            description: The ID of the project
             title: Project Id
+          description: The ID of the project
         - name: package_id
           in: path
           required: true
           schema:
             type: string
-            format: uuid4
+            format: uuid
+            description: The ID of the package
             title: Package Id
+          description: The ID of the package
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Package"
+                $ref: "#/components/schemas/Package"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
   "/projects/{project_id}/packages/{package_id}/deploy":
     post:
-      summary: Deploy Package
-      operationId: deploy_package_projects__project_id__packages__package_id__deploy_post
+      tags:
+        - project
+        - packages
+      summary: Deploy Project Package
+      operationId: >-
+        deploy_project_package_projects__project_id__packages__package_id__deploy_post
       parameters:
         - name: project_id
           in: path
           required: true
           schema:
             type: string
-            format: uuid4
+            format: uuid
+            description: The ID of the project
             title: Project Id
+          description: The ID of the project
         - name: package_id
           in: path
           required: true
           schema:
             type: string
-            format: uuid4
+            format: uuid
+            description: The ID of the package
             title: Package Id
+          description: The ID of the package
       requestBody:
         required: true
         content:
@@ -288,46 +402,54 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Package"
+                $ref: "#/components/schemas/Package"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
   "/projects/{project_id}/packages/{package_id}/destroy":
     delete:
-      summary: Destroy Package
-      operationId: destroy_package_projects__project_id__packages__package_id__destroy_delete
+      tags:
+        - project
+        - packages
+      summary: Destroy Project Package
+      operationId: >-
+        destroy_project_package_projects__project_id__packages__package_id__destroy_delete
       parameters:
         - name: project_id
           in: path
           required: true
           schema:
             type: string
-            format: uuid4
+            format: uuid
+            description: The ID of the project
             title: Project Id
+          description: The ID of the project
         - name: package_id
           in: path
           required: true
           schema:
             type: string
-            format: uuid4
+            format: uuid
+            description: The ID of the package
             title: Package Id
+          description: The ID of the package
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Package"
+                $ref: "#/components/schemas/Package"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/projects/":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /projects/:
     get:
       summary: List Projects
       operationId: list_projects_projects__get
@@ -354,14 +476,14 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/Project"
+                  $ref: "#/components/schemas/Project"
                 title: Response List Projects Projects  Get
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     post:
       summary: Create Project
       operationId: create_project_projects__post
@@ -370,20 +492,19 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ProjectCreate"
+              $ref: "#/components/schemas/ProjectCreate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
-              schema:
-                "$ref": "#/components/schemas/Project"
+              schema: {}
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
   "/projects/{project_id}":
     patch:
       summary: Update Project
@@ -401,20 +522,20 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ProjectUpdate"
+              $ref: "#/components/schemas/ProjectUpdate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Project"
+                $ref: "#/components/schemas/Project"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     delete:
       summary: Delete Project
       operationId: delete_project_projects__project_id__delete
@@ -432,13 +553,13 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Project"
+                $ref: "#/components/schemas/Project"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
 components:
   schemas:
     Connection:
@@ -502,19 +623,11 @@ components:
         - target_handle
         - project_id
       title: ConnectionCreate
-    DeployStatus:
-      type: string
-      enum:
-        - NOT_DEPLOYED
-        - DEPLOYING
-        - DEPLOYED
-        - FAILED
-      title: DeployStatus
     HTTPValidationError:
       properties:
         detail:
           items:
-            "$ref": "#/components/schemas/ValidationError"
+            $ref: "#/components/schemas/ValidationError"
           type: array
           title: Detail
       type: object
@@ -540,22 +653,6 @@ components:
           type: string
           format: uuid4
           title: Id
-        project_id:
-          type: string
-          format: uuid4
-          title: Project Id
-        deploy_status:
-          "$ref": "#/components/schemas/DeployStatus"
-        output_data:
-          anyOf:
-            - type: object
-            - type: "null"
-          title: Output Data
-        parameter_data:
-          anyOf:
-            - type: object
-            - type: "null"
-          title: Parameter Data
       type: object
       required:
         - name
@@ -564,8 +661,6 @@ components:
         - outputs
         - parameters
         - id
-        - project_id
-        - deploy_status
       title: Package
     PackageCreate:
       properties:
@@ -584,10 +679,6 @@ components:
         parameters:
           type: object
           title: Parameters
-        project_id:
-          type: string
-          format: uuid4
-          title: Project Id
       type: object
       required:
         - name
@@ -595,7 +686,6 @@ components:
         - inputs
         - outputs
         - parameters
-        - project_id
       title: PackageCreate
     PackageUpdate:
       properties:

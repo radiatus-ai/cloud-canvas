@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     CREDENTIAL_ENCRYPTION_KEY: str
     AUTH_SERVICE_URL: str = "https://auth-service-razsp32k5q-uc.a.run.app"
+    API_TOKEN: str
 
     OTEL_SERVICE_NAME: str = "your-service-name"
     OTEL_EXPORTER_OTLP_PROTOCOL: str = "http/protobuf"

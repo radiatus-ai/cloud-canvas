@@ -1,6 +1,7 @@
-import { Paper, styled } from '@mui/material';
+import { Paper, Typography, styled } from '@mui/material';
+import React from 'react';
 
-const DraggableItem = styled(Paper)(({ theme }) => ({
+const StyledPaper = styled(Paper)(({ theme }) => ({
   marginBottom: theme.spacing(1),
   padding: theme.spacing(1.5),
   cursor: 'grab',
@@ -16,5 +17,20 @@ const DraggableItem = styled(Paper)(({ theme }) => ({
     transform: 'translateY(0)',
   },
 }));
+
+const DraggableItem = ({ packageData }) => {
+  const handleDragStart = (event) => {
+    event.dataTransfer.setData('application/json', JSON.stringify(packageData));
+  };
+
+  return (
+    <StyledPaper draggable onDragStart={handleDragStart}>
+      <Typography variant="subtitle2">{packageData.name}</Typography>
+      <Typography variant="body2" color="textSecondary">
+        {packageData.type}
+      </Typography>
+    </StyledPaper>
+  );
+};
 
 export default DraggableItem;

@@ -24,7 +24,8 @@ def convert_yaml_to_package(yaml_data: Dict[str, Any]) -> Dict[str, Any]:
 
 def create_package(api_base_url: str, package_data: Dict[str, Any]) -> Dict[str, Any]:
     url = f"{api_base_url}/packages/"
-    response = requests.post(url, json=package_data)
+    headers = {"Authorization": f"Bearer {os.environ.get('API_TOKEN')}"}
+    response = requests.post(url, json=package_data, headers=headers)
     response.raise_for_status()
     return response.json()
 
@@ -54,7 +55,7 @@ def upload_packages(api_base_url: str, modules_dir: str) -> List[Dict[str, Any]]
 
 # Example usage
 if __name__ == "__main__":
-    API_BASE_URL = "http://localhost:8000"  # Replace with your actual API base URL
+    API_BASE_URL = "http://localhost:8000"
     MODULES_DIR = "terraform-modules"
 
     uploaded_packages = upload_packages(API_BASE_URL, MODULES_DIR)

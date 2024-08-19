@@ -12,7 +12,6 @@
  */
 
 import ApiClient from '../ApiClient';
-import DeployStatus from './DeployStatus';
 
 /**
  * The Package model module.
@@ -20,120 +19,127 @@ import DeployStatus from './DeployStatus';
  * @version 0.1.0
  */
 class Package {
-    /**
-     * Constructs a new <code>Package</code>.
-     * @alias module:model/Package
-     * @param name {String}
-     * @param type {String}
-     * @param inputs {Object}
-     * @param outputs {Object}
-     * @param parameters {Object}
-     * @param id {String}
-     * @param projectId {String}
-     * @param deployStatus {module:model/DeployStatus}
-     */
-    constructor(name, type, inputs, outputs, parameters, id, projectId, deployStatus) {
+  /**
+   * Constructs a new <code>Package</code>.
+   * @alias module:model/Package
+   * @param name {String}
+   * @param type {String}
+   * @param inputs {Object}
+   * @param outputs {Object}
+   * @param parameters {Object}
+   * @param id {String}
+   */
+  constructor(name, type, inputs, outputs, parameters, id) {
+    Package.initialize(this, name, type, inputs, outputs, parameters, id);
+  }
 
-        Package.initialize(this, name, type, inputs, outputs, parameters, id, projectId, deployStatus);
+  /**
+   * Initializes the fields of this object.
+   * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
+   * Only for internal use.
+   */
+  static initialize(obj, name, type, inputs, outputs, parameters, id) {
+    obj['name'] = name;
+    obj['type'] = type;
+    obj['inputs'] = inputs;
+    obj['outputs'] = outputs;
+    obj['parameters'] = parameters;
+    obj['id'] = id;
+  }
+
+  /**
+   * Constructs a <code>Package</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/Package} obj Optional instance to populate.
+   * @return {module:model/Package} The populated <code>Package</code> instance.
+   */
+  static constructFromObject(data, obj) {
+    if (data) {
+      obj = obj || new Package();
+
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('type')) {
+        obj['type'] = ApiClient.convertToType(data['type'], 'String');
+      }
+      if (data.hasOwnProperty('inputs')) {
+        obj['inputs'] = ApiClient.convertToType(data['inputs'], Object);
+      }
+      if (data.hasOwnProperty('outputs')) {
+        obj['outputs'] = ApiClient.convertToType(data['outputs'], Object);
+      }
+      if (data.hasOwnProperty('parameters')) {
+        obj['parameters'] = ApiClient.convertToType(data['parameters'], Object);
+      }
+      if (data.hasOwnProperty('id')) {
+        obj['id'] = ApiClient.convertToType(data['id'], 'String');
+      }
+    }
+    return obj;
+  }
+
+  /**
+   * Validates the JSON data with respect to <code>Package</code>.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @return {boolean} to indicate whether the JSON data is valid with respect to <code>Package</code>.
+   */
+  static validateJSON(data) {
+    // check to make sure all required properties are present in the JSON string
+    for (const property of Package.RequiredProperties) {
+      if (!data.hasOwnProperty(property)) {
+        throw new Error(
+          'The required field `' +
+            property +
+            '` is not found in the JSON data: ' +
+            JSON.stringify(data)
+        );
+      }
+    }
+    // ensure the json data is a string
+    if (
+      data['name'] &&
+      !(typeof data['name'] === 'string' || data['name'] instanceof String)
+    ) {
+      throw new Error(
+        'Expected the field `name` to be a primitive type in the JSON string but got ' +
+          data['name']
+      );
+    }
+    // ensure the json data is a string
+    if (
+      data['type'] &&
+      !(typeof data['type'] === 'string' || data['type'] instanceof String)
+    ) {
+      throw new Error(
+        'Expected the field `type` to be a primitive type in the JSON string but got ' +
+          data['type']
+      );
+    }
+    // ensure the json data is a string
+    if (
+      data['id'] &&
+      !(typeof data['id'] === 'string' || data['id'] instanceof String)
+    ) {
+      throw new Error(
+        'Expected the field `id` to be a primitive type in the JSON string but got ' +
+          data['id']
+      );
     }
 
-    /**
-     * Initializes the fields of this object.
-     * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
-     * Only for internal use.
-     */
-    static initialize(obj, name, type, inputs, outputs, parameters, id, projectId, deployStatus) {
-        obj['name'] = name;
-        obj['type'] = type;
-        obj['inputs'] = inputs;
-        obj['outputs'] = outputs;
-        obj['parameters'] = parameters;
-        obj['id'] = id;
-        obj['project_id'] = projectId;
-        obj['deploy_status'] = deployStatus;
-    }
-
-    /**
-     * Constructs a <code>Package</code> from a plain JavaScript object, optionally creating a new instance.
-     * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
-     * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/Package} obj Optional instance to populate.
-     * @return {module:model/Package} The populated <code>Package</code> instance.
-     */
-    static constructFromObject(data, obj) {
-        if (data) {
-            obj = obj || new Package();
-
-            if (data.hasOwnProperty('name')) {
-                obj['name'] = ApiClient.convertToType(data['name'], 'String');
-            }
-            if (data.hasOwnProperty('type')) {
-                obj['type'] = ApiClient.convertToType(data['type'], 'String');
-            }
-            if (data.hasOwnProperty('inputs')) {
-                obj['inputs'] = ApiClient.convertToType(data['inputs'], Object);
-            }
-            if (data.hasOwnProperty('outputs')) {
-                obj['outputs'] = ApiClient.convertToType(data['outputs'], Object);
-            }
-            if (data.hasOwnProperty('parameters')) {
-                obj['parameters'] = ApiClient.convertToType(data['parameters'], Object);
-            }
-            if (data.hasOwnProperty('id')) {
-                obj['id'] = ApiClient.convertToType(data['id'], 'String');
-            }
-            if (data.hasOwnProperty('project_id')) {
-                obj['project_id'] = ApiClient.convertToType(data['project_id'], 'String');
-            }
-            if (data.hasOwnProperty('deploy_status')) {
-                obj['deploy_status'] = DeployStatus.constructFromObject(data['deploy_status']);
-            }
-            if (data.hasOwnProperty('output_data')) {
-                obj['output_data'] = ApiClient.convertToType(data['output_data'], Object);
-            }
-            if (data.hasOwnProperty('parameter_data')) {
-                obj['parameter_data'] = ApiClient.convertToType(data['parameter_data'], Object);
-            }
-        }
-        return obj;
-    }
-
-    /**
-     * Validates the JSON data with respect to <code>Package</code>.
-     * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>Package</code>.
-     */
-    static validateJSON(data) {
-        // check to make sure all required properties are present in the JSON string
-        for (const property of Package.RequiredProperties) {
-            if (!data.hasOwnProperty(property)) {
-                throw new Error("The required field `" + property + "` is not found in the JSON data: " + JSON.stringify(data));
-            }
-        }
-        // ensure the json data is a string
-        if (data['name'] && !(typeof data['name'] === 'string' || data['name'] instanceof String)) {
-            throw new Error("Expected the field `name` to be a primitive type in the JSON string but got " + data['name']);
-        }
-        // ensure the json data is a string
-        if (data['type'] && !(typeof data['type'] === 'string' || data['type'] instanceof String)) {
-            throw new Error("Expected the field `type` to be a primitive type in the JSON string but got " + data['type']);
-        }
-        // ensure the json data is a string
-        if (data['id'] && !(typeof data['id'] === 'string' || data['id'] instanceof String)) {
-            throw new Error("Expected the field `id` to be a primitive type in the JSON string but got " + data['id']);
-        }
-        // ensure the json data is a string
-        if (data['project_id'] && !(typeof data['project_id'] === 'string' || data['project_id'] instanceof String)) {
-            throw new Error("Expected the field `project_id` to be a primitive type in the JSON string but got " + data['project_id']);
-        }
-
-        return true;
-    }
-
-
+    return true;
+  }
 }
 
-Package.RequiredProperties = ["name", "type", "inputs", "outputs", "parameters", "id", "project_id", "deploy_status"];
+Package.RequiredProperties = [
+  'name',
+  'type',
+  'inputs',
+  'outputs',
+  'parameters',
+  'id',
+];
 
 /**
  * @member {String} name
@@ -164,30 +170,5 @@ Package.prototype['parameters'] = undefined;
  * @member {String} id
  */
 Package.prototype['id'] = undefined;
-
-/**
- * @member {String} project_id
- */
-Package.prototype['project_id'] = undefined;
-
-/**
- * @member {module:model/DeployStatus} deploy_status
- */
-Package.prototype['deploy_status'] = undefined;
-
-/**
- * @member {Object} output_data
- */
-Package.prototype['output_data'] = undefined;
-
-/**
- * @member {Object} parameter_data
- */
-Package.prototype['parameter_data'] = undefined;
-
-
-
-
-
 
 export default Package;

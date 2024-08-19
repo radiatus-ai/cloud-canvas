@@ -12,6 +12,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+# todo: add api_token passthrough, or add to auth api
 async def get_current_user(
     request: Request, credentials: HTTPAuthorizationCredentials = Depends(security)
 ):

@@ -1,14 +1,17 @@
 from typing import Optional
+from uuid import UUID
 
 import httpx
 from fastapi import Depends, HTTPException, Request
 from opentelemetry import trace
 from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
 
 from app.core.config import settings
 from app.core.logger import get_logger
 from app.db.session import get_db
+from app.models.organization_reference import OrganizationReference
 
 logger = get_logger(__name__)
 
@@ -49,62 +52,16 @@ async def get_db_and_current_user(
     current_user: dict = Depends(get_current_user),
     trace_context: Optional[trace.SpanContext] = Depends(get_trace_context),
 ):
-    # default_project = await initialize_user_session(db, current_user)
-    # Ensure organization reference exists
-    # org_ref = await crud_org_ref.get_or_create(
-    #     db,
-    #     id=UUID(current_user["organization_id"]),
-    #     name="Default Organization",  # You might want to get this from the user data
-    # )
     org_ref = await ensure_organization_reference(
         db, UUID(current_user["organization_id"])
     )
-
-    # dfault project isn't a part of this api
-    # default_project = await crud_project.get_or_create_default(
-    #     db, organization_id=org_ref.id
-    # )
 
     return {
         "db": db,
         "current_user": current_user,
         "trace_context": trace_context,
-        # "default_project": default_project,
         "organization_id": org_ref,
     }
-
-
-from uuid import UUID
-
-from sqlalchemy import update
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-
-from app.models.project import Project
-
-
-async def create_default_project(db: AsyncSession, organization_id: UUID) -> Project:
-    # Create a new default project
-    new_project = Project(
-        name="Default Project", is_user_default=True, organization_id=organization_id
-    )
-    db.add(new_project)
-    await db.flush()  # This assigns an ID to new_project
-
-    # Update any existing default projects
-    await db.execute(
-        update(Project)
-        .where(Project.organization_id == organization_id, Project.id != new_project.id)
-        .values(is_user_default=False)
-    )
-
-    await db.commit()
-    await db.refresh(new_project)
-
-    return new_project
-
-
-from app.models.organization_reference import OrganizationReference
 
 
 async def ensure_organization_reference(
@@ -126,27 +83,3 @@ async def ensure_organization_reference(
         await db.commit()
 
     return org_ref
-
-
-async def initialize_user_session(db: AsyncSession, user_data: dict):
-    # Ensure organization reference exists
-    org_ref = await ensure_organization_reference(
-        db, UUID(user_data["organization_id"])
-    )
-
-    # Check if the user already has a default project
-    stmt = select(Project).where(
-        Project.organization_id == org_ref.id, Project.is_user_default is True
-    )
-    result = await db.execute(stmt)
-    default_project = result.scalar_one_or_none()
-
-    if not default_project:
-        # If no default project exists, create one
-        default_project = Project(
-            name="Default Project", is_user_default=True, organization_id=org_ref.id
-        )
-        db.add(default_project)
-        await db.commit()
-
-    return default_project
