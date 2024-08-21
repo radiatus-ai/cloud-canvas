@@ -3,14 +3,12 @@ package pubsub
 import (
 	"context"
 	"encoding/json"
+	"io/ioutil"
 	"log"
-	"os"
+	"net/http"
 
 	"github.com/radiatus-ai/package-provisioner/internal/config"
 	"github.com/radiatus-ai/package-provisioner/pkg/models"
-	"google.golang.org/api/option"
-
-	"cloud.google.com/go/pubsub"
 )
 
 type Subscriber struct {
@@ -26,38 +24,51 @@ func NewSubscriber(cfg *config.Config, deployFn func(models.DeploymentMessage) e
 }
 
 func (s *Subscriber) Listen(ctx context.Context) error {
-	var client *pubsub.Client
-	var err error
+	http.HandleFunc("/push", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "Only POST requests are allowed", http.StatusMethodNotAllowed)
+			return
+		}
 
-	if os.Getenv("PUBSUB_EMULATOR_HOST") != "" {
-		client, err = pubsub.NewClient(ctx, s.cfg.ProjectID, option.WithEndpoint(os.Getenv("PUBSUB_EMULATOR_HOST")))
-	} else {
-		client, err = pubsub.NewClient(ctx, s.cfg.ProjectID)
-	}
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			log.Printf("Error reading request body: %v", err)
+			http.Error(w, "Error reading request", http.StatusBadRequest)
+			return
+		}
+		defer r.Body.Close()
 
-	if err != nil {
-		return err
-	}
-	defer client.Close()
+		var pushRequest struct {
+			Message struct {
+				Data []byte `json:"data,omitempty"`
+				ID   string `json:"id"`
+			} `json:"message"`
+		}
 
-	sub := client.Subscription(s.cfg.SubscriptionID)
+		if err := json.Unmarshal(body, &pushRequest); err != nil {
+			log.Printf("Error unmarshaling push request: %v", err)
+			http.Error(w, "Error processing message", http.StatusBadRequest)
+			return
+		}
 
-	return sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
-		log.Printf("Received message: %s", string(msg.Data))
+		log.Printf("Received message: %s", string(pushRequest.Message.Data))
 
 		var deploymentMsg models.DeploymentMessage
-		if err := json.Unmarshal(msg.Data, &deploymentMsg); err != nil {
+		if err := json.Unmarshal(pushRequest.Message.Data, &deploymentMsg); err != nil {
 			log.Printf("Error unmarshaling message: %v", err)
-			msg.Nack()
+			http.Error(w, "Error processing message", http.StatusBadRequest)
 			return
 		}
 
 		if err := s.deployFn(deploymentMsg); err != nil {
 			log.Printf("Error deploying package: %v", err)
-			msg.Nack()
+			http.Error(w, "Error processing message", http.StatusInternalServerError)
 			return
 		}
 
-		msg.Ack()
+		w.WriteHeader(http.StatusOK)
 	})
+
+	log.Printf("Starting HTTP server on port 8080")
+	return http.ListenAndServe(":8080", nil)
 }
