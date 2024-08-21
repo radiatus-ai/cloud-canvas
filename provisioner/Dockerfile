@@ -1,15 +1,14 @@
-# Start from the official Golang image
-FROM golang:1.19-alpine AS builder
+FROM golang:1.22-alpine AS builder
 
 # Install git and SSH client
 RUN apk add --no-cache git openssh-client
 
 # Install Terraform
 RUN apk add --no-cache curl \
-    && curl -LO https://releases.hashicorp.com/terraform/1.4.6/terraform_1.4.6_linux_amd64.zip \
-    && unzip terraform_1.4.6_linux_amd64.zip \
+    && curl -LO https://releases.hashicorp.com/terraform/1.5.7/terraform_1.5.7_linux_amd64.zip \
+    && unzip terraform_1.5.7_linux_amd64.zip \
     && mv terraform /usr/local/bin/ \
-    && rm terraform_1.4.6_linux_amd64.zip
+    && rm terraform_1.5.7_linux_amd64.zip
 
 # Set the working directory
 WORKDIR /app

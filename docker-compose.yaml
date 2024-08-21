@@ -55,6 +55,17 @@ services:
     environment:
       - REACT_APP_ENV=production
 
+  provisioner-deploy:
+    platform: linux/amd64
+    build:
+      dockerfile: ./Dockerfile
+      context: ./provisioner
+    # environment:
+    #   - GOOGLE_APPLICATION_CREDENTIALS=/var/config/gcloud/application_default_credentials.json
+    #   - GITHUB_TOKEN=$GITHUB_TOKEN
+    ports:
+      - 8000:8000
+
   api-deploy:
     platform: linux/amd64
     build:

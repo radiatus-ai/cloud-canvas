@@ -103,7 +103,6 @@ func (e *Executor) WriteOutputFile(packageID, deployDir string, outputData map[s
 func (e *Executor) runCommand(command, dir string) (string, error) {
 	cmd := exec.Command("sh", "-c", command)
 	cmd.Dir = dir
-	cmd.Env = append(os.Environ(), fmt.Sprintf("GITHUB_TOKEN=%s", e.cfg.GithubToken))
 	output, err := cmd.CombinedOutput()
 	return string(output), err
 }
