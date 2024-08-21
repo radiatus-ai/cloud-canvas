@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ui
+  namespace: default
+  annotations:
+    iam.gke.io/gcp-service-account: platform-ui@rad-dev-platui-4r64.iam.gserviceaccount.com
+automountServiceAccountToken: true

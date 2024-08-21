@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ui
+  template:
+    metadata:
+      labels:
+        app: ui
+    spec:
+      serviceAccountName: ui
+      containers:
+        - name: ui
+          image: us-central1-docker.pkg.dev/rad-containers-hmed/platform/ui:latest
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+            # limits:
+            #   memory: "512Mi"
+            #   cpu: "500m"
+          ports:
+            - name: http
+              containerPort: 80
