@@ -16,15 +16,17 @@ upload: build tag
 
 
 deploy: build tag upload
-	gcloud run deploy api \
-		--image=us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/api:latest \
-		--execution-environment=gen2 \
-		--region=us-central1 \
-		--project=rad-dev-canvas-kwm6 \
-		&& gcloud run services update-traffic api --to-latest --region us-central1 --project=rad-dev-canvas-kwm6 && \
-		gcloud run deploy ui \
+	gcloud run deploy ui \
 		--image=us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/ui:latest \
 		--execution-environment=gen2 \
 		--region=us-central1 \
 		--project=rad-dev-canvas-kwm6 \
 		&& gcloud run services update-traffic ui --to-latest --region us-central1 --project=rad-dev-canvas-kwm6
+
+
+# gcloud run deploy api \
+# 		--image=us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/api:latest \
+# 		--execution-environment=gen2 \
+# 		--region=us-central1 \
+# 		--project=rad-dev-canvas-kwm6 \
+# 		&& gcloud run services update-traffic api --to-latest --region us-central1 --project=rad-dev-canvas-kwm6 && \

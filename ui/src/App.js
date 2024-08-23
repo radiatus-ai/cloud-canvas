@@ -47,7 +47,7 @@ const App = () => {
     return (
       <Container maxWidth="sm" sx={{ mt: 8, textAlign: 'center' }}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Welcome to Platform
+          Welcome to Cloud Canvas
         </Typography>
         <Typography variant="body1" gutterBottom>
           Please sign in to continue
