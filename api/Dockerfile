@@ -35,7 +35,5 @@ COPY --from=builder /app /app
 ENV PORT=8000
 EXPOSE $PORT
 
-COPY ada-cli /usr/local/bin/ada
-
 # Use gunicorn with multiple workers and enable preload
 CMD ["sh", "-c", "gunicorn app.main:app -w 4 -k uvicorn.workers.UvicornWorker --preload --bind 0.0.0.0:${PORT}"]

@@ -21,8 +21,8 @@ spec:
           resources:
             # Autopilot minimums / defaults
             requests:
-              memory: "100Mi"
-              cpu: "50m"
+              memory: "1000Mi"
+              cpu: "1000m"
             # limits:
             #   memory: "512Mi"
             #   cpu: "500m"
@@ -30,6 +30,8 @@ spec:
             - name: http
               containerPort: 8000
           env:
+            - name: API_TOKEN
+              value: foobar
             - name: POSTGRES_SERVER
               valueFrom:
                 secretKeyRef:

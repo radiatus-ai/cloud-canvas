@@ -36,12 +36,12 @@ func main() {
 	}
 
 	// Start HTTP server
-	go func() {
-		log.Printf("Starting HTTP server on port %s", port)
-		if err := http.ListenAndServe(":"+port, nil); err != nil {
-			log.Fatalf("Failed to start HTTP server: %v", err)
-		}
-	}()
+	// go func() {
+	// 	log.Printf("Starting HTTP server on port %s", port)
+	// 	if err := http.ListenAndServe(":"+port, nil); err != nil {
+	// 		log.Fatalf("Failed to start HTTP server: %v", err)
+	// 	}
+	// }()
 
 	log.Printf("Listening for messages on projects/%s/subscriptions/%s", cfg.ProjectID, cfg.SubscriptionID)
 	if err := subscriber.Listen(ctx); err != nil {

@@ -25,3 +25,11 @@ api_router.include_router(connections.router)
 api_router.include_router(packages.router)
 api_router.include_router(project_packages.router)
 api_router.include_router(projects.router)
+
+
+router = APIRouter()
+
+
+@router.get("/", dependencies=[])
+async def root():
+    return "healthy"
