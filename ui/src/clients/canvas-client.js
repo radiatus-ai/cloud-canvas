@@ -1,6 +1,4 @@
 import { ApiClient, DefaultApi } from 'canvas-client';
-// import { ApiClient, PlatformApi  } from 'canvas-client';
-// const DefaultApi = PlatformApi.DefaultApi;
 
 const getApiUrl = () => {
   switch (process.env.REACT_APP_ENV) {
