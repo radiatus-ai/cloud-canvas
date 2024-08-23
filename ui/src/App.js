@@ -6,6 +6,7 @@ import FlowDiagram from './components/FlowDiagram';
 import JsonSchemaFormTest from './components/JsonSchemaFormTest';
 import Navigation from './components/Navigation';
 import Projects from './components/Projects';
+import CredentialsList from './components/CredentialsList';
 import { useAuth } from './contexts/Auth';
 
 const App = () => {
@@ -70,6 +71,7 @@ const App = () => {
         <Box component="main" sx={{ flexGrow: 1, p: 0, overflow: 'hidden' }}>
           <Routes>
             <Route path="/" element={<Projects />} />
+            <Route path="/secrets" element={<CredentialsList />} />
             <Route path="/form" element={<JsonSchemaFormTest />} />
             <Route path="/flow/:projectId" element={<FlowDiagram />} />
           </Routes>

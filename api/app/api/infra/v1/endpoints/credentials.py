@@ -10,43 +10,44 @@ from app.schemas.credential import Credential, CredentialCreate, CredentialUpdat
 router = APIRouter()
 
 
-@router.get(
-    "/organizations/{organization_id}/credentials/", response_model=List[Credential]
-)
+@router.get("/credentials/", response_model=List[Credential])
 async def list_credentials(
-    organization_id: UUID4,
     skip: int = 0,
     limit: int = 100,
     deps: dict = Depends(get_db_and_current_user),
 ):
     db = deps["db"]
+    organization = deps["organization_id"]
+    organization_id = organization.id
     return await crud_credential.get_credentials_by_organization(
         db, organization_id=organization_id, skip=skip, limit=limit
     )
 
 
-@router.post("/organizations/{organization_id}/credentials/", response_model=Credential)
+@router.post("/credentials/", response_model=Credential)
 async def create_credential(
-    organization_id: UUID4,
     credential: CredentialCreate,
     deps: dict = Depends(get_db_and_current_user),
 ):
     db = deps["db"]
+    organization = deps["organization_id"]
+    organization_id = organization.id
     return await crud_credential.create_credential(
         db, obj_in=credential, organization_id=organization_id
     )
 
 
 @router.get(
-    "/organizations/{organization_id}/credentials/{credential_id}",
+    "/credentials/{credential_id}",
     response_model=Credential,
 )
 async def get_credential(
-    organization_id: UUID4,
     credential_id: UUID4,
     deps: dict = Depends(get_db_and_current_user),
 ):
     db = deps["db"]
+    organization = deps["organization_id"]
+    organization_id = organization.id
     credential = await crud_credential.get_credential(db, id=credential_id)
     if not credential or credential.organization_id != organization_id:
         raise HTTPException(status_code=404, detail="Credential not found")
@@ -54,16 +55,17 @@ async def get_credential(
 
 
 @router.patch(
-    "/organizations/{organization_id}/credentials/{credential_id}",
+    "/credentials/{credential_id}",
     response_model=Credential,
 )
 async def update_credential(
-    organization_id: UUID4,
     credential_id: UUID4,
     credential: CredentialUpdate,
     deps: dict = Depends(get_db_and_current_user),
 ):
     db = deps["db"]
+    organization = deps["organization_id"]
+    organization_id = organization.id
     db_credential = await crud_credential.get_credential(db, id=credential_id)
     if not db_credential or db_credential.organization_id != organization_id:
         raise HTTPException(status_code=404, detail="Credential not found")
@@ -71,15 +73,16 @@ async def update_credential(
 
 
 @router.delete(
-    "/organizations/{organization_id}/credentials/{credential_id}",
+    "/credentials/{credential_id}",
     response_model=Credential,
 )
 async def delete_credential(
-    organization_id: UUID4,
     credential_id: UUID4,
     deps: dict = Depends(get_db_and_current_user),
 ):
     db = deps["db"]
+    organization = deps["organization_id"]
+    organization_id = organization.id
     credential = await crud_credential.get_credential(db, id=credential_id)
     if not credential or credential.organization_id != organization_id:
         raise HTTPException(status_code=404, detail="Credential not found")

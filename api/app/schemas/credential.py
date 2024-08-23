@@ -7,11 +7,12 @@ from app.models.credential import CredentialType
 
 class CredentialBase(BaseModel):
     credential_type: CredentialType
-    credential_value: str
+    # CREDENTIAL VALUE IS NOT RETURNED FROM THIS API ON PURPOSE
+    # credential_value: str
 
 
 class CredentialCreate(CredentialBase):
-    organization_id: UUID4
+    credential_value: str
 
 
 class CredentialUpdate(BaseModel):

@@ -20,8 +20,8 @@ async def list_projects(
 ):
     db = deps["db"]
     deps["current_user"]
-    organization_id = deps["organization_id"]
-    organization_id = "2320a0d6-8cbb-4727-8f33-6573d017d980"
+    organization = deps["organization_id"]
+    organization_id = organization.id
     return await crud_project.list_projects_for_organization(
         db, skip=skip, limit=limit, organization_id=organization_id
     )
@@ -33,9 +33,9 @@ async def create_project(
     project: ProjectCreate, deps: dict = Depends(get_db_and_current_user)
 ):
     db = deps["db"]
-    new_prj = ProjectCreate(
-        name=project.name, organization_id="2320a0d6-8cbb-4727-8f33-6573d017d980"
-    )
+    organization = deps["organization_id"]
+    organization_id = organization.id
+    new_prj = ProjectCreate(name=project.name, organization_id=organization_id)
     prj = await crud_project.create_project(db, obj_in=new_prj)
     # a little weird we have to do this. def unique to the async setup we have
     # we may only have to do this in create but I'm not 100% sure yet

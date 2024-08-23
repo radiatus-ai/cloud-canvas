@@ -5,7 +5,6 @@ from pydantic import UUID4, BaseModel
 
 class ProjectBase(BaseModel):
     name: str
-    is_user_default: bool = False
 
 
 class ProjectCreate(ProjectBase):

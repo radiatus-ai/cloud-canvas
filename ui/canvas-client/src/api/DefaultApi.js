@@ -14,6 +14,9 @@
 import ApiClient from '../ApiClient';
 import Connection from '../model/Connection';
 import ConnectionCreate from '../model/ConnectionCreate';
+import Credential from '../model/Credential';
+import CredentialCreate from '../model/CredentialCreate';
+import CredentialUpdate from '../model/CredentialUpdate';
 import HTTPValidationError from '../model/HTTPValidationError';
 import Package from '../model/Package';
 import PackageCreate from '../model/PackageCreate';
@@ -85,6 +88,55 @@ export default class DefaultApi {
     let returnType = Connection;
     return this.apiClient.callApi(
       '/projects/{project_id}/connections/',
+      'POST',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
+
+  /**
+   * Callback function to receive the result of the createCredentialCredentialsPost operation.
+   * @callback module:api/DefaultApi~createCredentialCredentialsPostCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/Credential} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
+
+  /**
+   * Create Credential
+   * @param {module:model/CredentialCreate} credentialCreate
+   * @param {module:api/DefaultApi~createCredentialCredentialsPostCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/Credential}
+   */
+  createCredentialCredentialsPost(credentialCreate, callback) {
+    let postBody = credentialCreate;
+    // verify the required parameter 'credentialCreate' is set
+    if (credentialCreate === undefined || credentialCreate === null) {
+      throw new Error(
+        "Missing the required parameter 'credentialCreate' when calling createCredentialCredentialsPost"
+      );
+    }
+
+    let pathParams = {};
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
+
+    let authNames = [];
+    let contentTypes = ['application/json'];
+    let accepts = ['application/json'];
+    let returnType = Credential;
+    return this.apiClient.callApi(
+      '/credentials/',
       'POST',
       pathParams,
       queryParams,
@@ -262,6 +314,57 @@ export default class DefaultApi {
   }
 
   /**
+   * Callback function to receive the result of the deleteCredentialCredentialsCredentialIdDelete operation.
+   * @callback module:api/DefaultApi~deleteCredentialCredentialsCredentialIdDeleteCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/Credential} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
+
+  /**
+   * Delete Credential
+   * @param {String} credentialId
+   * @param {module:api/DefaultApi~deleteCredentialCredentialsCredentialIdDeleteCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/Credential}
+   */
+  deleteCredentialCredentialsCredentialIdDelete(credentialId, callback) {
+    let postBody = null;
+    // verify the required parameter 'credentialId' is set
+    if (credentialId === undefined || credentialId === null) {
+      throw new Error(
+        "Missing the required parameter 'credentialId' when calling deleteCredentialCredentialsCredentialIdDelete"
+      );
+    }
+
+    let pathParams = {
+      credential_id: credentialId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
+
+    let authNames = [];
+    let contentTypes = [];
+    let accepts = ['application/json'];
+    let returnType = Credential;
+    return this.apiClient.callApi(
+      '/credentials/{credential_id}',
+      'DELETE',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
+
+  /**
    * Callback function to receive the result of the deleteProjectProjectsProjectIdDelete operation.
    * @callback module:api/DefaultApi~deleteProjectProjectsProjectIdDeleteCallback
    * @param {String} error Error message, if any.
@@ -298,6 +401,57 @@ export default class DefaultApi {
     return this.apiClient.callApi(
       '/projects/{project_id}',
       'DELETE',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
+
+  /**
+   * Callback function to receive the result of the getCredentialCredentialsCredentialIdGet operation.
+   * @callback module:api/DefaultApi~getCredentialCredentialsCredentialIdGetCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/Credential} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
+
+  /**
+   * Get Credential
+   * @param {String} credentialId
+   * @param {module:api/DefaultApi~getCredentialCredentialsCredentialIdGetCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/Credential}
+   */
+  getCredentialCredentialsCredentialIdGet(credentialId, callback) {
+    let postBody = null;
+    // verify the required parameter 'credentialId' is set
+    if (credentialId === undefined || credentialId === null) {
+      throw new Error(
+        "Missing the required parameter 'credentialId' when calling getCredentialCredentialsCredentialIdGet"
+      );
+    }
+
+    let pathParams = {
+      credential_id: credentialId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
+
+    let authNames = [];
+    let contentTypes = [];
+    let accepts = ['application/json'];
+    let returnType = Credential;
+    return this.apiClient.callApi(
+      '/credentials/{credential_id}',
+      'GET',
       pathParams,
       queryParams,
       headerParams,
@@ -413,6 +567,55 @@ export default class DefaultApi {
   }
 
   /**
+   * Callback function to receive the result of the listCredentialsCredentialsGet operation.
+   * @callback module:api/DefaultApi~listCredentialsCredentialsGetCallback
+   * @param {String} error Error message, if any.
+   * @param {Array.<module:model/Credential>} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
+
+  /**
+   * List Credentials
+   * @param {Object} opts Optional parameters
+   * @param {Number} [skip = 0)]
+   * @param {Number} [limit = 100)]
+   * @param {module:api/DefaultApi~listCredentialsCredentialsGetCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link Array.<module:model/Credential>}
+   */
+  listCredentialsCredentialsGet(opts, callback) {
+    opts = opts || {};
+    let postBody = null;
+
+    let pathParams = {};
+    let queryParams = {
+      skip: opts['skip'],
+      limit: opts['limit'],
+    };
+    let headerParams = {};
+    let formParams = {};
+
+    let authNames = [];
+    let contentTypes = [];
+    let accepts = ['application/json'];
+    let returnType = [Credential];
+    return this.apiClient.callApi(
+      '/credentials/',
+      'GET',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
+
+  /**
    * Callback function to receive the result of the listProjectsProjectsGet operation.
    * @callback module:api/DefaultApi~listProjectsProjectsGetCallback
    * @param {String} error Error message, if any.
@@ -447,6 +650,110 @@ export default class DefaultApi {
     return this.apiClient.callApi(
       '/projects/',
       'GET',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
+
+  /**
+   * Callback function to receive the result of the rootGet operation.
+   * @callback module:api/DefaultApi~rootGetCallback
+   * @param {String} error Error message, if any.
+   * @param {Object} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
+
+  /**
+   * Root
+   * @param {module:api/DefaultApi~rootGetCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link Object}
+   */
+  rootGet(callback) {
+    let postBody = null;
+
+    let pathParams = {};
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
+
+    let authNames = [];
+    let contentTypes = [];
+    let accepts = ['application/json'];
+    let returnType = Object;
+    return this.apiClient.callApi(
+      '/',
+      'GET',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
+
+  /**
+   * Callback function to receive the result of the updateCredentialCredentialsCredentialIdPatch operation.
+   * @callback module:api/DefaultApi~updateCredentialCredentialsCredentialIdPatchCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/Credential} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
+
+  /**
+   * Update Credential
+   * @param {String} credentialId
+   * @param {module:model/CredentialUpdate} credentialUpdate
+   * @param {module:api/DefaultApi~updateCredentialCredentialsCredentialIdPatchCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/Credential}
+   */
+  updateCredentialCredentialsCredentialIdPatch(
+    credentialId,
+    credentialUpdate,
+    callback
+  ) {
+    let postBody = credentialUpdate;
+    // verify the required parameter 'credentialId' is set
+    if (credentialId === undefined || credentialId === null) {
+      throw new Error(
+        "Missing the required parameter 'credentialId' when calling updateCredentialCredentialsCredentialIdPatch"
+      );
+    }
+    // verify the required parameter 'credentialUpdate' is set
+    if (credentialUpdate === undefined || credentialUpdate === null) {
+      throw new Error(
+        "Missing the required parameter 'credentialUpdate' when calling updateCredentialCredentialsCredentialIdPatch"
+      );
+    }
+
+    let pathParams = {
+      credential_id: credentialId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
+
+    let authNames = [];
+    let contentTypes = ['application/json'];
+    let accepts = ['application/json'];
+    let returnType = Credential;
+    return this.apiClient.callApi(
+      '/credentials/{credential_id}',
+      'PATCH',
       pathParams,
       queryParams,
       headerParams,

@@ -161,7 +161,53 @@ const useApi = () => {
     [apiCall]
   );
 
-  return { projects, error };
+  const credentials = useMemo(
+    () => ({
+      list: (token, parentSpan) =>
+        apiCall(
+          DefaultApi,
+          'listCredentialsCredentialsGet',
+          [],
+          token,
+          parentSpan
+        ),
+      create: (data, token, parentSpan) =>
+        apiCall(
+          DefaultApi,
+          'createCredentialCredentialsPost',
+          [data],
+          token,
+          parentSpan
+        ),
+      get: (id, token, parentSpan) =>
+        apiCall(
+          DefaultApi,
+          'getCredentialCredentialsCredentialIdGet',
+          [id],
+          token,
+          parentSpan
+        ),
+      update: (id, data, token, parentSpan) =>
+        apiCall(
+          DefaultApi,
+          'updateCredentialCredentialsCredentialIdPatch',
+          [id, data],
+          token,
+          parentSpan
+        ),
+      delete: (id, token, parentSpan) =>
+        apiCall(
+          DefaultApi,
+          'deleteCredentialCredentialsCredentialIdDelete',
+          [id],
+          token,
+          parentSpan
+        ),
+    }),
+    [apiCall]
+  );
+
+  return { projects, credentials, error };
 };
 
 export default useApi;

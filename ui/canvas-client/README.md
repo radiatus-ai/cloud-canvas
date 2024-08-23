@@ -125,13 +125,19 @@ All URIs are relative to _http://localhost_
 | Class                     | Method                                                                                                                                                               | HTTP request                                                    | Description             |
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------- |
 | _PlatformApi.DefaultApi_  | [**createConnectionProjectsProjectIdConnectionsPost**](docs/DefaultApi.md#createConnectionProjectsProjectIdConnectionsPost)                                          | **POST** /projects/{project_id}/connections/                    | Create Connection       |
+| _PlatformApi.DefaultApi_  | [**createCredentialCredentialsPost**](docs/DefaultApi.md#createCredentialCredentialsPost)                                                                            | **POST** /credentials/                                          | Create Credential       |
 | _PlatformApi.DefaultApi_  | [**createGlobalPackagePackagesPost**](docs/DefaultApi.md#createGlobalPackagePackagesPost)                                                                            | **POST** /packages                                              | Create Global Package   |
 | _PlatformApi.DefaultApi_  | [**createProjectProjectsPost**](docs/DefaultApi.md#createProjectProjectsPost)                                                                                        | **POST** /projects/                                             | Create Project          |
 | _PlatformApi.DefaultApi_  | [**deleteConnectionProjectsProjectIdConnectionsConnectionIdDelete**](docs/DefaultApi.md#deleteConnectionProjectsProjectIdConnectionsConnectionIdDelete)              | **DELETE** /projects/{project_id}/connections/{connection_id}   | Delete Connection       |
+| _PlatformApi.DefaultApi_  | [**deleteCredentialCredentialsCredentialIdDelete**](docs/DefaultApi.md#deleteCredentialCredentialsCredentialIdDelete)                                                | **DELETE** /credentials/{credential_id}                         | Delete Credential       |
 | _PlatformApi.DefaultApi_  | [**deleteProjectProjectsProjectIdDelete**](docs/DefaultApi.md#deleteProjectProjectsProjectIdDelete)                                                                  | **DELETE** /projects/{project_id}                               | Delete Project          |
+| _PlatformApi.DefaultApi_  | [**getCredentialCredentialsCredentialIdGet**](docs/DefaultApi.md#getCredentialCredentialsCredentialIdGet)                                                            | **GET** /credentials/{credential_id}                            | Get Credential          |
 | _PlatformApi.DefaultApi_  | [**listAllPackagesPackagesGet**](docs/DefaultApi.md#listAllPackagesPackagesGet)                                                                                      | **GET** /packages                                               | List All Packages       |
 | _PlatformApi.DefaultApi_  | [**listConnectionsProjectsProjectIdConnectionsGet**](docs/DefaultApi.md#listConnectionsProjectsProjectIdConnectionsGet)                                              | **GET** /projects/{project_id}/connections/                     | List Connections        |
+| _PlatformApi.DefaultApi_  | [**listCredentialsCredentialsGet**](docs/DefaultApi.md#listCredentialsCredentialsGet)                                                                                | **GET** /credentials/                                           | List Credentials        |
 | _PlatformApi.DefaultApi_  | [**listProjectsProjectsGet**](docs/DefaultApi.md#listProjectsProjectsGet)                                                                                            | **GET** /projects/                                              | List Projects           |
+| _PlatformApi.DefaultApi_  | [**rootGet**](docs/DefaultApi.md#rootGet)                                                                                                                            | **GET** /                                                       | Root                    |
+| _PlatformApi.DefaultApi_  | [**updateCredentialCredentialsCredentialIdPatch**](docs/DefaultApi.md#updateCredentialCredentialsCredentialIdPatch)                                                  | **PATCH** /credentials/{credential_id}                          | Update Credential       |
 | _PlatformApi.DefaultApi_  | [**updateProjectProjectsProjectIdPatch**](docs/DefaultApi.md#updateProjectProjectsProjectIdPatch)                                                                    | **PATCH** /projects/{project_id}                                | Update Project          |
 | _PlatformApi.PackagesApi_ | [**createProjectPackageProjectsProjectIdPackagesPost**](docs/PackagesApi.md#createProjectPackageProjectsProjectIdPackagesPost)                                       | **POST** /projects/{project_id}/packages/                       | Create Project Package  |
 | _PlatformApi.PackagesApi_ | [**deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete**](docs/PackagesApi.md#deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete)                 | **DELETE** /projects/{project_id}/packages/{package_id}         | Delete Project Package  |
@@ -152,6 +158,10 @@ All URIs are relative to _http://localhost_
 
 - [PlatformApi.Connection](docs/Connection.md)
 - [PlatformApi.ConnectionCreate](docs/ConnectionCreate.md)
+- [PlatformApi.Credential](docs/Credential.md)
+- [PlatformApi.CredentialCreate](docs/CredentialCreate.md)
+- [PlatformApi.CredentialType](docs/CredentialType.md)
+- [PlatformApi.CredentialUpdate](docs/CredentialUpdate.md)
 - [PlatformApi.HTTPValidationError](docs/HTTPValidationError.md)
 - [PlatformApi.Package](docs/Package.md)
 - [PlatformApi.PackageCreate](docs/PackageCreate.md)
