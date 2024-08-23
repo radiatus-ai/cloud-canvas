@@ -1,5 +1,6 @@
 from .api_token import APIToken
 from .connection import Connection
+from .credential import Credential
 from .organization_reference import OrganizationReference
 from .package import Package
 from .project import Project
