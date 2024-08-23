@@ -4,6 +4,10 @@
 README.md
 docs/Connection.md
 docs/ConnectionCreate.md
+docs/Credential.md
+docs/CredentialCreate.md
+docs/CredentialType.md
+docs/CredentialUpdate.md
 docs/DefaultApi.md
 docs/HTTPValidationError.md
 docs/Package.md
@@ -26,6 +30,10 @@ src/api/ProjectApi.js
 src/index.js
 src/model/Connection.js
 src/model/ConnectionCreate.js
+src/model/Credential.js
+src/model/CredentialCreate.js
+src/model/CredentialType.js
+src/model/CredentialUpdate.js
 src/model/HTTPValidationError.js
 src/model/Package.js
 src/model/PackageCreate.js
@@ -35,5 +43,3 @@ src/model/ProjectCreate.js
 src/model/ProjectUpdate.js
 src/model/ValidationError.js
 src/model/ValidationErrorLocInner.js
-test/api/PackagesApi.spec.js
-test/api/ProjectApi.spec.js

@@ -8,12 +8,9 @@ from alembic.config import Config
 from app.db.base_class import Base
 from app.models import (
     APIToken,
-    Chat,
-    ChatMessage,
-    Organization,
+    OrganizationReference,
     Project,
-    User,
-    UserOrganization,
+    UserReference,
 )
 
 # Create an async engine for SQLite
@@ -51,52 +48,29 @@ async def init_test_db():
     print("Adding seed data...")
     async with TestingSessionLocal() as session:
         # Add seed data
-        org1 = Organization(name="Test Org 1", is_user_default=True)
-        org2 = Organization(name="Test Org 2", is_user_default=True)
-        session.add_all([org1, org2])
+        org_ref1 = OrganizationReference(name="Test Org 1")
+        org_ref2 = OrganizationReference(name="Test Org 2")
+        session.add_all([org_ref1, org_ref2])
         await session.flush()
 
-        user1 = User(
-            email="user1@example.com", google_id="google_id_1", organization_id=org1.id
+        user_ref1 = UserReference(email="user1@example.com", google_id="google_id_1")
+        user_ref2 = UserReference(email="user2@example.com", google_id="google_id_2")
+        session.add_all([user_ref1, user_ref2])
+        await session.flush()
+
+        project1 = Project(
+            name="Test Project 1", organization_id=org_ref1.id, user_id=user_ref1.id
         )
-        user2 = User(
-            email="user2@example.com", google_id="google_id_2", organization_id=org2.id
+        project2 = Project(
+            name="Test Project 2", organization_id=org_ref2.id, user_id=user_ref2.id
         )
-        session.add_all([user1, user2])
-        await session.flush()
-
-        # Add entries to the UserOrganization model
-        user_org1 = UserOrganization(user_id=user1.id, organization_id=org1.id)
-        session.add(user_org1)
-        await session.flush()
-
-        project1 = Project(name="Test Project 1", organization_id=org1.id)
-        project2 = Project(name="Test Project 2", organization_id=org2.id)
         session.add_all([project1, project2])
         await session.flush()
 
-        api_token = APIToken(name="test", token="foobar", user_id=user1.id)
+        api_token = APIToken(name="test", token="foobar", user_id=user_ref1.id)
         session.add(api_token)
         await session.flush()
 
-        chat = Chat(name="first chat", model="hello world", project_id=project1.id)
-        session.add(chat)
-        await session.flush()
-
-        chat_message = ChatMessage(
-            role="user",
-            content="hello world",
-            is_context_file=False,
-            model="opus",
-            tokens=0,
-            content_raw={},
-            is_tool_message=False,
-            chat_id=chat.id,
-        )
-        session.add(chat_message)
-        await session.flush()
-
-        await session.commit()
     print("Seed data added.")
 
 

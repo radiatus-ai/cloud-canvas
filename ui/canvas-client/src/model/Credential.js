@@ -12,22 +12,23 @@
  */
 
 import ApiClient from '../ApiClient';
+import CredentialType from './CredentialType';
 
 /**
- * The Project model module.
- * @module model/Project
+ * The Credential model module.
+ * @module model/Credential
  * @version 0.1.0
  */
-class Project {
+class Credential {
   /**
-   * Constructs a new <code>Project</code>.
-   * @alias module:model/Project
-   * @param name {String}
+   * Constructs a new <code>Credential</code>.
+   * @alias module:model/Credential
+   * @param credentialType {module:model/CredentialType}
    * @param id {String}
    * @param organizationId {String}
    */
-  constructor(name, id, organizationId) {
-    Project.initialize(this, name, id, organizationId);
+  constructor(credentialType, id, organizationId) {
+    Credential.initialize(this, credentialType, id, organizationId);
   }
 
   /**
@@ -35,25 +36,27 @@ class Project {
    * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
    * Only for internal use.
    */
-  static initialize(obj, name, id, organizationId) {
-    obj['name'] = name;
+  static initialize(obj, credentialType, id, organizationId) {
+    obj['credential_type'] = credentialType;
     obj['id'] = id;
     obj['organization_id'] = organizationId;
   }
 
   /**
-   * Constructs a <code>Project</code> from a plain JavaScript object, optionally creating a new instance.
+   * Constructs a <code>Credential</code> from a plain JavaScript object, optionally creating a new instance.
    * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
    * @param {Object} data The plain JavaScript object bearing properties of interest.
-   * @param {module:model/Project} obj Optional instance to populate.
-   * @return {module:model/Project} The populated <code>Project</code> instance.
+   * @param {module:model/Credential} obj Optional instance to populate.
+   * @return {module:model/Credential} The populated <code>Credential</code> instance.
    */
   static constructFromObject(data, obj) {
     if (data) {
-      obj = obj || new Project();
+      obj = obj || new Credential();
 
-      if (data.hasOwnProperty('name')) {
-        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      if (data.hasOwnProperty('credential_type')) {
+        obj['credential_type'] = CredentialType.constructFromObject(
+          data['credential_type']
+        );
       }
       if (data.hasOwnProperty('id')) {
         obj['id'] = ApiClient.convertToType(data['id'], 'String');
@@ -69,13 +72,13 @@ class Project {
   }
 
   /**
-   * Validates the JSON data with respect to <code>Project</code>.
+   * Validates the JSON data with respect to <code>Credential</code>.
    * @param {Object} data The plain JavaScript object bearing properties of interest.
-   * @return {boolean} to indicate whether the JSON data is valid with respect to <code>Project</code>.
+   * @return {boolean} to indicate whether the JSON data is valid with respect to <code>Credential</code>.
    */
   static validateJSON(data) {
     // check to make sure all required properties are present in the JSON string
-    for (const property of Project.RequiredProperties) {
+    for (const property of Credential.RequiredProperties) {
       if (!data.hasOwnProperty(property)) {
         throw new Error(
           'The required field `' +
@@ -84,16 +87,6 @@ class Project {
             JSON.stringify(data)
         );
       }
-    }
-    // ensure the json data is a string
-    if (
-      data['name'] &&
-      !(typeof data['name'] === 'string' || data['name'] instanceof String)
-    ) {
-      throw new Error(
-        'Expected the field `name` to be a primitive type in the JSON string but got ' +
-          data['name']
-      );
     }
     // ensure the json data is a string
     if (
@@ -123,21 +116,21 @@ class Project {
   }
 }
 
-Project.RequiredProperties = ['name', 'id', 'organization_id'];
+Credential.RequiredProperties = ['credential_type', 'id', 'organization_id'];
 
 /**
- * @member {String} name
+ * @member {module:model/CredentialType} credential_type
  */
-Project.prototype['name'] = undefined;
+Credential.prototype['credential_type'] = undefined;
 
 /**
  * @member {String} id
  */
-Project.prototype['id'] = undefined;
+Credential.prototype['id'] = undefined;
 
 /**
  * @member {String} organization_id
  */
-Project.prototype['organization_id'] = undefined;
+Credential.prototype['organization_id'] = undefined;
 
-export default Project;
+export default Credential;

@@ -87,6 +87,7 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
 
   const menuItems = [
     { text: 'Projects', icon: <FolderIcon />, path: '/' },
+    { text: 'Secrets', icon: <FolderIcon />, path: '/secrets' },
     // Add more menu items as needed
   ];
 

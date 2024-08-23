@@ -14,6 +14,10 @@
 import ApiClient from './ApiClient';
 import Connection from './model/Connection';
 import ConnectionCreate from './model/ConnectionCreate';
+import Credential from './model/Credential';
+import CredentialCreate from './model/CredentialCreate';
+import CredentialType from './model/CredentialType';
+import CredentialUpdate from './model/CredentialUpdate';
 import HTTPValidationError from './model/HTTPValidationError';
 import Package from './model/Package';
 import PackageCreate from './model/PackageCreate';
@@ -76,6 +80,30 @@ export {
    * @property {module:model/ConnectionCreate}
    */
   ConnectionCreate,
+
+  /**
+   * The Credential model constructor.
+   * @property {module:model/Credential}
+   */
+  Credential,
+
+  /**
+   * The CredentialCreate model constructor.
+   * @property {module:model/CredentialCreate}
+   */
+  CredentialCreate,
+
+  /**
+   * The CredentialType model constructor.
+   * @property {module:model/CredentialType}
+   */
+  CredentialType,
+
+  /**
+   * The CredentialUpdate model constructor.
+   * @property {module:model/CredentialUpdate}
+   */
+  CredentialUpdate,
 
   /**
    * The HTTPValidationError model constructor.
