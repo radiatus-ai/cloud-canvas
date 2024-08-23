@@ -13,3 +13,4 @@ class OrganizationReference(Base):
     name = Column(String, index=True)
 
     projects = relationship("Project", back_populates="organization")
+    credentials = relationship("Credential", back_populates="organization")
