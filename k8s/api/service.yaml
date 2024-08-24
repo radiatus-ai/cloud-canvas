@@ -1,10 +1,21 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: my-backendconfig
+spec:
+  sessionAffinity:
+    affinityType: "GENERATED_COOKIE"
+    affinityCookieTtlSec: 50
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: api2
+  name: api
   annotations:
-    cloud.google.com/neg: '{"ingress": true, "exposed_ports": {"8000":{}}}'
+    # cloud.google.com/neg: '{"ingress": true, "exposed_ports": {"8000":{}}}'
+    cloud.google.com/backend-config: '{"default": "my-backendconfig"}'
 spec:
+  type: NodePort
   selector:
     app: api
   ports:

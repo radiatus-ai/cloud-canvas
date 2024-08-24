@@ -2,15 +2,32 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: basic-ingress
-  # annotations:
-  #   kubernetes.io/ingress.global-static-ip-name: "web-static-ip"
-  # annotations:
-  #   kubernetes.io/ingress.global-static-ip-name: ADDRESS_NAME
-  #   networking.gke.io/managed-certificates: managed-cert
-  #   kubernetes.io/ingress.class:"gce"
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: api-1
+    networking.gke.io/v1beta1.FrontendConfig: my-frontend-config
+    networking.gke.io/managed-certificates: "api-managed-cert"
+    kubernetes.io/ingress.class: "gce"
+    kubernetes.io/ingress.allow-http: "true"
+    # ingress.gcp.kubernetes.io/pre-shared-cert: "api-compute-cert"
+    # ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
+  tls:
+    - hosts:
+        - canvas-api.dev.r7ai.net
+      # secretName: api-managed-cert
   defaultBackend:
     service:
       name: api
       port:
         number: 8000
+  # rules:
+  # - host: canvas-api.dev.r7ai.net
+  #   http:
+  #     paths:
+  #     - path: /*
+  #       pathType: ImplementationSpecific
+  #       backend:
+  #         service:
+  #           name: api
+  #           port:
+  #             number: 8000
