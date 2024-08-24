@@ -72,5 +72,5 @@ graph TD
     %% click InfrastructureAppsAgents "https://github.com/yourusername/infrastructure-apps-agents-repo" _blank
     click gs "https://github.com/radiatus-ai/canvas-packages" _blank
 
-    style InfrastructureAppsAgents fill:#90EE90
+    style InfrastructureAppsAgents fill:#127312
 ```
