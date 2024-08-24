@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 import {
   createApi,
   DefaultApi,
+  ProjectApi,
   handleApiError,
 } from '../clients/canvas-client';
 
@@ -94,40 +95,40 @@ const useApi = () => {
         ),
       listProjectPackages: (projectId, token, parentSpan) =>
         apiCall(
-          DefaultApi,
-          'listPackagesProjectsProjectIdPackagesGet',
+          ProjectApi,
+          'listProjectPackagesProjectsProjectIdPackagesGet',
           [projectId],
           token,
           parentSpan
         ),
       createPackage: (projectId, data, token, parentSpan) =>
         apiCall(
-          DefaultApi,
-          'createPackageProjectsProjectIdPackagesPost',
+          ProjectApi,
+          'createProjectPackageProjectsProjectIdPackagesPost',
           [projectId, data],
           token,
           parentSpan
         ),
       updatePackage: (projectId, packageId, data, token, parentSpan) =>
         apiCall(
-          DefaultApi,
-          'updatePackageProjectsProjectIdPackagesPackageIdPatch',
+          ProjectApi,
+          'updateProjectPackageProjectsProjectIdPackagesPackageIdPatch',
           [projectId, packageId, data],
           token,
           parentSpan
         ),
       deletePackage: (projectId, packageId, token, parentSpan) =>
         apiCall(
-          DefaultApi,
-          'deletePackageProjectsProjectIdPackagesPackageIdDelete',
+          ProjectApi,
+          'deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete',
           [projectId, packageId],
           token,
           parentSpan
         ),
       deployPackage: (projectId, packageId, data, token, parentSpan) =>
         apiCall(
-          DefaultApi,
-          'deployPackageProjectsProjectIdPackagesPackageIdDeployPost',
+          ProjectApi,
+          'deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost',
           [projectId, packageId, data],
           token,
           parentSpan

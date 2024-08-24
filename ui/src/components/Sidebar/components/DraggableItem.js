@@ -20,7 +20,9 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 
 const DraggableItem = ({ packageData }) => {
   const handleDragStart = (event) => {
-    event.dataTransfer.setData('application/json', JSON.stringify(packageData));
+    event.dataTransfer.setData('application/reactflow', JSON.stringify(packageData));
+    // Also set it as plain text as a fallback
+    event.dataTransfer.setData('text/plain', JSON.stringify(packageData));
   };
 
   return (

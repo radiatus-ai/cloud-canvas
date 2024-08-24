@@ -24,7 +24,9 @@ def convert_yaml_to_package(yaml_data: Dict[str, Any]) -> Dict[str, Any]:
 
 def create_package(api_base_url: str, package_data: Dict[str, Any]) -> Dict[str, Any]:
     url = f"{api_base_url}/packages/"
-    headers = {"Authorization": f"Bearer {os.environ.get('API_TOKEN')}"}
+    headers = {
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MjQ1MTA3NzMsInN1YiI6IjRlN2Y1ZGEwLWM3ZWItNDA4OC04OTNjLWE2YzlhZmQyZTc0YSJ9.7Xw-tM0GtUCzA6bzbo0NKpnYmj4szg8fS_rxLSXcoX0"
+    }
     response = requests.post(url, json=package_data, headers=headers)
     response.raise_for_status()
     return response.json()

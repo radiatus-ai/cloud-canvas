@@ -64,7 +64,8 @@ const Projects = () => {
       const response = await projectsApi.create(
         {
           ...projectData,
-          organization_id: '2320a0d6-8cbb-4727-8f33-6573d017d980',
+          // todo: can probably remove this now
+          // organization_id: '2320a0d6-8cbb-4727-8f33-6573d017d980',
         },
         token
       );

@@ -17,31 +17,31 @@ const StatusDot = styled('div')(({ theme, status }) => ({
   backgroundColor: (() => {
     switch (status) {
       case 'undeployed':
-        return theme.palette.grey[500];
+        return theme?.palette?.grey?.[500] || '#9e9e9e';
       case 'deploying':
         return blue[500];
       case 'destroying':
         return yellow[500];
       case 'deployed':
-        return theme.palette.success.main;
+        return theme?.palette?.success?.main || '#4caf50';
       case 'failed':
-        return theme.palette.error.main;
+        return theme?.palette?.error?.main || '#f44336';
       default:
-        return theme.palette.grey[500];
+        return theme?.palette?.grey?.[500] || '#9e9e9e';
     }
   })(),
 }));
 
-const StyledModal = styled(Modal)(({ theme }) => ({
+const StyledModal = styled(Modal)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
 }));
 
 const ModalContent = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  boxShadow: theme.shadows[5],
-  borderRadius: theme.shape.borderRadius,
+  backgroundColor: theme?.palette?.background?.paper || '#ffffff',
+  boxShadow: theme?.shadows?.[5] || '0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12)',
+  borderRadius: theme?.shape?.borderRadius || '4px',
   maxWidth: '90%',
   maxHeight: '90%',
   display: 'flex',
@@ -49,12 +49,12 @@ const ModalContent = styled(Box)(({ theme }) => ({
 }));
 
 const ModalTitle = styled(Typography)(({ theme }) => ({
-  padding: theme.spacing(2, 2, 1),
+  padding: theme?.spacing?.(2, 2, 1) || '16px 16px 8px',
   fontWeight: 'bold',
 }));
 
 const ModalDescription = styled(Box)(({ theme }) => ({
-  padding: theme.spacing(1, 2, 2),
+  padding: theme?.spacing?.(1, 2, 2) || '8px 16px 16px',
   overflowY: 'auto',
   flexGrow: 1,
 }));

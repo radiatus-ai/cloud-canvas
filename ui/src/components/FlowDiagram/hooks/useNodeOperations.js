@@ -1,24 +1,31 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNodesState } from 'reactflow';
 import { useAuth } from '../../../contexts/Auth';
 import useApi from '../../../hooks/useAPI';
 
-const useNodeOperations = (projectId, projectData) => {
+const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
   const { token } = useAuth();
   const { projects: projectsApi } = useApi();
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  // const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log('projectData', projectData);
     if (projectData && projectData.packages) {
       setNodes(transformPackagesToNodes(projectData.packages));
     }
   }, [projectData, setNodes]);
 
   const transformPackagesToNodes = (packages) => {
+    console.log('packages', packages);
     return (packages || []).map((pkg) => ({
       id: pkg.id,
       type: 'custom',
-      position: pkg.position || { x: 0, y: 0 },
+      // position: pkg.position && typeof pkg.position.x === 'number' && typeof pkg.position.y === 'number'
+      //   ? pkg.position
+      //   : { x: Math.random() * 500, y: Math.random() * 500 }, // Generate random position if invalid
+      position: { x: 250, y: 250 },
       data: {
         id: pkg.id,
         label: pkg.name || '',
@@ -62,13 +69,13 @@ const useNodeOperations = (projectId, projectData) => {
             nds.map((node) =>
               node.id === nodeId
                 ? {
-                    ...node,
-                    data: {
-                      ...node.data,
-                      parameter_data: updatedPackage.parameter_data || {},
-                      parameters: updatedPackage.parameters || {},
-                    },
-                  }
+                  ...node,
+                  data: {
+                    ...node.data,
+                    parameter_data: updatedPackage.parameter_data || {},
+                    parameters: updatedPackage.parameters || {},
+                  },
+                }
                 : node
             )
           );
@@ -136,14 +143,14 @@ const useNodeOperations = (projectId, projectData) => {
           nds.map((n) =>
             n.id === nodeId
               ? {
-                  ...n,
-                  data: {
-                    ...n.data,
-                    deploy_status: updatedPackage.deploy_status,
-                    parameters: updatedPackage.parameter_data,
-                    ...updatedPackage,
-                  },
-                }
+                ...n,
+                data: {
+                  ...n.data,
+                  deploy_status: updatedPackage.deploy_status,
+                  parameters: updatedPackage.parameter_data,
+                  ...updatedPackage,
+                },
+              }
               : n
           )
         );
@@ -225,13 +232,15 @@ const useNodeOperations = (projectId, projectData) => {
   return {
     nodes,
     setNodes,
-    onNodesChange,
+    // onNodesChange,
     onOpenModal,
     onSubmitForm,
     onDeleteNode,
     onDeploy,
     updateNodeData,
     createNode,
+    isLoading,
+    error,
   };
 };
 

@@ -24,7 +24,7 @@ export const useFlowDiagram = () => {
     onDeploy,
     updateNodeData,
     createNode,
-  } = useNodeOperations(projectId, token, projectsApi, nodes, setNodes);
+  } = useNodeOperations(projectId, projectData, nodes, setNodes);
 
   const {
     onConnect,
@@ -33,7 +33,7 @@ export const useFlowDiagram = () => {
     onConnectCheck,
     validateConnection,
     onEdgesDelete,
-  } = useEdgeOperations(projectId, token, projectsApi, nodes, edges, setEdges);
+  } = useEdgeOperations(projectId, projectData, nodes, edges, setEdges);
 
   const [modalState, setModalState] = useState({
     isModalOpen: false,
@@ -47,12 +47,15 @@ export const useFlowDiagram = () => {
 
   useEffect(() => {
     if (projectData) {
-      if (JSON.stringify(nodes) !== JSON.stringify(projectData.nodes)) {
-        setNodes(projectData.nodes || []);
-      }
-      if (JSON.stringify(edges) !== JSON.stringify(projectData.edges)) {
-        setEdges(projectData.edges || []);
-      }
+      // debugger;
+      // setNodes(nodes || [])
+      // setEdges(edges || [])
+      // if (JSON.stringify(nodes) !== JSON.stringify(projectData.packages)) {
+      //   setNodes(projectData.packages || []);
+      // }
+      // if (JSON.stringify(edges) !== JSON.stringify(projectData.connections)) {
+      //   setEdges(projectData.connections || []);
+      // }
     }
   }, [projectData, nodes, edges, setNodes, setEdges]);
 
@@ -70,9 +73,18 @@ export const useFlowDiagram = () => {
       event.preventDefault();
 
       const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      const packageData = event.dataTransfer.getData('application/reactflow');
 
-      if (typeof packageData === 'undefined' || !packageData) {
+      // Log the entire dataTransfer object
+      console.log('DataTransfer:', event.dataTransfer);
+
+      // Try getting data with different types
+      const packageData = event.dataTransfer.getData('application/reactflow') ||
+                          event.dataTransfer.getData('text/plain');
+
+      console.log('packageData', packageData);
+
+      if (!packageData) {
+        console.error('No valid package data found in the drop event');
         return;
       }
 

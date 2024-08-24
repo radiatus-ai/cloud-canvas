@@ -1,12 +1,38 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { addEdge, useEdgesState } from 'reactflow';
 import { useAuth } from '../../../contexts/Auth';
 import useApi from '../../../hooks/useAPI';
 
-const useEdgeOperations = (projectId, nodes) => {
+const useEdgeOperations = (projectId, projectData, nodes, edges, setEdges) => {
   const { token } = useAuth();
   const { projects: projectsApi } = useApi();
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  // const { projects: projectsApi } = useApi();
+  // const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  // const [error, setError] = useState(null);
+
+  // useEffect(() => {
+  //   const fetchProjectData = async () => {
+  //     // if (!projectData || !projectData.id) return;
+
+  //     setIsLoading(true);
+  //     try {
+  //       const edgesData = await projectsApi.fetchConnections(projectId, token);
+  //       // const newNodes = transformPackagesToNodes(infraData);
+  //       // setNodes(newNodes);
+  //       setEdges(edgesData);
+  //       // Note: You might want to handle edgesData if needed
+  //       setError(null);
+  //     } catch (err) {
+  //       setError('Failed to load project data. Please try again later.');
+  //       console.error('Error fetching project data:', err);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   fetchProjectData();
+  // }, [nodes, projectId, setEdges]);
 
   const validateConnection = useCallback(
     (source, target, sourceHandle, targetHandle) => {
@@ -105,7 +131,7 @@ const useEdgeOperations = (projectId, nodes) => {
   return {
     edges,
     setEdges,
-    onEdgesChange,
+    // onEdgesChange,
     onConnect,
     onConnectStart,
     onConnectEnd,
