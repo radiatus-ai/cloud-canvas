@@ -47,3 +47,30 @@ npm start
 ## Deploying To Dev
 
 `make deploy`
+
+## Architecture
+
+```mermaid
+graph TD
+    UI[UI] --> API
+    UI --> AuthService[Auth Service]
+    API --> AuthService
+    API --> PubSubTopic[PubSub Topic]
+    API --> canvas-db[canvas-db]
+    AuthService --> user-db[user-db]
+    PubSubTopic --> Provisioner
+    Provisioner --> InfrastructureAppsAgents[Infrastructure / Apps / Agents]
+    gs[gs://rad-canvas-packages] --> Provisioner
+
+    click UI "https://github.com/radiatus-ai/cloud-canvas/tree/main/ui" _blank
+    click API "https://github.com/radiatus-ai/cloud-canvas/tree/main/api" _blank
+    click AuthService "https://github.com/radiatus-ai/auth-service" _blank
+    %% click PubSubTopic "https://github.com/yourusername/pubsub-topic-repo" _blank
+    %% click canvas-db "https://github.com/yourusername/canvas-db-repo" _blank
+    %% click user-db "https://github.com/yourusername/user-db-repo" _blank
+    click Provisioner "https://github.com/radiatus-ai/package-provisioner" _blank
+    %% click InfrastructureAppsAgents "https://github.com/yourusername/infrastructure-apps-agents-repo" _blank
+    click gs "https://github.com/radiatus-ai/canvas-packages" _blank
+
+    style InfrastructureAppsAgents fill:#90EE90
+```
