@@ -44,14 +44,25 @@ const ModalsContainer = ({
   };
 
   const handleSubmitForm = async (newFormData) => {
-    if (selectedNodeId) {
-      await onSubmitForm(selectedNodeId, newFormData);
+    if (selectedNodeId && onSubmitForm) {
+      console.log('ModalsContainer - Submitting form data:', newFormData);
+      console.log('ModalsContainer - Selected Node ID:', selectedNodeId);
+      try {
+        const result = await onSubmitForm(selectedNodeId, newFormData);
+        console.log('ModalsContainer - Form submission result:', result);
+      } catch (error) {
+        console.error('ModalsContainer - Error submitting form:', error);
+      }
       handleCloseModal();
+    } else {
+      console.warn(
+        'ModalsContainer - Unable to submit form: missing selectedNodeId or onSubmitForm'
+      );
     }
   };
 
   const handleDeployWithMissingConnections = async () => {
-    if (selectedNodeId) {
+    if (selectedNodeId && onDeploy) {
       await onDeploy(selectedNodeId);
       setModalState((prev) => ({
         ...prev,

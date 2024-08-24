@@ -21,12 +21,14 @@ const FlowDiagram = () => {
     onDragOver,
     isLoading,
     error,
+    handleDeploy,
     reactFlowWrapper,
     handleNameSubmit,
     modalState,
     setModalState,
     formData,
     onSubmitForm,
+    handleSubmitForm,
     missingConnections,
   } = useFlowDiagram();
 
@@ -75,9 +77,10 @@ const FlowDiagram = () => {
           modalState={modalState}
           setModalState={setModalState}
           formData={formData}
-          onSubmitForm={onSubmitForm}
+          onSubmitForm={handleSubmitForm}
           handleNameSubmit={handleNameSubmit}
           missingConnections={missingConnections}
+          onDeploy={handleDeploy}
         />
       </ReactFlowProvider>
     </Box>

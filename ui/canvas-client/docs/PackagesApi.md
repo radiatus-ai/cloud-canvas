@@ -1,22 +1,20 @@
 # PlatformApi.PackagesApi
 
-All URIs are relative to *http://localhost*
+All URIs are relative to _http://localhost_
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**createProjectPackageProjectsProjectIdPackagesPost**](PackagesApi.md#createProjectPackageProjectsProjectIdPackagesPost) | **POST** /projects/{project_id}/packages/ | Create Project Package
-[**deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete**](PackagesApi.md#deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete) | **DELETE** /projects/{project_id}/packages/{package_id} | Delete Project Package
-[**deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost**](PackagesApi.md#deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost) | **POST** /projects/{project_id}/packages/{package_id}/deploy | Deploy Project Package
-[**destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete**](PackagesApi.md#destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete) | **DELETE** /projects/{project_id}/packages/{package_id}/destroy | Destroy Project Package
-[**getProjectPackageProjectsProjectIdPackagesPackageIdGet**](PackagesApi.md#getProjectPackageProjectsProjectIdPackagesPackageIdGet) | **GET** /projects/{project_id}/packages/{package_id} | Get Project Package
-[**listProjectPackagesProjectsProjectIdPackagesGet**](PackagesApi.md#listProjectPackagesProjectsProjectIdPackagesGet) | **GET** /projects/{project_id}/packages/ | List Project Packages
-[**updateProjectPackageProjectsProjectIdPackagesPackageIdPatch**](PackagesApi.md#updateProjectPackageProjectsProjectIdPackagesPackageIdPatch) | **PATCH** /projects/{project_id}/packages/{package_id} | Update Project Package
-
-
+| Method                                                                                                                                                          | HTTP request                                                    | Description             |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------- |
+| [**createProjectPackageProjectsProjectIdPackagesPost**](PackagesApi.md#createProjectPackageProjectsProjectIdPackagesPost)                                       | **POST** /projects/{project_id}/packages/                       | Create Project Package  |
+| [**deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete**](PackagesApi.md#deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete)                 | **DELETE** /projects/{project_id}/packages/{package_id}         | Delete Project Package  |
+| [**deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost**](PackagesApi.md#deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost)         | **POST** /projects/{project_id}/packages/{package_id}/deploy    | Deploy Project Package  |
+| [**destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete**](PackagesApi.md#destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete) | **DELETE** /projects/{project_id}/packages/{package_id}/destroy | Destroy Project Package |
+| [**getProjectPackageProjectsProjectIdPackagesPackageIdGet**](PackagesApi.md#getProjectPackageProjectsProjectIdPackagesPackageIdGet)                             | **GET** /projects/{project_id}/packages/{package_id}            | Get Project Package     |
+| [**listProjectPackagesProjectsProjectIdPackagesGet**](PackagesApi.md#listProjectPackagesProjectsProjectIdPackagesGet)                                           | **GET** /projects/{project_id}/packages/                        | List Project Packages   |
+| [**updateProjectPackageProjectsProjectIdPackagesPackageIdPatch**](PackagesApi.md#updateProjectPackageProjectsProjectIdPackagesPackageIdPatch)                   | **PATCH** /projects/{project_id}/packages/{package_id}          | Update Project Package  |
 
 ## createProjectPackageProjectsProjectIdPackagesPost
 
-> Package createProjectPackageProjectsProjectIdPackagesPost(projectId, packageCreate)
+> ProjectPackage createProjectPackageProjectsProjectIdPackagesPost(projectId, projectPackageCreate)
 
 Create Project Package
 
@@ -26,28 +24,31 @@ Create Project Package
 import PlatformApi from 'platform_api';
 
 let apiInstance = new PlatformApi.PackagesApi();
-let projectId = "projectId_example"; // String | The ID of the project
-let packageCreate = new PlatformApi.PackageCreate(); // PackageCreate |
-apiInstance.createProjectPackageProjectsProjectIdPackagesPost(projectId, packageCreate, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
+let projectId = 'projectId_example'; // String | The ID of the project
+let projectPackageCreate = new PlatformApi.ProjectPackageCreate(); // ProjectPackageCreate |
+apiInstance.createProjectPackageProjectsProjectIdPackagesPost(
+  projectId,
+  projectPackageCreate,
+  (error, data, response) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log('API called successfully. Returned data: ' + data);
+    }
   }
-});
+);
 ```
 
 ### Parameters
 
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **projectId** | **String**| The ID of the project |
- **packageCreate** | [**PackageCreate**](PackageCreate.md)|  |
+| Name                     | Type                                                | Description           | Notes |
+| ------------------------ | --------------------------------------------------- | --------------------- | ----- |
+| **projectId**            | **String**                                          | The ID of the project |
+| **projectPackageCreate** | [**ProjectPackageCreate**](ProjectPackageCreate.md) |                       |
 
 ### Return type
 
-[**Package**](Package.md)
+[**ProjectPackage**](ProjectPackage.md)
 
 ### Authorization
 
@@ -58,10 +59,9 @@ No authorization required
 - **Content-Type**: application/json
 - **Accept**: application/json
 
-
 ## deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete
 
-> Package deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete(projectId, packageId)
+> ProjectPackage deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete(projectId, packageId)
 
 Delete Project Package
 
@@ -71,28 +71,31 @@ Delete Project Package
 import PlatformApi from 'platform_api';
 
 let apiInstance = new PlatformApi.PackagesApi();
-let projectId = "projectId_example"; // String | The ID of the project
-let packageId = "packageId_example"; // String | The ID of the package
-apiInstance.deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete(projectId, packageId, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
+let projectId = 'projectId_example'; // String | The ID of the project
+let packageId = 'packageId_example'; // String | The ID of the package
+apiInstance.deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete(
+  projectId,
+  packageId,
+  (error, data, response) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log('API called successfully. Returned data: ' + data);
+    }
   }
-});
+);
 ```
 
 ### Parameters
 
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **projectId** | **String**| The ID of the project |
- **packageId** | **String**| The ID of the package |
+| Name          | Type       | Description           | Notes |
+| ------------- | ---------- | --------------------- | ----- |
+| **projectId** | **String** | The ID of the project |
+| **packageId** | **String** | The ID of the package |
 
 ### Return type
 
-[**Package**](Package.md)
+[**ProjectPackage**](ProjectPackage.md)
 
 ### Authorization
 
@@ -103,10 +106,9 @@ No authorization required
 - **Content-Type**: Not defined
 - **Accept**: application/json
 
-
 ## deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost
 
-> Package deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost(projectId, packageId)
+> ProjectPackage deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost(projectId, packageId)
 
 Deploy Project Package
 
@@ -116,28 +118,31 @@ Deploy Project Package
 import PlatformApi from 'platform_api';
 
 let apiInstance = new PlatformApi.PackagesApi();
-let projectId = "projectId_example"; // String | The ID of the project
-let packageId = "packageId_example"; // String | The ID of the package
-apiInstance.deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost(projectId, packageId, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
+let projectId = 'projectId_example'; // String | The ID of the project
+let packageId = 'packageId_example'; // String | The ID of the package
+apiInstance.deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost(
+  projectId,
+  packageId,
+  (error, data, response) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log('API called successfully. Returned data: ' + data);
+    }
   }
-});
+);
 ```
 
 ### Parameters
 
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **projectId** | **String**| The ID of the project |
- **packageId** | **String**| The ID of the package |
+| Name          | Type       | Description           | Notes |
+| ------------- | ---------- | --------------------- | ----- |
+| **projectId** | **String** | The ID of the project |
+| **packageId** | **String** | The ID of the package |
 
 ### Return type
 
-[**Package**](Package.md)
+[**ProjectPackage**](ProjectPackage.md)
 
 ### Authorization
 
@@ -148,10 +153,9 @@ No authorization required
 - **Content-Type**: Not defined
 - **Accept**: application/json
 
-
 ## destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete
 
-> Package destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete(projectId, packageId)
+> ProjectPackage destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete(projectId, packageId)
 
 Destroy Project Package
 
@@ -161,28 +165,31 @@ Destroy Project Package
 import PlatformApi from 'platform_api';
 
 let apiInstance = new PlatformApi.PackagesApi();
-let projectId = "projectId_example"; // String | The ID of the project
-let packageId = "packageId_example"; // String | The ID of the package
-apiInstance.destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete(projectId, packageId, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
+let projectId = 'projectId_example'; // String | The ID of the project
+let packageId = 'packageId_example'; // String | The ID of the package
+apiInstance.destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete(
+  projectId,
+  packageId,
+  (error, data, response) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log('API called successfully. Returned data: ' + data);
+    }
   }
-});
+);
 ```
 
 ### Parameters
 
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **projectId** | **String**| The ID of the project |
- **packageId** | **String**| The ID of the package |
+| Name          | Type       | Description           | Notes |
+| ------------- | ---------- | --------------------- | ----- |
+| **projectId** | **String** | The ID of the project |
+| **packageId** | **String** | The ID of the package |
 
 ### Return type
 
-[**Package**](Package.md)
+[**ProjectPackage**](ProjectPackage.md)
 
 ### Authorization
 
@@ -193,10 +200,9 @@ No authorization required
 - **Content-Type**: Not defined
 - **Accept**: application/json
 
-
 ## getProjectPackageProjectsProjectIdPackagesPackageIdGet
 
-> Package getProjectPackageProjectsProjectIdPackagesPackageIdGet(projectId, packageId)
+> ProjectPackage getProjectPackageProjectsProjectIdPackagesPackageIdGet(projectId, packageId)
 
 Get Project Package
 
@@ -206,28 +212,31 @@ Get Project Package
 import PlatformApi from 'platform_api';
 
 let apiInstance = new PlatformApi.PackagesApi();
-let projectId = "projectId_example"; // String | The ID of the project
-let packageId = "packageId_example"; // String | The ID of the package
-apiInstance.getProjectPackageProjectsProjectIdPackagesPackageIdGet(projectId, packageId, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
+let projectId = 'projectId_example'; // String | The ID of the project
+let packageId = 'packageId_example'; // String | The ID of the package
+apiInstance.getProjectPackageProjectsProjectIdPackagesPackageIdGet(
+  projectId,
+  packageId,
+  (error, data, response) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log('API called successfully. Returned data: ' + data);
+    }
   }
-});
+);
 ```
 
 ### Parameters
 
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **projectId** | **String**| The ID of the project |
- **packageId** | **String**| The ID of the package |
+| Name          | Type       | Description           | Notes |
+| ------------- | ---------- | --------------------- | ----- |
+| **projectId** | **String** | The ID of the project |
+| **packageId** | **String** | The ID of the package |
 
 ### Return type
 
-[**Package**](Package.md)
+[**ProjectPackage**](ProjectPackage.md)
 
 ### Authorization
 
@@ -238,10 +247,9 @@ No authorization required
 - **Content-Type**: Not defined
 - **Accept**: application/json
 
-
 ## listProjectPackagesProjectsProjectIdPackagesGet
 
-> [Package] listProjectPackagesProjectsProjectIdPackagesGet(projectId, opts)
+> [ProjectPackage] listProjectPackagesProjectsProjectIdPackagesGet(projectId, opts)
 
 List Project Packages
 
@@ -251,32 +259,35 @@ List Project Packages
 import PlatformApi from 'platform_api';
 
 let apiInstance = new PlatformApi.PackagesApi();
-let projectId = "projectId_example"; // String | The ID of the project
+let projectId = 'projectId_example'; // String | The ID of the project
 let opts = {
-  'skip': 0, // Number |
-  'limit': 100 // Number |
+  skip: 0, // Number |
+  limit: 100, // Number |
 };
-apiInstance.listProjectPackagesProjectsProjectIdPackagesGet(projectId, opts, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
+apiInstance.listProjectPackagesProjectsProjectIdPackagesGet(
+  projectId,
+  opts,
+  (error, data, response) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log('API called successfully. Returned data: ' + data);
+    }
   }
-});
+);
 ```
 
 ### Parameters
 
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **projectId** | **String**| The ID of the project |
- **skip** | **Number**|  | [optional] [default to 0]
- **limit** | **Number**|  | [optional] [default to 100]
+| Name          | Type       | Description           | Notes                       |
+| ------------- | ---------- | --------------------- | --------------------------- |
+| **projectId** | **String** | The ID of the project |
+| **skip**      | **Number** |                       | [optional] [default to 0]   |
+| **limit**     | **Number** |                       | [optional] [default to 100] |
 
 ### Return type
 
-[**[Package]**](Package.md)
+[**[ProjectPackage]**](ProjectPackage.md)
 
 ### Authorization
 
@@ -287,10 +298,9 @@ No authorization required
 - **Content-Type**: Not defined
 - **Accept**: application/json
 
-
 ## updateProjectPackageProjectsProjectIdPackagesPackageIdPatch
 
-> Package updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, packageUpdate)
+> ProjectPackage updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, projectPackageUpdate)
 
 Update Project Package
 
@@ -300,30 +310,34 @@ Update Project Package
 import PlatformApi from 'platform_api';
 
 let apiInstance = new PlatformApi.PackagesApi();
-let projectId = "projectId_example"; // String | The ID of the project
-let packageId = "packageId_example"; // String | The ID of the package
-let packageUpdate = new PlatformApi.PackageUpdate(); // PackageUpdate |
-apiInstance.updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, packageUpdate, (error, data, response) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log('API called successfully. Returned data: ' + data);
+let projectId = 'projectId_example'; // String | The ID of the project
+let packageId = 'packageId_example'; // String | The ID of the package
+let projectPackageUpdate = new PlatformApi.ProjectPackageUpdate(); // ProjectPackageUpdate |
+apiInstance.updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(
+  projectId,
+  packageId,
+  projectPackageUpdate,
+  (error, data, response) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log('API called successfully. Returned data: ' + data);
+    }
   }
-});
+);
 ```
 
 ### Parameters
 
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **projectId** | **String**| The ID of the project |
- **packageId** | **String**| The ID of the package |
- **packageUpdate** | [**PackageUpdate**](PackageUpdate.md)|  |
+| Name                     | Type                                                | Description           | Notes |
+| ------------------------ | --------------------------------------------------- | --------------------- | ----- |
+| **projectId**            | **String**                                          | The ID of the project |
+| **packageId**            | **String**                                          | The ID of the package |
+| **projectPackageUpdate** | [**ProjectPackageUpdate**](ProjectPackageUpdate.md) |                       |
 
 ### Return type
 
-[**Package**](Package.md)
+[**ProjectPackage**](ProjectPackage.md)
 
 ### Authorization
 

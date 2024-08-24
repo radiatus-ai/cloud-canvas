@@ -79,8 +79,9 @@ export const useFlowDiagram = () => {
       console.log('DataTransfer:', event.dataTransfer);
 
       // Try getting data with different types
-      const packageData = event.dataTransfer.getData('application/reactflow') ||
-                          event.dataTransfer.getData('text/plain');
+      const packageData =
+        event.dataTransfer.getData('application/reactflow') ||
+        event.dataTransfer.getData('text/plain');
 
       console.log('packageData', packageData);
 
@@ -166,9 +167,9 @@ export const useFlowDiagram = () => {
   );
 
   const handleSubmitForm = useCallback(
-    async (newFormData) => {
+    async (id, newFormData) => {
       if (modalState.selectedNodeId) {
-        await onSubmitForm(modalState.selectedNodeId, newFormData);
+        await onSubmitForm(modalState.selectedNodeId, id, newFormData);
         setModalState((prev) => ({
           ...prev,
           isModalOpen: false,
@@ -244,6 +245,7 @@ export const useFlowDiagram = () => {
     modalState,
     setModalState,
     handleOpenModal,
+    onSubmitForm,
     handleSubmitForm,
     handleDeleteNode,
     handleDeploy,

@@ -11,371 +11,469 @@
  *
  */
 
-
-import ApiClient from "../ApiClient";
+import ApiClient from '../ApiClient';
 import HTTPValidationError from '../model/HTTPValidationError';
-import Package from '../model/Package';
-import PackageCreate from '../model/PackageCreate';
-import PackageUpdate from '../model/PackageUpdate';
+import ProjectPackage from '../model/ProjectPackage';
+import ProjectPackageCreate from '../model/ProjectPackageCreate';
+import ProjectPackageUpdate from '../model/ProjectPackageUpdate';
 
 /**
-* Project service.
-* @module api/ProjectApi
-* @version 0.1.0
-*/
+ * Project service.
+ * @module api/ProjectApi
+ * @version 0.1.0
+ */
 export default class ProjectApi {
+  /**
+   * Constructs a new ProjectApi.
+   * @alias module:api/ProjectApi
+   * @class
+   * @param {module:ApiClient} [apiClient] Optional API client implementation to use,
+   * default to {@link module:ApiClient#instance} if unspecified.
+   */
+  constructor(apiClient) {
+    this.apiClient = apiClient || ApiClient.instance;
+  }
 
-    /**
-    * Constructs a new ProjectApi.
-    * @alias module:api/ProjectApi
-    * @class
-    * @param {module:ApiClient} [apiClient] Optional API client implementation to use,
-    * default to {@link module:ApiClient#instance} if unspecified.
-    */
-    constructor(apiClient) {
-        this.apiClient = apiClient || ApiClient.instance;
+  /**
+   * Callback function to receive the result of the createProjectPackageProjectsProjectIdPackagesPost operation.
+   * @callback module:api/ProjectApi~createProjectPackageProjectsProjectIdPackagesPostCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/ProjectPackage} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
+
+  /**
+   * Create Project Package
+   * @param {String} projectId The ID of the project
+   * @param {module:model/ProjectPackageCreate} projectPackageCreate
+   * @param {module:api/ProjectApi~createProjectPackageProjectsProjectIdPackagesPostCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/ProjectPackage}
+   */
+  createProjectPackageProjectsProjectIdPackagesPost(
+    projectId,
+    projectPackageCreate,
+    callback
+  ) {
+    let postBody = projectPackageCreate;
+    // verify the required parameter 'projectId' is set
+    if (projectId === undefined || projectId === null) {
+      throw new Error(
+        "Missing the required parameter 'projectId' when calling createProjectPackageProjectsProjectIdPackagesPost"
+      );
     }
-
-
-    /**
-     * Callback function to receive the result of the createProjectPackageProjectsProjectIdPackagesPost operation.
-     * @callback module:api/ProjectApi~createProjectPackageProjectsProjectIdPackagesPostCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/Package} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
-
-    /**
-     * Create Project Package
-     * @param {String} projectId The ID of the project
-     * @param {module:model/PackageCreate} packageCreate
-     * @param {module:api/ProjectApi~createProjectPackageProjectsProjectIdPackagesPostCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/Package}
-     */
-    createProjectPackageProjectsProjectIdPackagesPost(projectId, packageCreate, callback) {
-      let postBody = packageCreate;
-      // verify the required parameter 'projectId' is set
-      if (projectId === undefined || projectId === null) {
-        throw new Error("Missing the required parameter 'projectId' when calling createProjectPackageProjectsProjectIdPackagesPost");
-      }
-      // verify the required parameter 'packageCreate' is set
-      if (packageCreate === undefined || packageCreate === null) {
-        throw new Error("Missing the required parameter 'packageCreate' when calling createProjectPackageProjectsProjectIdPackagesPost");
-      }
-
-      let pathParams = {
-        'project_id': projectId
-      };
-      let queryParams = {
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
-
-      let authNames = [];
-      let contentTypes = ['application/json'];
-      let accepts = ['application/json'];
-      let returnType = Package;
-      return this.apiClient.callApi(
-        '/projects/{project_id}/packages/', 'POST',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+    // verify the required parameter 'projectPackageCreate' is set
+    if (projectPackageCreate === undefined || projectPackageCreate === null) {
+      throw new Error(
+        "Missing the required parameter 'projectPackageCreate' when calling createProjectPackageProjectsProjectIdPackagesPost"
       );
     }
 
-    /**
-     * Callback function to receive the result of the deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete operation.
-     * @callback module:api/ProjectApi~deleteProjectPackageProjectsProjectIdPackagesPackageIdDeleteCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/Package} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
+    let pathParams = {
+      project_id: projectId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
 
-    /**
-     * Delete Project Package
-     * @param {String} projectId The ID of the project
-     * @param {String} packageId The ID of the package
-     * @param {module:api/ProjectApi~deleteProjectPackageProjectsProjectIdPackagesPackageIdDeleteCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/Package}
-     */
-    deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete(projectId, packageId, callback) {
-      let postBody = null;
-      // verify the required parameter 'projectId' is set
-      if (projectId === undefined || projectId === null) {
-        throw new Error("Missing the required parameter 'projectId' when calling deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete");
-      }
-      // verify the required parameter 'packageId' is set
-      if (packageId === undefined || packageId === null) {
-        throw new Error("Missing the required parameter 'packageId' when calling deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete");
-      }
+    let authNames = [];
+    let contentTypes = ['application/json'];
+    let accepts = ['application/json'];
+    let returnType = ProjectPackage;
+    return this.apiClient.callApi(
+      '/projects/{project_id}/packages/',
+      'POST',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
 
-      let pathParams = {
-        'project_id': projectId,
-        'package_id': packageId
-      };
-      let queryParams = {
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
+  /**
+   * Callback function to receive the result of the deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete operation.
+   * @callback module:api/ProjectApi~deleteProjectPackageProjectsProjectIdPackagesPackageIdDeleteCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/ProjectPackage} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
 
-      let authNames = [];
-      let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = Package;
-      return this.apiClient.callApi(
-        '/projects/{project_id}/packages/{package_id}', 'DELETE',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+  /**
+   * Delete Project Package
+   * @param {String} projectId The ID of the project
+   * @param {String} packageId The ID of the package
+   * @param {module:api/ProjectApi~deleteProjectPackageProjectsProjectIdPackagesPackageIdDeleteCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/ProjectPackage}
+   */
+  deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete(
+    projectId,
+    packageId,
+    callback
+  ) {
+    let postBody = null;
+    // verify the required parameter 'projectId' is set
+    if (projectId === undefined || projectId === null) {
+      throw new Error(
+        "Missing the required parameter 'projectId' when calling deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete"
+      );
+    }
+    // verify the required parameter 'packageId' is set
+    if (packageId === undefined || packageId === null) {
+      throw new Error(
+        "Missing the required parameter 'packageId' when calling deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete"
       );
     }
 
-    /**
-     * Callback function to receive the result of the deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost operation.
-     * @callback module:api/ProjectApi~deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPostCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/Package} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
+    let pathParams = {
+      project_id: projectId,
+      package_id: packageId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
 
-    /**
-     * Deploy Project Package
-     * @param {String} projectId The ID of the project
-     * @param {String} packageId The ID of the package
-     * @param {module:api/ProjectApi~deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPostCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/Package}
-     */
-    deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost(projectId, packageId, callback) {
-      let postBody = null;
-      // verify the required parameter 'projectId' is set
-      if (projectId === undefined || projectId === null) {
-        throw new Error("Missing the required parameter 'projectId' when calling deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost");
-      }
-      // verify the required parameter 'packageId' is set
-      if (packageId === undefined || packageId === null) {
-        throw new Error("Missing the required parameter 'packageId' when calling deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost");
-      }
+    let authNames = [];
+    let contentTypes = [];
+    let accepts = ['application/json'];
+    let returnType = ProjectPackage;
+    return this.apiClient.callApi(
+      '/projects/{project_id}/packages/{package_id}',
+      'DELETE',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
 
-      let pathParams = {
-        'project_id': projectId,
-        'package_id': packageId
-      };
-      let queryParams = {
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
+  /**
+   * Callback function to receive the result of the deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost operation.
+   * @callback module:api/ProjectApi~deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPostCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/ProjectPackage} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
 
-      let authNames = [];
-      let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = Package;
-      return this.apiClient.callApi(
-        '/projects/{project_id}/packages/{package_id}/deploy', 'POST',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+  /**
+   * Deploy Project Package
+   * @param {String} projectId The ID of the project
+   * @param {String} packageId The ID of the package
+   * @param {module:api/ProjectApi~deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPostCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/ProjectPackage}
+   */
+  deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost(
+    projectId,
+    packageId,
+    callback
+  ) {
+    let postBody = null;
+    // verify the required parameter 'projectId' is set
+    if (projectId === undefined || projectId === null) {
+      throw new Error(
+        "Missing the required parameter 'projectId' when calling deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost"
+      );
+    }
+    // verify the required parameter 'packageId' is set
+    if (packageId === undefined || packageId === null) {
+      throw new Error(
+        "Missing the required parameter 'packageId' when calling deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost"
       );
     }
 
-    /**
-     * Callback function to receive the result of the destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete operation.
-     * @callback module:api/ProjectApi~destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDeleteCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/Package} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
+    let pathParams = {
+      project_id: projectId,
+      package_id: packageId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
 
-    /**
-     * Destroy Project Package
-     * @param {String} projectId The ID of the project
-     * @param {String} packageId The ID of the package
-     * @param {module:api/ProjectApi~destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDeleteCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/Package}
-     */
-    destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete(projectId, packageId, callback) {
-      let postBody = null;
-      // verify the required parameter 'projectId' is set
-      if (projectId === undefined || projectId === null) {
-        throw new Error("Missing the required parameter 'projectId' when calling destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete");
-      }
-      // verify the required parameter 'packageId' is set
-      if (packageId === undefined || packageId === null) {
-        throw new Error("Missing the required parameter 'packageId' when calling destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete");
-      }
+    let authNames = [];
+    let contentTypes = [];
+    let accepts = ['application/json'];
+    let returnType = ProjectPackage;
+    return this.apiClient.callApi(
+      '/projects/{project_id}/packages/{package_id}/deploy',
+      'POST',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
 
-      let pathParams = {
-        'project_id': projectId,
-        'package_id': packageId
-      };
-      let queryParams = {
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
+  /**
+   * Callback function to receive the result of the destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete operation.
+   * @callback module:api/ProjectApi~destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDeleteCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/ProjectPackage} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
 
-      let authNames = [];
-      let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = Package;
-      return this.apiClient.callApi(
-        '/projects/{project_id}/packages/{package_id}/destroy', 'DELETE',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+  /**
+   * Destroy Project Package
+   * @param {String} projectId The ID of the project
+   * @param {String} packageId The ID of the package
+   * @param {module:api/ProjectApi~destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDeleteCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/ProjectPackage}
+   */
+  destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete(
+    projectId,
+    packageId,
+    callback
+  ) {
+    let postBody = null;
+    // verify the required parameter 'projectId' is set
+    if (projectId === undefined || projectId === null) {
+      throw new Error(
+        "Missing the required parameter 'projectId' when calling destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete"
+      );
+    }
+    // verify the required parameter 'packageId' is set
+    if (packageId === undefined || packageId === null) {
+      throw new Error(
+        "Missing the required parameter 'packageId' when calling destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete"
       );
     }
 
-    /**
-     * Callback function to receive the result of the getProjectPackageProjectsProjectIdPackagesPackageIdGet operation.
-     * @callback module:api/ProjectApi~getProjectPackageProjectsProjectIdPackagesPackageIdGetCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/Package} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
+    let pathParams = {
+      project_id: projectId,
+      package_id: packageId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
 
-    /**
-     * Get Project Package
-     * @param {String} projectId The ID of the project
-     * @param {String} packageId The ID of the package
-     * @param {module:api/ProjectApi~getProjectPackageProjectsProjectIdPackagesPackageIdGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/Package}
-     */
-    getProjectPackageProjectsProjectIdPackagesPackageIdGet(projectId, packageId, callback) {
-      let postBody = null;
-      // verify the required parameter 'projectId' is set
-      if (projectId === undefined || projectId === null) {
-        throw new Error("Missing the required parameter 'projectId' when calling getProjectPackageProjectsProjectIdPackagesPackageIdGet");
-      }
-      // verify the required parameter 'packageId' is set
-      if (packageId === undefined || packageId === null) {
-        throw new Error("Missing the required parameter 'packageId' when calling getProjectPackageProjectsProjectIdPackagesPackageIdGet");
-      }
+    let authNames = [];
+    let contentTypes = [];
+    let accepts = ['application/json'];
+    let returnType = ProjectPackage;
+    return this.apiClient.callApi(
+      '/projects/{project_id}/packages/{package_id}/destroy',
+      'DELETE',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
 
-      let pathParams = {
-        'project_id': projectId,
-        'package_id': packageId
-      };
-      let queryParams = {
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
+  /**
+   * Callback function to receive the result of the getProjectPackageProjectsProjectIdPackagesPackageIdGet operation.
+   * @callback module:api/ProjectApi~getProjectPackageProjectsProjectIdPackagesPackageIdGetCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/ProjectPackage} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
 
-      let authNames = [];
-      let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = Package;
-      return this.apiClient.callApi(
-        '/projects/{project_id}/packages/{package_id}', 'GET',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+  /**
+   * Get Project Package
+   * @param {String} projectId The ID of the project
+   * @param {String} packageId The ID of the package
+   * @param {module:api/ProjectApi~getProjectPackageProjectsProjectIdPackagesPackageIdGetCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/ProjectPackage}
+   */
+  getProjectPackageProjectsProjectIdPackagesPackageIdGet(
+    projectId,
+    packageId,
+    callback
+  ) {
+    let postBody = null;
+    // verify the required parameter 'projectId' is set
+    if (projectId === undefined || projectId === null) {
+      throw new Error(
+        "Missing the required parameter 'projectId' when calling getProjectPackageProjectsProjectIdPackagesPackageIdGet"
+      );
+    }
+    // verify the required parameter 'packageId' is set
+    if (packageId === undefined || packageId === null) {
+      throw new Error(
+        "Missing the required parameter 'packageId' when calling getProjectPackageProjectsProjectIdPackagesPackageIdGet"
       );
     }
 
-    /**
-     * Callback function to receive the result of the listProjectPackagesProjectsProjectIdPackagesGet operation.
-     * @callback module:api/ProjectApi~listProjectPackagesProjectsProjectIdPackagesGetCallback
-     * @param {String} error Error message, if any.
-     * @param {Array.<module:model/Package>} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
+    let pathParams = {
+      project_id: projectId,
+      package_id: packageId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
 
-    /**
-     * List Project Packages
-     * @param {String} projectId The ID of the project
-     * @param {Object} opts Optional parameters
-     * @param {Number} [skip = 0)]
-     * @param {Number} [limit = 100)]
-     * @param {module:api/ProjectApi~listProjectPackagesProjectsProjectIdPackagesGetCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link Array.<module:model/Package>}
-     */
-    listProjectPackagesProjectsProjectIdPackagesGet(projectId, opts, callback) {
-      opts = opts || {};
-      let postBody = null;
-      // verify the required parameter 'projectId' is set
-      if (projectId === undefined || projectId === null) {
-        throw new Error("Missing the required parameter 'projectId' when calling listProjectPackagesProjectsProjectIdPackagesGet");
-      }
+    let authNames = [];
+    let contentTypes = [];
+    let accepts = ['application/json'];
+    let returnType = ProjectPackage;
+    return this.apiClient.callApi(
+      '/projects/{project_id}/packages/{package_id}',
+      'GET',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
 
-      let pathParams = {
-        'project_id': projectId
-      };
-      let queryParams = {
-        'skip': opts['skip'],
-        'limit': opts['limit']
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
+  /**
+   * Callback function to receive the result of the listProjectPackagesProjectsProjectIdPackagesGet operation.
+   * @callback module:api/ProjectApi~listProjectPackagesProjectsProjectIdPackagesGetCallback
+   * @param {String} error Error message, if any.
+   * @param {Array.<module:model/ProjectPackage>} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
 
-      let authNames = [];
-      let contentTypes = [];
-      let accepts = ['application/json'];
-      let returnType = [Package];
-      return this.apiClient.callApi(
-        '/projects/{project_id}/packages/', 'GET',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+  /**
+   * List Project Packages
+   * @param {String} projectId The ID of the project
+   * @param {Object} opts Optional parameters
+   * @param {Number} [skip = 0)]
+   * @param {Number} [limit = 100)]
+   * @param {module:api/ProjectApi~listProjectPackagesProjectsProjectIdPackagesGetCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link Array.<module:model/ProjectPackage>}
+   */
+  listProjectPackagesProjectsProjectIdPackagesGet(projectId, opts, callback) {
+    opts = opts || {};
+    let postBody = null;
+    // verify the required parameter 'projectId' is set
+    if (projectId === undefined || projectId === null) {
+      throw new Error(
+        "Missing the required parameter 'projectId' when calling listProjectPackagesProjectsProjectIdPackagesGet"
       );
     }
 
-    /**
-     * Callback function to receive the result of the updateProjectPackageProjectsProjectIdPackagesPackageIdPatch operation.
-     * @callback module:api/ProjectApi~updateProjectPackageProjectsProjectIdPackagesPackageIdPatchCallback
-     * @param {String} error Error message, if any.
-     * @param {module:model/Package} data The data returned by the service call.
-     * @param {String} response The complete HTTP response.
-     */
+    let pathParams = {
+      project_id: projectId,
+    };
+    let queryParams = {
+      skip: opts['skip'],
+      limit: opts['limit'],
+    };
+    let headerParams = {};
+    let formParams = {};
 
-    /**
-     * Update Project Package
-     * @param {String} projectId The ID of the project
-     * @param {String} packageId The ID of the package
-     * @param {module:model/PackageUpdate} packageUpdate
-     * @param {module:api/ProjectApi~updateProjectPackageProjectsProjectIdPackagesPackageIdPatchCallback} callback The callback function, accepting three arguments: error, data, response
-     * data is of type: {@link module:model/Package}
-     */
-    updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, packageUpdate, callback) {
-      let postBody = packageUpdate;
-      // verify the required parameter 'projectId' is set
-      if (projectId === undefined || projectId === null) {
-        throw new Error("Missing the required parameter 'projectId' when calling updateProjectPackageProjectsProjectIdPackagesPackageIdPatch");
-      }
-      // verify the required parameter 'packageId' is set
-      if (packageId === undefined || packageId === null) {
-        throw new Error("Missing the required parameter 'packageId' when calling updateProjectPackageProjectsProjectIdPackagesPackageIdPatch");
-      }
-      // verify the required parameter 'packageUpdate' is set
-      if (packageUpdate === undefined || packageUpdate === null) {
-        throw new Error("Missing the required parameter 'packageUpdate' when calling updateProjectPackageProjectsProjectIdPackagesPackageIdPatch");
-      }
+    let authNames = [];
+    let contentTypes = [];
+    let accepts = ['application/json'];
+    let returnType = [ProjectPackage];
+    return this.apiClient.callApi(
+      '/projects/{project_id}/packages/',
+      'GET',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
 
-      let pathParams = {
-        'project_id': projectId,
-        'package_id': packageId
-      };
-      let queryParams = {
-      };
-      let headerParams = {
-      };
-      let formParams = {
-      };
+  /**
+   * Callback function to receive the result of the updateProjectPackageProjectsProjectIdPackagesPackageIdPatch operation.
+   * @callback module:api/ProjectApi~updateProjectPackageProjectsProjectIdPackagesPackageIdPatchCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/ProjectPackage} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
 
-      let authNames = [];
-      let contentTypes = ['application/json'];
-      let accepts = ['application/json'];
-      let returnType = Package;
-      return this.apiClient.callApi(
-        '/projects/{project_id}/packages/{package_id}', 'PATCH',
-        pathParams, queryParams, headerParams, formParams, postBody,
-        authNames, contentTypes, accepts, returnType, null, callback
+  /**
+   * Update Project Package
+   * @param {String} projectId The ID of the project
+   * @param {String} packageId The ID of the package
+   * @param {module:model/ProjectPackageUpdate} projectPackageUpdate
+   * @param {module:api/ProjectApi~updateProjectPackageProjectsProjectIdPackagesPackageIdPatchCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/ProjectPackage}
+   */
+  updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(
+    projectId,
+    packageId,
+    projectPackageUpdate,
+    callback
+  ) {
+    let postBody = projectPackageUpdate;
+    // verify the required parameter 'projectId' is set
+    if (projectId === undefined || projectId === null) {
+      throw new Error(
+        "Missing the required parameter 'projectId' when calling updateProjectPackageProjectsProjectIdPackagesPackageIdPatch"
+      );
+    }
+    // verify the required parameter 'packageId' is set
+    if (packageId === undefined || packageId === null) {
+      throw new Error(
+        "Missing the required parameter 'packageId' when calling updateProjectPackageProjectsProjectIdPackagesPackageIdPatch"
+      );
+    }
+    // verify the required parameter 'projectPackageUpdate' is set
+    if (projectPackageUpdate === undefined || projectPackageUpdate === null) {
+      throw new Error(
+        "Missing the required parameter 'projectPackageUpdate' when calling updateProjectPackageProjectsProjectIdPackagesPackageIdPatch"
       );
     }
 
+    let pathParams = {
+      project_id: projectId,
+      package_id: packageId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
 
+    let authNames = [];
+    let contentTypes = ['application/json'];
+    let accepts = ['application/json'];
+    let returnType = ProjectPackage;
+    return this.apiClient.callApi(
+      '/projects/{project_id}/packages/{package_id}',
+      'PATCH',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
 }

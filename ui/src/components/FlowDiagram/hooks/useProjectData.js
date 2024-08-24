@@ -23,6 +23,8 @@ const useProjectData = () => {
 
         // Check if the component is still interested in this fetch result
         if (fetchRef.current !== fetchData) return;
+        console.log('packagesResponse', packagesResponse);
+        console.log('connectionsResponse', connectionsResponse);
 
         setProjectData({
           packages: packagesResponse.body,

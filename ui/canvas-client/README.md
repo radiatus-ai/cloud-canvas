@@ -68,13 +68,13 @@ then install it via:
 
 The library also works in the browser environment via npm and [browserify](http://browserify.org/). After following
 the above steps with Node.js and installing browserify with `npm install -g browserify`,
-perform the following (assuming *main.js* is your entry file):
+perform the following (assuming _main.js_ is your entry file):
 
 ```shell
 browserify main.js > bundle.js
 ```
 
-Then include *bundle.js* in the HTML pages.
+Then include _bundle.js_ in the HTML pages.
 
 ### Webpack Configuration
 
@@ -87,10 +87,10 @@ module: {
   rules: [
     {
       parser: {
-        amd: false
-      }
-    }
-  ]
+        amd: false,
+      },
+    },
+  ];
 }
 ```
 
@@ -101,76 +101,79 @@ Please follow the [installation](#installation) instruction and execute the foll
 ```javascript
 var PlatformApi = require('platform_api');
 
-
-var api = new PlatformApi.DefaultApi()
-var projectId = "projectId_example"; // {String}
+var api = new PlatformApi.DefaultApi();
+var projectId = 'projectId_example'; // {String}
 var connectionCreate = new PlatformApi.ConnectionCreate(); // {ConnectionCreate}
-var callback = function(error, data, response) {
+var callback = function (error, data, response) {
   if (error) {
     console.error(error);
   } else {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.createConnectionProjectsProjectIdConnectionsPost(projectId, connectionCreate, callback);
-
+api.createConnectionProjectsProjectIdConnectionsPost(
+  projectId,
+  connectionCreate,
+  callback
+);
 ```
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *http://localhost*
+All URIs are relative to _http://localhost_
 
-Class | Method | HTTP request | Description
------------- | ------------- | ------------- | -------------
-*PlatformApi.DefaultApi* | [**createConnectionProjectsProjectIdConnectionsPost**](docs/DefaultApi.md#createConnectionProjectsProjectIdConnectionsPost) | **POST** /projects/{project_id}/connections/ | Create Connection
-*PlatformApi.DefaultApi* | [**createCredentialCredentialsPost**](docs/DefaultApi.md#createCredentialCredentialsPost) | **POST** /credentials/ | Create Credential
-*PlatformApi.DefaultApi* | [**createGlobalPackagePackagesPost**](docs/DefaultApi.md#createGlobalPackagePackagesPost) | **POST** /packages | Create Global Package
-*PlatformApi.DefaultApi* | [**createProjectProjectsPost**](docs/DefaultApi.md#createProjectProjectsPost) | **POST** /projects/ | Create Project
-*PlatformApi.DefaultApi* | [**deleteConnectionProjectsProjectIdConnectionsConnectionIdDelete**](docs/DefaultApi.md#deleteConnectionProjectsProjectIdConnectionsConnectionIdDelete) | **DELETE** /projects/{project_id}/connections/{connection_id} | Delete Connection
-*PlatformApi.DefaultApi* | [**deleteCredentialCredentialsCredentialIdDelete**](docs/DefaultApi.md#deleteCredentialCredentialsCredentialIdDelete) | **DELETE** /credentials/{credential_id} | Delete Credential
-*PlatformApi.DefaultApi* | [**deleteProjectProjectsProjectIdDelete**](docs/DefaultApi.md#deleteProjectProjectsProjectIdDelete) | **DELETE** /projects/{project_id} | Delete Project
-*PlatformApi.DefaultApi* | [**getCredentialCredentialsCredentialIdGet**](docs/DefaultApi.md#getCredentialCredentialsCredentialIdGet) | **GET** /credentials/{credential_id} | Get Credential
-*PlatformApi.DefaultApi* | [**listAllPackagesPackagesGet**](docs/DefaultApi.md#listAllPackagesPackagesGet) | **GET** /packages | List All Packages
-*PlatformApi.DefaultApi* | [**listConnectionsProjectsProjectIdConnectionsGet**](docs/DefaultApi.md#listConnectionsProjectsProjectIdConnectionsGet) | **GET** /projects/{project_id}/connections/ | List Connections
-*PlatformApi.DefaultApi* | [**listCredentialsCredentialsGet**](docs/DefaultApi.md#listCredentialsCredentialsGet) | **GET** /credentials/ | List Credentials
-*PlatformApi.DefaultApi* | [**listProjectsProjectsGet**](docs/DefaultApi.md#listProjectsProjectsGet) | **GET** /projects/ | List Projects
-*PlatformApi.DefaultApi* | [**rootGet**](docs/DefaultApi.md#rootGet) | **GET** / | Root
-*PlatformApi.DefaultApi* | [**updateCredentialCredentialsCredentialIdPatch**](docs/DefaultApi.md#updateCredentialCredentialsCredentialIdPatch) | **PATCH** /credentials/{credential_id} | Update Credential
-*PlatformApi.DefaultApi* | [**updateProjectProjectsProjectIdPatch**](docs/DefaultApi.md#updateProjectProjectsProjectIdPatch) | **PATCH** /projects/{project_id} | Update Project
-*PlatformApi.PackagesApi* | [**createProjectPackageProjectsProjectIdPackagesPost**](docs/PackagesApi.md#createProjectPackageProjectsProjectIdPackagesPost) | **POST** /projects/{project_id}/packages/ | Create Project Package
-*PlatformApi.PackagesApi* | [**deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete**](docs/PackagesApi.md#deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete) | **DELETE** /projects/{project_id}/packages/{package_id} | Delete Project Package
-*PlatformApi.PackagesApi* | [**deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost**](docs/PackagesApi.md#deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost) | **POST** /projects/{project_id}/packages/{package_id}/deploy | Deploy Project Package
-*PlatformApi.PackagesApi* | [**destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete**](docs/PackagesApi.md#destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete) | **DELETE** /projects/{project_id}/packages/{package_id}/destroy | Destroy Project Package
-*PlatformApi.PackagesApi* | [**getProjectPackageProjectsProjectIdPackagesPackageIdGet**](docs/PackagesApi.md#getProjectPackageProjectsProjectIdPackagesPackageIdGet) | **GET** /projects/{project_id}/packages/{package_id} | Get Project Package
-*PlatformApi.PackagesApi* | [**listProjectPackagesProjectsProjectIdPackagesGet**](docs/PackagesApi.md#listProjectPackagesProjectsProjectIdPackagesGet) | **GET** /projects/{project_id}/packages/ | List Project Packages
-*PlatformApi.PackagesApi* | [**updateProjectPackageProjectsProjectIdPackagesPackageIdPatch**](docs/PackagesApi.md#updateProjectPackageProjectsProjectIdPackagesPackageIdPatch) | **PATCH** /projects/{project_id}/packages/{package_id} | Update Project Package
-*PlatformApi.ProjectApi* | [**createProjectPackageProjectsProjectIdPackagesPost**](docs/ProjectApi.md#createProjectPackageProjectsProjectIdPackagesPost) | **POST** /projects/{project_id}/packages/ | Create Project Package
-*PlatformApi.ProjectApi* | [**deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete**](docs/ProjectApi.md#deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete) | **DELETE** /projects/{project_id}/packages/{package_id} | Delete Project Package
-*PlatformApi.ProjectApi* | [**deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost**](docs/ProjectApi.md#deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost) | **POST** /projects/{project_id}/packages/{package_id}/deploy | Deploy Project Package
-*PlatformApi.ProjectApi* | [**destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete**](docs/ProjectApi.md#destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete) | **DELETE** /projects/{project_id}/packages/{package_id}/destroy | Destroy Project Package
-*PlatformApi.ProjectApi* | [**getProjectPackageProjectsProjectIdPackagesPackageIdGet**](docs/ProjectApi.md#getProjectPackageProjectsProjectIdPackagesPackageIdGet) | **GET** /projects/{project_id}/packages/{package_id} | Get Project Package
-*PlatformApi.ProjectApi* | [**listProjectPackagesProjectsProjectIdPackagesGet**](docs/ProjectApi.md#listProjectPackagesProjectsProjectIdPackagesGet) | **GET** /projects/{project_id}/packages/ | List Project Packages
-*PlatformApi.ProjectApi* | [**updateProjectPackageProjectsProjectIdPackagesPackageIdPatch**](docs/ProjectApi.md#updateProjectPackageProjectsProjectIdPackagesPackageIdPatch) | **PATCH** /projects/{project_id}/packages/{package_id} | Update Project Package
-
+| Class                     | Method                                                                                                                                                               | HTTP request                                                    | Description             |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------- |
+| _PlatformApi.DefaultApi_  | [**createConnectionProjectsProjectIdConnectionsPost**](docs/DefaultApi.md#createConnectionProjectsProjectIdConnectionsPost)                                          | **POST** /projects/{project_id}/connections/                    | Create Connection       |
+| _PlatformApi.DefaultApi_  | [**createCredentialCredentialsPost**](docs/DefaultApi.md#createCredentialCredentialsPost)                                                                            | **POST** /credentials/                                          | Create Credential       |
+| _PlatformApi.DefaultApi_  | [**createGlobalPackagePackagesPost**](docs/DefaultApi.md#createGlobalPackagePackagesPost)                                                                            | **POST** /packages                                              | Create Global Package   |
+| _PlatformApi.DefaultApi_  | [**createProjectProjectsPost**](docs/DefaultApi.md#createProjectProjectsPost)                                                                                        | **POST** /projects/                                             | Create Project          |
+| _PlatformApi.DefaultApi_  | [**deleteConnectionProjectsProjectIdConnectionsConnectionIdDelete**](docs/DefaultApi.md#deleteConnectionProjectsProjectIdConnectionsConnectionIdDelete)              | **DELETE** /projects/{project_id}/connections/{connection_id}   | Delete Connection       |
+| _PlatformApi.DefaultApi_  | [**deleteCredentialCredentialsCredentialIdDelete**](docs/DefaultApi.md#deleteCredentialCredentialsCredentialIdDelete)                                                | **DELETE** /credentials/{credential_id}                         | Delete Credential       |
+| _PlatformApi.DefaultApi_  | [**deleteProjectProjectsProjectIdDelete**](docs/DefaultApi.md#deleteProjectProjectsProjectIdDelete)                                                                  | **DELETE** /projects/{project_id}                               | Delete Project          |
+| _PlatformApi.DefaultApi_  | [**getCredentialCredentialsCredentialIdGet**](docs/DefaultApi.md#getCredentialCredentialsCredentialIdGet)                                                            | **GET** /credentials/{credential_id}                            | Get Credential          |
+| _PlatformApi.DefaultApi_  | [**listAllPackagesPackagesGet**](docs/DefaultApi.md#listAllPackagesPackagesGet)                                                                                      | **GET** /packages                                               | List All Packages       |
+| _PlatformApi.DefaultApi_  | [**listConnectionsProjectsProjectIdConnectionsGet**](docs/DefaultApi.md#listConnectionsProjectsProjectIdConnectionsGet)                                              | **GET** /projects/{project_id}/connections/                     | List Connections        |
+| _PlatformApi.DefaultApi_  | [**listCredentialsCredentialsGet**](docs/DefaultApi.md#listCredentialsCredentialsGet)                                                                                | **GET** /credentials/                                           | List Credentials        |
+| _PlatformApi.DefaultApi_  | [**listProjectsProjectsGet**](docs/DefaultApi.md#listProjectsProjectsGet)                                                                                            | **GET** /projects/                                              | List Projects           |
+| _PlatformApi.DefaultApi_  | [**rootGet**](docs/DefaultApi.md#rootGet)                                                                                                                            | **GET** /                                                       | Root                    |
+| _PlatformApi.DefaultApi_  | [**updateCredentialCredentialsCredentialIdPatch**](docs/DefaultApi.md#updateCredentialCredentialsCredentialIdPatch)                                                  | **PATCH** /credentials/{credential_id}                          | Update Credential       |
+| _PlatformApi.DefaultApi_  | [**updateProjectProjectsProjectIdPatch**](docs/DefaultApi.md#updateProjectProjectsProjectIdPatch)                                                                    | **PATCH** /projects/{project_id}                                | Update Project          |
+| _PlatformApi.PackagesApi_ | [**createProjectPackageProjectsProjectIdPackagesPost**](docs/PackagesApi.md#createProjectPackageProjectsProjectIdPackagesPost)                                       | **POST** /projects/{project_id}/packages/                       | Create Project Package  |
+| _PlatformApi.PackagesApi_ | [**deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete**](docs/PackagesApi.md#deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete)                 | **DELETE** /projects/{project_id}/packages/{package_id}         | Delete Project Package  |
+| _PlatformApi.PackagesApi_ | [**deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost**](docs/PackagesApi.md#deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost)         | **POST** /projects/{project_id}/packages/{package_id}/deploy    | Deploy Project Package  |
+| _PlatformApi.PackagesApi_ | [**destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete**](docs/PackagesApi.md#destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete) | **DELETE** /projects/{project_id}/packages/{package_id}/destroy | Destroy Project Package |
+| _PlatformApi.PackagesApi_ | [**getProjectPackageProjectsProjectIdPackagesPackageIdGet**](docs/PackagesApi.md#getProjectPackageProjectsProjectIdPackagesPackageIdGet)                             | **GET** /projects/{project_id}/packages/{package_id}            | Get Project Package     |
+| _PlatformApi.PackagesApi_ | [**listProjectPackagesProjectsProjectIdPackagesGet**](docs/PackagesApi.md#listProjectPackagesProjectsProjectIdPackagesGet)                                           | **GET** /projects/{project_id}/packages/                        | List Project Packages   |
+| _PlatformApi.PackagesApi_ | [**updateProjectPackageProjectsProjectIdPackagesPackageIdPatch**](docs/PackagesApi.md#updateProjectPackageProjectsProjectIdPackagesPackageIdPatch)                   | **PATCH** /projects/{project_id}/packages/{package_id}          | Update Project Package  |
+| _PlatformApi.ProjectApi_  | [**createProjectPackageProjectsProjectIdPackagesPost**](docs/ProjectApi.md#createProjectPackageProjectsProjectIdPackagesPost)                                        | **POST** /projects/{project_id}/packages/                       | Create Project Package  |
+| _PlatformApi.ProjectApi_  | [**deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete**](docs/ProjectApi.md#deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete)                  | **DELETE** /projects/{project_id}/packages/{package_id}         | Delete Project Package  |
+| _PlatformApi.ProjectApi_  | [**deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost**](docs/ProjectApi.md#deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost)          | **POST** /projects/{project_id}/packages/{package_id}/deploy    | Deploy Project Package  |
+| _PlatformApi.ProjectApi_  | [**destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete**](docs/ProjectApi.md#destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete)  | **DELETE** /projects/{project_id}/packages/{package_id}/destroy | Destroy Project Package |
+| _PlatformApi.ProjectApi_  | [**getProjectPackageProjectsProjectIdPackagesPackageIdGet**](docs/ProjectApi.md#getProjectPackageProjectsProjectIdPackagesPackageIdGet)                              | **GET** /projects/{project_id}/packages/{package_id}            | Get Project Package     |
+| _PlatformApi.ProjectApi_  | [**listProjectPackagesProjectsProjectIdPackagesGet**](docs/ProjectApi.md#listProjectPackagesProjectsProjectIdPackagesGet)                                            | **GET** /projects/{project_id}/packages/                        | List Project Packages   |
+| _PlatformApi.ProjectApi_  | [**updateProjectPackageProjectsProjectIdPackagesPackageIdPatch**](docs/ProjectApi.md#updateProjectPackageProjectsProjectIdPackagesPackageIdPatch)                    | **PATCH** /projects/{project_id}/packages/{package_id}          | Update Project Package  |
 
 ## Documentation for Models
 
- - [PlatformApi.Connection](docs/Connection.md)
- - [PlatformApi.ConnectionCreate](docs/ConnectionCreate.md)
- - [PlatformApi.Credential](docs/Credential.md)
- - [PlatformApi.CredentialCreate](docs/CredentialCreate.md)
- - [PlatformApi.CredentialType](docs/CredentialType.md)
- - [PlatformApi.CredentialUpdate](docs/CredentialUpdate.md)
- - [PlatformApi.HTTPValidationError](docs/HTTPValidationError.md)
- - [PlatformApi.Package](docs/Package.md)
- - [PlatformApi.PackageCreate](docs/PackageCreate.md)
- - [PlatformApi.PackageUpdate](docs/PackageUpdate.md)
- - [PlatformApi.Project](docs/Project.md)
- - [PlatformApi.ProjectCreate](docs/ProjectCreate.md)
- - [PlatformApi.ProjectUpdate](docs/ProjectUpdate.md)
- - [PlatformApi.ValidationError](docs/ValidationError.md)
- - [PlatformApi.ValidationErrorLocInner](docs/ValidationErrorLocInner.md)
-
+- [PlatformApi.Connection](docs/Connection.md)
+- [PlatformApi.ConnectionCreate](docs/ConnectionCreate.md)
+- [PlatformApi.Credential](docs/Credential.md)
+- [PlatformApi.CredentialCreate](docs/CredentialCreate.md)
+- [PlatformApi.CredentialType](docs/CredentialType.md)
+- [PlatformApi.CredentialUpdate](docs/CredentialUpdate.md)
+- [PlatformApi.DeployStatus](docs/DeployStatus.md)
+- [PlatformApi.HTTPValidationError](docs/HTTPValidationError.md)
+- [PlatformApi.Package](docs/Package.md)
+- [PlatformApi.PackageCreate](docs/PackageCreate.md)
+- [PlatformApi.Project](docs/Project.md)
+- [PlatformApi.ProjectCreate](docs/ProjectCreate.md)
+- [PlatformApi.ProjectPackage](docs/ProjectPackage.md)
+- [PlatformApi.ProjectPackageCreate](docs/ProjectPackageCreate.md)
+- [PlatformApi.ProjectPackageUpdate](docs/ProjectPackageUpdate.md)
+- [PlatformApi.ProjectUpdate](docs/ProjectUpdate.md)
+- [PlatformApi.ValidationError](docs/ValidationError.md)
+- [PlatformApi.ValidationErrorLocInner](docs/ValidationErrorLocInner.md)
 
 ## Documentation for Authorization
 

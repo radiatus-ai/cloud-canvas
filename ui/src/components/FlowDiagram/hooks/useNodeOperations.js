@@ -35,7 +35,6 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
         parameters: pkg.parameters || {},
         parameter_data: pkg.parameter_data || {},
         deploy_status: pkg.deploy_status || 'undeployed',
-
       },
     }));
   };
@@ -43,6 +42,7 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
   const onOpenModal = useCallback(
     (nodeId) => {
       const node = nodes.find((n) => n.id === nodeId);
+      console.log('node', node);
       if (node) {
         return {
           selectedNodeId: nodeId,
@@ -56,14 +56,18 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
   );
 
   const onSubmitForm = useCallback(
-    async (nodeId, newFormData) => {
+    async (projectIdTwo, nodeId, newFormData) => {
       try {
+        console.log('useNodeOperations - Submitting form data:', newFormData);
+        console.log('useNodeOperations - Node ID:', nodeId);
+        console.log('useNodeOperations - Project ID:', projectId);
         const response = await projectsApi.updatePackage(
           projectId,
           nodeId,
           { parameter_data: newFormData },
           token
         );
+        console.log('useNodeOperations - API response:', response);
         const updatedPackage = response.body;
 
         if (updatedPackage) {
@@ -71,22 +75,23 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
             nds.map((node) =>
               node.id === nodeId
                 ? {
-                  ...node,
-                  data: {
-                    ...node.data,
-                    parameter_data: updatedPackage.parameter_data || {},
-                    parameters: updatedPackage.parameters || {},
-                  },
-                }
+                    ...node,
+                    data: {
+                      ...node.data,
+                      parameter_data: updatedPackage.parameter_data || {},
+                      parameters: updatedPackage.parameters || {},
+                    },
+                  }
                 : node
             )
           );
 
+          console.log('useNodeOperations - Updated package:', updatedPackage);
           return updatedPackage.parameter_data || {};
         }
         return {};
       } catch (error) {
-        console.error('Error updating package:', error);
+        console.error('useNodeOperations - Error updating package:', error);
         throw error;
       }
     },
@@ -145,14 +150,14 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
           nds.map((n) =>
             n.id === nodeId
               ? {
-                ...n,
-                data: {
-                  ...n.data,
-                  deploy_status: updatedPackage.deploy_status,
-                  parameters: updatedPackage.parameter_data,
-                  ...updatedPackage,
-                },
-              }
+                  ...n,
+                  data: {
+                    ...n.data,
+                    deploy_status: updatedPackage.deploy_status,
+                    parameters: updatedPackage.parameter_data,
+                    ...updatedPackage,
+                  },
+                }
               : n
           )
         );
