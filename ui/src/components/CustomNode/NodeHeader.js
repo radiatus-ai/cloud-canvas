@@ -6,7 +6,8 @@ import { Box, IconButton, Modal, Tooltip, Typography } from '@mui/material';
 import { blue, yellow } from '@mui/material/colors';
 import { styled } from '@mui/system';
 import React, { useCallback, useEffect, useState } from 'react';
-import apiService from '../../apiService';
+import { useAuth } from '../../contexts/Auth';
+import useApi from '../../hooks/useAPI';
 
 const StatusDot = styled('div')(({ theme, status }) => ({
   width: 8,
@@ -60,6 +61,8 @@ const ModalDescription = styled(Box)(({ theme }) => ({
 }));
 
 const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
+  const { token } = useAuth();
+  const { projects: projectsApi } = useApi();
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [localDeployStatus, setLocalDeployStatus] = useState(
     data.deploy_status
@@ -84,7 +87,8 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
   const handleDeploy = useCallback(async () => {
     setLocalDeployStatus('deploying');
     try {
-      const result = await apiService.deployPackage(projectId, data.id);
+      const result = await projectsApi.deployPackage(projectId, data.id, token);
+
       setLocalDeployStatus('deployed');
       setCommandOutputs(result.command_outputs || '');
     } catch (error) {
@@ -99,7 +103,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
   const handleDestroy = useCallback(async () => {
     setLocalDeployStatus('destroying');
     try {
-      await apiService.destroyPackage(projectId, data.id);
+      await projectsApi.destroyPackage(projectId, data.id, token);
       setLocalDeployStatus('undeployed');
       setCommandOutputs('Package successfully destroyed.');
     } catch (error) {

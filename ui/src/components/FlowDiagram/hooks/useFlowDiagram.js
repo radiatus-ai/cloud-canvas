@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEdgesState, useNodesState } from 'reactflow';
 import { useAuth } from '../../../contexts/Auth';
@@ -41,6 +41,7 @@ export const useFlowDiagram = () => {
     missingConnectionsModalOpen: false,
     selectedNodeId: null,
     formData: {},
+    schema: {},
     droppedPackageInfo: null,
     missingConnections: [],
   });
@@ -157,6 +158,7 @@ export const useFlowDiagram = () => {
           isModalOpen: true,
           selectedNodeId: modalData.selectedNodeId,
           formData: modalData.formData,
+          schema: modalData.schema, // Add this line to include the schema
         }));
       }
     },
@@ -209,8 +211,22 @@ export const useFlowDiagram = () => {
     [checkRequiredConnections, onDeploy]
   );
 
+  const nodesWithFunctions = useMemo(() => {
+    return nodes.map((node) => ({
+      ...node,
+      data: {
+        ...node.data,
+        updateNodeData: (newData) => updateNodeData(node.id, newData),
+        onOpenModal: () => handleOpenModal(node.id),
+        onDeploy: () => handleDeploy(node.id),
+        onDelete: () => handleDeleteNode(node.id),
+        deploy_status: node.data.deploy_status || 'undeployed',
+      },
+    }));
+  }, [nodes, handleOpenModal, handleDeploy, handleDeleteNode, updateNodeData]);
+
   return {
-    nodes,
+    nodes: nodesWithFunctions,
     edges,
     onNodesChange,
     onEdgesChange,

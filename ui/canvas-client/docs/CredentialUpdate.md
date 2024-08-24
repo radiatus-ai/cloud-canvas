@@ -2,7 +2,7 @@
 
 ## Properties
 
-| Name                | Type                                    | Description | Notes      |
-| ------------------- | --------------------------------------- | ----------- | ---------- |
-| **credentialType**  | [**CredentialType**](CredentialType.md) |             | [optional] |
-| **credentialValue** | **String**                              |             | [optional] |
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**credentialType** | [**CredentialType**](CredentialType.md) |  | [optional]
+**credentialValue** | **String** |  | [optional]

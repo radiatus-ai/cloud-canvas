@@ -13,29 +13,33 @@
 
 import ApiClient from '../ApiClient';
 /**
- * Enum class CredentialType.
- * @enum {}
- * @readonly
- */
+* Enum class CredentialType.
+* @enum {}
+* @readonly
+*/
 export default class CredentialType {
-  /**
-   * value: "SERVICE_ACCOUNT_KEY"
-   * @const
-   */
-  SERVICE_ACCOUNT_KEY = 'SERVICE_ACCOUNT_KEY';
 
-  /**
-   * value: "SECRET"
-   * @const
-   */
-  SECRET = 'SECRET';
+        /**
+         * value: "SERVICE_ACCOUNT_KEY"
+         * @const
+         */
+        "SERVICE_ACCOUNT_KEY" = "SERVICE_ACCOUNT_KEY";
 
-  /**
-   * Returns a <code>CredentialType</code> enum value from a Javascript object name.
-   * @param {Object} data The plain JavaScript object containing the name of the enum value.
-   * @return {module:model/CredentialType} The enum <code>CredentialType</code> value.
-   */
-  static constructFromObject(object) {
-    return object;
-  }
+
+        /**
+         * value: "SECRET"
+         * @const
+         */
+        "SECRET" = "SECRET";
+
+
+
+    /**
+    * Returns a <code>CredentialType</code> enum value from a Javascript object name.
+    * @param {Object} data The plain JavaScript object containing the name of the enum value.
+    * @return {module:model/CredentialType} The enum <code>CredentialType</code> value.
+    */
+    static constructFromObject(object) {
+        return object;
+    }
 }

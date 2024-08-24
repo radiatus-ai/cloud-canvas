@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 )
 
@@ -13,14 +12,17 @@ type Config struct {
 
 func Load() (*Config, error) {
 	cfg := &Config{
-		ProjectID:      os.Getenv("GOOGLE_CLOUD_PROJECT"),
-		SubscriptionID: os.Getenv("PUBSUB_SUBSCRIPTION_ID"),
-		BucketName:     os.Getenv("BUCKET_NAME"),
-	}
-
-	if cfg.ProjectID == "" || cfg.SubscriptionID == "" || cfg.BucketName == "" {
-		return nil, fmt.Errorf("missing required environment variables")
+		ProjectID:      getEnvOrDefault("GOOGLE_CLOUD_PROJECT", "default-project-id"),
+		SubscriptionID: getEnvOrDefault("PUBSUB_SUBSCRIPTION_ID", "default-subscription-id"),
+		BucketName:     getEnvOrDefault("BUCKET_NAME", "rad-provisioner-state-1234"),
 	}
 
 	return cfg, nil
+}
+
+func getEnvOrDefault(key, defaultValue string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return defaultValue
 }

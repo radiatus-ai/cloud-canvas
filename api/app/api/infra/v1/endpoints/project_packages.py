@@ -70,12 +70,13 @@ async def update_project_package(
 async def deploy_project_package(
     project_id: UUID4 = Path(..., description="The ID of the project"),
     package_id: UUID4 = Path(..., description="The ID of the package"),
-    deploy_data: dict = Body(...),
     deps: dict = Depends(get_db_and_current_user),
 ):
     db = deps["db"]
     return await crud_project_package.deploy_package(
-        db, project_id=project_id, package_id=package_id, deploy_data=deploy_data
+        db,
+        project_id=project_id,
+        package_id=package_id,
     )
 
 

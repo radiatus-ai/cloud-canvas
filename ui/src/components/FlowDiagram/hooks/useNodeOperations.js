@@ -35,6 +35,7 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
         parameters: pkg.parameters || {},
         parameter_data: pkg.parameter_data || {},
         deploy_status: pkg.deploy_status || 'undeployed',
+
       },
     }));
   };
@@ -46,6 +47,7 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
         return {
           selectedNodeId: nodeId,
           formData: node.data.parameter_data || {},
+          schema: node.data.parameters || {}, // Ensure we're passing the schema
         };
       }
       return null;

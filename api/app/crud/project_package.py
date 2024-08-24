@@ -1,5 +1,7 @@
+import json
 from typing import List, Optional
 
+from google.cloud import pubsub_v1
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -7,6 +9,41 @@ from sqlalchemy.future import select
 from app.crud.base import CRUDBase
 from app.models.project_package import ProjectPackage
 from app.schemas.project_package import ProjectPackageCreate, ProjectPackageUpdate
+
+
+def send_pubsub_message(project_id: str, topic_id: str, message_data: dict):
+    """
+    Sends a message to a Google Cloud Pub/Sub topic.
+
+    Args:
+        project_id (str): The GCP project ID.
+        topic_id (str): The Pub/Sub topic ID.
+        message_data (dict): The message data to be sent.
+
+    Returns:
+        str: The published message ID.
+    """
+    # Initialize a Publisher client
+    publisher = pubsub_v1.PublisherClient()
+
+    # Create the topic path
+    topic_path = publisher.topic_path(project_id, topic_id)
+
+    # Convert the message data to JSON string
+    message_json = json.dumps(message_data)
+
+    # Encode the JSON string to bytes
+    message_bytes = message_json.encode("utf-8")
+
+    # Publish the message
+    try:
+        publish_future = publisher.publish(topic_path, data=message_bytes)
+        message_id = publish_future.result()  # Wait for the publish to complete
+        print(f"Message published with ID: {message_id}")
+        return message_id
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        raise
 
 
 class CRUDProjectPackage(
@@ -53,25 +90,31 @@ class CRUDProjectPackage(
         return db_obj
 
     async def deploy_package(
-        self, db: AsyncSession, *, project_id: UUID, package_id: UUID, deploy_data: dict
+        self, db: AsyncSession, *, project_id: UUID, package_id: UUID
     ) -> Optional[ProjectPackage]:
         package = await self.get_package(db, id=package_id, project_id=project_id)
         if not package:
             return None
 
-        # Update package with deploy data and set status to DEPLOYING
-        for key, value in deploy_data.items():
-            setattr(package, key, value)
         package.deploy_status = "DEPLOYING"
-
         await db.commit()
         await db.refresh(package)
 
-        # Here you would typically trigger your actual deployment process
-        # For now, we'll just set it to DEPLOYED
-        package.deploy_status = "DEPLOYED"
-        await db.commit()
-        await db.refresh(package)
+        # Create a dictionary matching the DeploymentMessage struct
+        deployment_message = {
+            "project_id": str(project_id),
+            "package_id": str(package_id),
+            "package": {
+                "type": package.type,
+                "parameter_data": package.parameter_data,
+                "outputs": package.outputs or {},
+            },
+            # "connected_input_data": package.connected_input_data or {},
+        }
+
+        send_pubsub_message(
+            "rad-dev-canvas-kwm6", "provisioner-topic", deployment_message
+        )
 
         return package
 

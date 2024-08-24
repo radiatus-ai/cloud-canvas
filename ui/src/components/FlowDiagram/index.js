@@ -30,6 +30,21 @@ const FlowDiagram = () => {
     missingConnections,
   } = useFlowDiagram();
 
+  // Update nodes to include onOpenModal and onDeploy functions
+  // const nodesWithFunctions = useMemo(() => {
+  //   return nodes.map((node) => ({
+  //     ...node,
+  //     data: {
+  //       ...node.data,
+  //       updateNodeData: (newData) => updateNodeData(node.id, newData),
+  //       onOpenModal: () => onOpenModal(node.id),
+  //       onDeploy: () => onDeploy(node.id),
+  //       onDelete: () => onDeleteNode(node.id),
+  //       deploy_status: node.data.deploy_status || 'undeployed',
+  //     },
+  //   }));
+  // }, [nodes, onOpenModal, onDeploy, onDeleteNode]);
+
   if (isLoading) {
     return <div>Loading infrastructure data...</div>;
   }

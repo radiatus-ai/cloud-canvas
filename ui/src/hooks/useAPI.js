@@ -125,14 +125,22 @@ const useApi = () => {
           token,
           parentSpan
         ),
-      deployPackage: (projectId, packageId, data, token, parentSpan) =>
+      deployPackage: (projectId, packageId, token, parentSpan) =>
         apiCall(
           ProjectApi,
           'deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost',
-          [projectId, packageId, data],
+          [projectId, packageId],
           token,
           parentSpan
         ),
+      destroyPackage: (projectId, packageId, token, parentSpan) =>
+          apiCall(
+            ProjectApi,
+            'destroyProjectPackageProjectsProjectIdPackagesPackageIdDeployPost',
+            [projectId, packageId],
+            token,
+            parentSpan
+          ),
       // New methods for connections
       listConnections: (projectId, token, parentSpan) =>
         apiCall(

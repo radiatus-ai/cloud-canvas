@@ -30,7 +30,9 @@ const ModalsContainer = ({
     formData,
     droppedPackageInfo,
     missingConnections,
+    schema, // Added schema from modalState
   } = modalState;
+  // debugger;
 
   const handleCloseModal = () => {
     setModalState((prev) => ({
@@ -60,13 +62,16 @@ const ModalsContainer = ({
 
   // Find the selected node
   const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+  if (selectedNode) {
+    console.log('selectedNode', selectedNode);
+  }
 
   return (
     <>
       <DynamicModalForm
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        schema={selectedNode?.data?.parameters || null}
+        schema={schema} // Use modalState.schema instead of selectedNode.data.parameters
         onSubmit={handleSubmitForm}
         initialData={formData}
         title={`Edit Parameters for ${selectedNode?.data?.label || 'Node'}`}

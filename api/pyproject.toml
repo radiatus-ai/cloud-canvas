@@ -30,6 +30,7 @@ opentelemetry-instrumentation-logging = "^0.46b0"
 opentelemetry-instrumentation-sqlalchemy = "^0.46b0"
 httpx = "^0.27.0"
 pyyaml = "^6.0.2"
+google-cloud-pubsub = "^2.23.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^8.1.1"

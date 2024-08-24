@@ -1,53 +1,21 @@
 package pubsub
 
 import (
-	"context"
+	"bytes"
 	"encoding/json"
-	"os"
+	"net/http"
+	"net/http/httptest"
 	"testing"
-	"time"
 
 	"github.com/radiatus-ai/package-provisioner/internal/config"
 	"github.com/radiatus-ai/package-provisioner/pkg/models"
-
-	"cloud.google.com/go/pubsub"
 )
 
-func TestSubscriber_Listen(t *testing.T) {
-	// Skip this test if not running in the Pub/Sub emulator
-	if os.Getenv("PUBSUB_EMULATOR_HOST") == "" {
-		t.Skip("Skipping integration test: Pub/Sub emulator not running")
-	}
-
-	ctx := context.Background()
-	projectID := "test-project"
-	topicID := "test-topic"
-	subscriptionID := "test-subscription"
-
-	// Create a Pub/Sub client
-	client, err := pubsub.NewClient(ctx, projectID)
-	if err != nil {
-		t.Fatalf("Failed to create client: %v", err)
-	}
-	defer client.Close()
-
-	// Create a topic and subscription
-	topic, err := client.CreateTopic(ctx, topicID)
-	if err != nil {
-		t.Fatalf("Failed to create topic: %v", err)
-	}
-	defer topic.Delete(ctx)
-
-	sub, err := client.CreateSubscription(ctx, subscriptionID, pubsub.SubscriptionConfig{Topic: topic})
-	if err != nil {
-		t.Fatalf("Failed to create subscription: %v", err)
-	}
-	defer sub.Delete(ctx)
-
+func TestSubscriber_HandlePush(t *testing.T) {
 	// Create a test config and subscriber
 	cfg := &config.Config{
-		ProjectID:      projectID,
-		SubscriptionID: subscriptionID,
+		ProjectID:      "test-project",
+		SubscriptionID: "test-subscription",
 	}
 
 	deploymentCount := 0
@@ -58,38 +26,84 @@ func TestSubscriber_Listen(t *testing.T) {
 
 	subscriber := NewSubscriber(cfg, testDeployFn)
 
-	// Start listening in a goroutine
-	errCh := make(chan error)
-	go func() {
-		errCh <- subscriber.Listen(ctx)
-	}()
-
-	// Publish a test message
+	// Create a test message
 	testMsg := models.DeploymentMessage{
 		ProjectID: "test-project",
-		PackageID: "test-package",
+		Package: models.Package{
+			Type: "test-package",
+		},
 	}
 	msgBytes, _ := json.Marshal(testMsg)
-	topic.Publish(ctx, &pubsub.Message{Data: msgBytes})
 
-	// Wait for the message to be processed
-	time.Sleep(5 * time.Second)
+	// Create a push request
+	pushRequest := struct {
+		Message struct {
+			Data []byte `json:"data,omitempty"`
+			ID   string `json:"id"`
+		} `json:"message"`
+	}{
+		Message: struct {
+			Data []byte `json:"data,omitempty"`
+			ID   string `json:"id"`
+		}{
+			Data: msgBytes,
+			ID:   "test-message-id",
+		},
+	}
+
+	body, _ := json.Marshal(pushRequest)
+
+	// Create a test request
+	req, err := http.NewRequest("POST", "/push", bytes.NewBuffer(body))
+	if err != nil {
+		t.Fatalf("Failed to create request: %v", err)
+	}
+
+	// Create a ResponseRecorder to record the response
+	rr := httptest.NewRecorder()
+
+	// Call the HandlePush method
+	subscriber.HandlePush(rr, req)
+
+	// Check the status code
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("Handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
 
 	// Check if the deployment function was called
 	if deploymentCount != 1 {
 		t.Errorf("Expected 1 deployment, got %d", deploymentCount)
 	}
+}
 
-	// Cancel the context to stop listening
-	ctx.Done()
+func TestSubscriber_HandlePush_InvalidMethod(t *testing.T) {
+	subscriber := NewSubscriber(&config.Config{}, nil)
 
-	// Check for any errors from the listener
-	select {
-	case err := <-errCh:
-		if err != nil {
-			t.Errorf("Listen() error = %v", err)
-		}
-	case <-time.After(1 * time.Second):
-		t.Error("Listen() did not return after context cancellation")
+	req, err := http.NewRequest("GET", "/push", nil)
+	if err != nil {
+		t.Fatalf("Failed to create request: %v", err)
+	}
+
+	rr := httptest.NewRecorder()
+	subscriber.HandlePush(rr, req)
+
+	if status := rr.Code; status != http.StatusMethodNotAllowed {
+		t.Errorf("Handler returned wrong status code: got %v want %v", status, http.StatusMethodNotAllowed)
+	}
+}
+
+func TestSubscriber_HandlePush_InvalidBody(t *testing.T) {
+	subscriber := NewSubscriber(&config.Config{}, nil)
+
+	req, err := http.NewRequest("POST", "/push", bytes.NewBufferString("invalid json"))
+	if err != nil {
+		t.Fatalf("Failed to create request: %v", err)
+	}
+
+	rr := httptest.NewRecorder()
+	subscriber.HandlePush(rr, req)
+
+	if status := rr.Code; status != http.StatusBadRequest {
+		t.Errorf("Handler returned wrong status code: got %v want %v", status, http.StatusBadRequest)
 	}
 }

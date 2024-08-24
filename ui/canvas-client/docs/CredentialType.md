@@ -2,6 +2,7 @@
 
 ## Enum
 
-- `SERVICE_ACCOUNT_KEY` (value: `"SERVICE_ACCOUNT_KEY"`)
 
-- `SECRET` (value: `"SECRET"`)
+* `SERVICE_ACCOUNT_KEY` (value: `"SERVICE_ACCOUNT_KEY"`)
+
+* `SECRET` (value: `"SECRET"`)

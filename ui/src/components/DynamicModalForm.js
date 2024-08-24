@@ -76,7 +76,7 @@ const DynamicModalForm = ({
       <DialogContent>
         <JsonSchemaForm
           ref={formRef}
-          schema={memoizedSchema}
+          schema={schema}
           initialData={formData}
           onSubmit={handleSubmit}
           customComponents={customComponents}
@@ -99,3 +99,40 @@ const DynamicModalForm = ({
 };
 
 export default React.memo(DynamicModalForm);
+
+// const onSubmitForm = useCallback(
+//   async (newFormData) => {
+//     if (!selectedNodeId) return;
+//     console.log('submitting form');
+
+//     try {
+//       const updatedPackage = await apiService.updatePackage(
+//         projectId,
+//         selectedNodeId,
+//         { parameter_data: newFormData }
+//       );
+
+//       setNodes((nds) =>
+//         nds.map((node) =>
+//           node.id === selectedNodeId
+//             ? {
+//                 ...node,
+//                 data: {
+//                   ...node.data,
+//                   parameter_data: updatedPackage.parameter_data,
+//                   parameters: updatedPackage.parameters,
+//                 },
+//               }
+//             : node
+//         )
+//       );
+
+//       setFormData(updatedPackage.parameter_data);
+//       onCloseModal();
+//     } catch (error) {
+//       console.error('Error updating package:', error);
+//       // You might want to show an error message to the user here
+//     }
+//   },
+//   [selectedNodeId, projectId, setNodes, onCloseModal]
+// );
