@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.crud.base import CRUDBase
+from app.models.project import Project
 from app.models.project_package import ProjectPackage
 from app.schemas.project_package import ProjectPackageCreate, ProjectPackageUpdate
 
@@ -100,6 +101,16 @@ class CRUDProjectPackage(
         await db.commit()
         await db.refresh(package)
 
+        # Fetch credentials associated with the project
+        query = select(Project).where(Project.id == project_id)
+        result = await db.execute(query)
+        project = result.scalars().first()
+
+        credentials = {}
+        if project and project.credentials:
+            for credential in project.credentials:
+                credentials[credential.name] = credential.credential_value
+
         # Create a dictionary matching the DeploymentMessage struct
         deployment_message = {
             "project_id": str(project_id),
@@ -110,7 +121,7 @@ class CRUDProjectPackage(
                 "outputs": package.outputs or {},
             },
             "action": "DEPLOY",
-            # "secrets": {}
+            "secrets": credentials,
             # "connected_input_data": package.connected_input_data or {},
         }
 
@@ -132,6 +143,16 @@ class CRUDProjectPackage(
         # await db.commit()
         # await db.refresh(package)
 
+        # Fetch credentials associated with the project
+        query = select(Project).where(Project.id == project_id)
+        result = await db.execute(query)
+        project = result.scalars().first()
+
+        credentials = {}
+        if project and project.credentials:
+            for credential in project.credentials:
+                credentials[credential.name] = credential.credential_value
+
         # Create a dictionary matching the DeploymentMessage struct
         deployment_message = {
             "project_id": str(project_id),
@@ -142,7 +163,7 @@ class CRUDProjectPackage(
                 "outputs": package.outputs or {},
             },
             "action": "DESTROY",
-            # "secrets": {}
+            "secrets": credentials,
         }
 
         send_pubsub_message(

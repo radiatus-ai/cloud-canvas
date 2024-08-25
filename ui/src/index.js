@@ -10,6 +10,7 @@ import { AuthProvider } from './contexts/Auth';
 import { TitleProvider } from './contexts/TitleContext';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
+import ThemeContextProvider from './contexts/ThemeContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,17 +22,17 @@ root.render(
       }}
     >
       <RecoilRoot>
-        {/* <ThemeContextProvider> */}
-        <GoogleOAuthProvider clientId="1018921851541-kja9q7h1e3f1ah00c1v0pifu9n3mqbj8.apps.googleusercontent.com">
-          <AuthProvider>
-            <SnackbarProvider>
-              <TitleProvider>
-                <App />
-              </TitleProvider>
-            </SnackbarProvider>
-          </AuthProvider>
-        </GoogleOAuthProvider>
-        {/* </ThemeContextProvider> */}
+        <ThemeContextProvider>
+          <GoogleOAuthProvider clientId="1018921851541-kja9q7h1e3f1ah00c1v0pifu9n3mqbj8.apps.googleusercontent.com">
+            <AuthProvider>
+              <SnackbarProvider>
+                <TitleProvider>
+                  <App />
+                </TitleProvider>
+              </SnackbarProvider>
+            </AuthProvider>
+          </GoogleOAuthProvider>
+        </ThemeContextProvider>
       </RecoilRoot>
     </ErrorBoundary>
   </React.StrictMode>

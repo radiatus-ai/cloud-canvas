@@ -17,6 +17,7 @@ import { useAuth } from '../contexts/Auth';
 import useApi from '../hooks/useAPI';
 import DynamicModalForm from './DynamicModalForm';
 import CreateProjectModal from './ProjectCreate';
+import EditProjectModal from './EditProjectModal';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -209,18 +210,11 @@ const Projects = () => {
         onSubmit={handleCreateProject}
       />
 
-      <DynamicModalForm
+      <EditProjectModal
         isOpen={editDialogOpen}
         onClose={handleCloseEditDialog}
-        schema={{
-          type: 'object',
-          properties: {
-            name: { type: 'string', title: 'Project Name' },
-          },
-        }}
         onSubmit={handleUpdateProject}
-        initialData={editProject}
-        title="Edit Project"
+        project={editProject}
       />
 
       <DynamicModalForm
@@ -243,7 +237,7 @@ const Projects = () => {
             setError('You must confirm the deletion.');
           }
         }}
-        initialData={{ confirm: false }} // Ensure the switch is initially off
+        initialData={{ confirm: false }}
         title="Delete Project"
       />
     </Container>

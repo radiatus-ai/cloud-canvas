@@ -49,6 +49,3 @@ src/model/ProjectPackageUpdate.js
 src/model/ProjectUpdate.js
 src/model/ValidationError.js
 src/model/ValidationErrorLocInner.js
-test/model/ProjectPackage.spec.js
-test/model/ProjectPackageCreate.spec.js
-test/model/ProjectPackageUpdate.spec.js

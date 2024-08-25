@@ -50,5 +50,23 @@ class CRUDCredential(CRUDBase[Credential, CredentialCreate, CredentialUpdate]):
             await db.commit()
         return credential
 
+    async def get_credentials_by_project(
+        self,
+        db: AsyncSession,
+        *,
+        project_id: UUID,
+        skip: int = 0,
+        limit: int = 100,
+    ) -> List[Credential]:
+        query = (
+            select(Credential)
+            .join(Credential.projects)
+            .where(Credential.projects.any(id=project_id))
+            .offset(skip)
+            .limit(limit)
+        )
+        result = await db.execute(query)
+        return result.scalars().all()
+
 
 credential = CRUDCredential(Credential)

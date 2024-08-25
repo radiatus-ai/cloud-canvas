@@ -9,6 +9,7 @@ class PackageBase(BaseModel):
     inputs: Dict[str, Any]
     outputs: Dict[str, Any]
     parameters: Dict[str, Any]
+    private: Optional[bool] = True
 
 
 class PackageCreate(PackageBase):
@@ -21,6 +22,7 @@ class PackageUpdate(BaseModel):
     inputs: Optional[Dict[str, Any]] = None
     outputs: Optional[Dict[str, Any]] = None
     parameters: Optional[Dict[str, Any]] = None
+    private: Optional[bool] = None
 
 
 class Package(PackageBase):

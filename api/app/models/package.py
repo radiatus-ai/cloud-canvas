@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import JSON, Column, String
+from sqlalchemy import JSON, Boolean, Column, String
 from sqlalchemy.dialects.postgresql import UUID
 
 from app.db.base_class import Base
@@ -14,6 +14,7 @@ class Package(Base):
     inputs = Column(JSON)
     outputs = Column(JSON)
     parameters = Column(JSON)
+    private = Column(Boolean, default=True)
     # todo: add organization, other fields
     # organization_id = Column(
     #     UUID(as_uuid=True), ForeignKey("organization_references.id")

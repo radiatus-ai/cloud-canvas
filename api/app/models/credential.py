@@ -17,6 +17,7 @@ class CredentialType(Enum):
 class Credential(Base):
     __tablename__ = "credentials"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String, nullable=False)
     organization_id = Column(
         UUID(as_uuid=True), ForeignKey("organization_references.id")
     )
@@ -24,3 +25,6 @@ class Credential(Base):
     credential_value = Column(String, nullable=False)  # This will need encryption later
 
     organization = relationship("OrganizationReference", back_populates="credentials")
+    projects = relationship(
+        "Project", secondary="project_credential", back_populates="credentials"
+    )

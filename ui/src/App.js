@@ -1,5 +1,5 @@
-import { Box, Container, Typography } from '@mui/material';
-import React, { useCallback } from 'react';
+import { Box, Container, Typography, CircularProgress } from '@mui/material';
+import React, { useCallback, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import AuthenticationComponent from './components/Authentication';
 import FlowDiagram from './components/FlowDiagram';
@@ -11,9 +11,11 @@ import { useAuth } from './contexts/Auth';
 
 const App = () => {
   const { token, login, logout } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = useCallback(
     async (decodedToken, authToken) => {
+      setIsLoading(true);
       try {
         // todo: add env var / config to set this
         const response = await fetch(
@@ -34,6 +36,8 @@ const App = () => {
         console.log('Login successful:', data);
       } catch (error) {
         console.error('Login error:', error);
+      } finally {
+        setIsLoading(false);
       }
     },
     [login]
@@ -53,10 +57,14 @@ const App = () => {
           Please sign in to continue
         </Typography>
         <Box mt={4}>
-          <AuthenticationComponent
-            onLogin={handleLogin}
-            onError={handleLoginError}
-          />
+          {isLoading ? (
+            <CircularProgress />
+          ) : (
+            <AuthenticationComponent
+              onLogin={handleLogin}
+              onError={handleLoginError}
+            />
+          )}
         </Box>
       </Container>
     );

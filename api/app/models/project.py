@@ -1,10 +1,18 @@
 import uuid
 
-from sqlalchemy import Column, ForeignKey, String
+from sqlalchemy import Column, ForeignKey, String, Table
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
 from app.db.base_class import Base
+
+# New association table
+project_credential = Table(
+    "project_credential",
+    Base.metadata,
+    Column("project_id", UUID(as_uuid=True), ForeignKey("projects.id")),
+    Column("credential_id", UUID(as_uuid=True), ForeignKey("credentials.id")),
+)
 
 
 class Project(Base):
@@ -20,3 +28,6 @@ class Project(Base):
     user = relationship("UserReference", back_populates="projects")
     packages = relationship("ProjectPackage", back_populates="project")
     connections = relationship("Connection", back_populates="project")
+    credentials = relationship(
+        "Credential", secondary=project_credential, back_populates="projects"
+    )

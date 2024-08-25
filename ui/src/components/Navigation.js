@@ -17,6 +17,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import KeyIcon from '@mui/icons-material/Key';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import apiService from '../apiService';
@@ -87,7 +88,7 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
 
   const menuItems = [
     { text: 'Projects', icon: <FolderIcon />, path: '/' },
-    { text: 'Secrets', icon: <FolderIcon />, path: '/secrets' },
+    { text: 'Secrets', icon: <KeyIcon />, path: '/secrets' },
     // Add more menu items as needed
   ];
 

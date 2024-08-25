@@ -9,7 +9,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { darkTheme, lightTheme } from '../theme/theme';
+import { lightTheme, darkTheme } from '../theme';
 
 const ThemeContext = createContext();
 

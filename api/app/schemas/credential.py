@@ -7,6 +7,7 @@ from app.models.credential import CredentialType
 
 class CredentialBase(BaseModel):
     credential_type: CredentialType
+    name: str
     # CREDENTIAL VALUE IS NOT RETURNED FROM THIS API ON PURPOSE
     # credential_value: str
 
