@@ -217,7 +217,7 @@ export const useFlowDiagram = () => {
         onOpenModal: () => handleOpenModal(node.id),
         onDeploy: () => handleDeploy(node.id),
         onDelete: () => handleDeleteNode(node.id),
-        deploy_status: node.data.deploy_status || 'undeployed',
+        deploy_status: node.data.deploy_status || 'NOT_DEPLOYED',
       },
     }));
   }, [nodes, handleOpenModal, handleDeploy, handleDeleteNode, updateNodeData]);

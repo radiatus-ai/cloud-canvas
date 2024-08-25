@@ -35,7 +35,7 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
         outputs: pkg.outputs || {},
         parameters: pkg.parameters || {},
         parameter_data: pkg.parameter_data || {},
-        deploy_status: pkg.deploy_status || 'undeployed',
+        deploy_status: pkg.deploy_status || 'NOT_DEPLOYED',
       },
     }));
   };
@@ -105,7 +105,7 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
         setNodes((nds) =>
           nds.map((node) =>
             node.id === nodeId
-              ? { ...node, data: { ...node.data, deploy_status: 'deploying' } }
+              ? { ...node, data: { ...node.data, deploy_status: 'DEPLOYING' } }
               : node
           )
         );
@@ -118,7 +118,7 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
         setNodes((nds) =>
           nds.map((node) =>
             node.id === nodeId
-              ? { ...node, data: { ...node.data, deploy_status: 'failed' } }
+              ? { ...node, data: { ...node.data, deploy_status: 'FAILED' } }
               : node
           )
         );
@@ -136,7 +136,7 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
         setNodes((nds) =>
           nds.map((n) =>
             n.id === nodeId
-              ? { ...n, data: { ...n.data, deploy_status: 'deploying' } }
+              ? { ...n, data: { ...n.data, deploy_status: 'DEPLOYING' } }
               : n
           )
         );
@@ -169,7 +169,7 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
         setNodes((nds) =>
           nds.map((n) =>
             n.id === nodeId
-              ? { ...n, data: { ...n.data, deploy_status: 'failed' } }
+              ? { ...n, data: { ...n.data, deploy_status: 'FAILED' } }
               : n
           )
         );
@@ -193,20 +193,32 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
     [setNodes]
   );
 
+  //   class ProjectPackageBase(BaseModel):
+  //     name: str
+  //     type: str
+  //     inputs: Dict[str, Any]
+  //     outputs: Dict[str, Any]
+  //     parameters: Dict[str, Any]
+
+  // class ProjectPackageCreate(ProjectPackageBase):
+  //     project_id: UUID4
+
   const createNode = useCallback(
     async (packageInfo, position) => {
       try {
+        console.log('createNode - packageInfo:', packageInfo);
         const response = await projectsApi.createPackage(
           projectId,
           {
-            package_id: packageInfo.id,
+            // package_id: packageInfo.id,
             name: packageInfo.name,
             type: packageInfo.type,
             inputs: packageInfo.inputs,
             outputs: packageInfo.outputs,
             parameters: packageInfo.parameters,
-            position: position,
-            deploy_status: 'undeployed',
+            // store position later, use smater layout algos, etc
+            // position: position,
+            deploy_status: 'NOT_DEPLOYED',
           },
           token
         );
@@ -224,7 +236,7 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
             outputs: createdPackage.outputs,
             parameters: createdPackage.parameters,
             parameter_data: createdPackage.parameter_data || {},
-            deploy_status: 'undeployed',
+            deploy_status: 'NOT_DEPLOYED',
           },
         };
 

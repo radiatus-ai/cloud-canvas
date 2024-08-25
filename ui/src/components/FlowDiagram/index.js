@@ -41,7 +41,7 @@ const FlowDiagram = () => {
   //       onOpenModal: () => onOpenModal(node.id),
   //       onDeploy: () => onDeploy(node.id),
   //       onDelete: () => onDeleteNode(node.id),
-  //       deploy_status: node.data.deploy_status || 'undeployed',
+  //       deploy_status: node.data.deploy_status || 'UNDEPLOYED',
   //     },
   //   }));
   // }, [nodes, onOpenModal, onDeploy, onDeleteNode]);

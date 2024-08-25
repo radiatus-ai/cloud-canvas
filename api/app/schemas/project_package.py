@@ -21,7 +21,8 @@ class ProjectPackageBase(BaseModel):
 
 
 class ProjectPackageCreate(ProjectPackageBase):
-    project_id: UUID4
+    deploy_status: Optional[DeployStatus] = DeployStatus.NOT_DEPLOYED
+    pass
 
 
 class ProjectPackageUpdate(BaseModel):
@@ -29,8 +30,8 @@ class ProjectPackageUpdate(BaseModel):
     type: Optional[str] = None
     inputs: Optional[Dict[str, Any]] = None
     outputs: Optional[Dict[str, Any]] = None
-    parameters: Optional[Dict[str, Any]] = DeployStatus.NOT_DEPLOYED
-    deploy_status: Optional[DeployStatus] = None
+    parameters: Optional[Dict[str, Any]] = None
+    deploy_status: Optional[DeployStatus] = DeployStatus.NOT_DEPLOYED
     output_data: Optional[Dict[str, Any]] = None
     parameter_data: Optional[Dict[str, Any]] = None
 

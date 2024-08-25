@@ -106,7 +106,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
     setLocalDeployStatus('DESTROYING');
     try {
       await projectsApi.destroyPackage(projectId, data.id, token);
-      setLocalDeployStatus('undeployed');
+      setLocalDeployStatus('UNDEPLOYED');
       setCommandOutputs('Package successfully destroyed.');
     } catch (error) {
       console.error('Destruction failed:', error);
