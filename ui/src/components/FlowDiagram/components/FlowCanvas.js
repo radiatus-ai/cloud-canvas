@@ -3,6 +3,9 @@ import ReactFlow, { Background, Controls } from 'reactflow';
 import CustomNode from '../../CustomNode';
 import CustomConnectionLine from './CustomConnectionLine';
 import CustomEdge from './CustomEdge';
+import {
+  Box,
+} from '@mui/material';
 
 const nodeTypes = {
   custom: CustomNode,
@@ -26,9 +29,13 @@ const FlowCanvas = ({
   onDragOver,
   reactFlowWrapper,
 }) => {
+  const defaultViewport = { x: 0, y: 0, zoom: 0.5 };
+
   return (
+    <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', width: '100%' }}>
     <div style={{ flexGrow: 1 }} ref={reactFlowWrapper}>
       <ReactFlow
+        defaultViewport={defaultViewport}
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
@@ -52,6 +59,7 @@ const FlowCanvas = ({
         <Background variant="dots" gap={12} size={1} />
       </ReactFlow>
     </div>
+    </Box>
   );
 };
 

@@ -100,7 +100,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
         'Deployment failed. Please check the logs for more information.'
       );
     }
-  }, [projectId, data.id]);
+  }, [projectId, data.id, projectsApi, token]);
 
   const handleDestroy = useCallback(async () => {
     setLocalDeployStatus('DESTROYING');
@@ -115,7 +115,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
         'Destruction failed. Please check the logs for more information.'
       );
     }
-  }, [projectId, data.id]);
+  }, [projectId, data.id, projectsApi, token]);
 
   // const handleDelete = useCallback(async () => {
   //   try {

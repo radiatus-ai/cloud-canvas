@@ -1,16 +1,12 @@
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEdgesState, useNodesState } from 'reactflow';
-import { useAuth } from '../../../contexts/Auth';
-import useApi from '../../../hooks/useAPI';
 import useEdgeOperations from './useEdgeOperations';
 import useNodeOperations from './useNodeOperations';
 import useProjectData from './useProjectData';
 
 export const useFlowDiagram = () => {
   const { projectId } = useParams();
-  const { token } = useAuth();
-  const { projects: projectsApi } = useApi();
   const { projectData, isLoading, error } = useProjectData(projectId);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);

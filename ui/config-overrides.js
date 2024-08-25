@@ -5,6 +5,7 @@ module.exports = function override(config) {
   Object.assign(fallback, {
     querystring: require.resolve('querystring-es3'),
     process: require.resolve('process/browser'),
+    buffer: require.resolve("buffer/") ,
   });
   config.resolve.fallback = fallback;
   config.plugins = (config.plugins || []).concat([

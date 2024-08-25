@@ -34,8 +34,6 @@ const DynamicModalForm = ({
   const [formData, setFormData] = useState(initialData);
   const formRef = useRef();
 
-  // Memoize the schema and initialData
-  const memoizedSchema = useMemo(() => schema, [schema]);
   const memoizedInitialData = useMemo(() => initialData, [initialData]);
 
   useEffect(() => {

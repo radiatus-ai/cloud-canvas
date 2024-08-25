@@ -28,7 +28,7 @@ const ModalsContainer = ({
     missingConnectionsModalOpen,
     selectedNodeId,
     formData,
-    droppedPackageInfo,
+    // droppedPackageInfo,
     missingConnections,
     schema, // Added schema from modalState
   } = modalState;

@@ -56,7 +56,7 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
       fetchUserInfo();
       fetchProjects();
     }
-  }, []);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (projectId && projects.length > 0) {

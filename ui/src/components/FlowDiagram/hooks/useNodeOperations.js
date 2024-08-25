@@ -19,13 +19,14 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
 
   const transformPackagesToNodes = (packages) => {
     console.log('packages', packages);
-    return (packages || []).map((pkg) => ({
+    return (packages || []).map((pkg, index) => ({
       id: pkg.id,
       type: 'custom',
       // position: pkg.position && typeof pkg.position.x === 'number' && typeof pkg.position.y === 'number'
       //   ? pkg.position
       //   : { x: Math.random() * 500, y: Math.random() * 500 }, // Generate random position if invalid
-      position: { x: 250, y: 250 },
+      // position: { x: 250, y: 250 },
+      position: { x: 250 * (index + 1), y: 100 * (index + 1) },
       data: {
         id: pkg.id,
         label: pkg.name || '',

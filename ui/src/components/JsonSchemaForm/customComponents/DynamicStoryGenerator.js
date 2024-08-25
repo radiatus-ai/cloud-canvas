@@ -1,20 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Box,
   TextField,
   Button,
   Typography,
   Paper,
-  Chip,
-  IconButton,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Stage, Layer, Rect, Text, Arrow, Circle } from 'react-konva';
+import { Stage, Layer, Rect, Text, Arrow } from 'react-konva';
 
 const StoryNode = ({ node, position, onSelect, isSelected }) => (
   <React.Fragment>
@@ -146,22 +142,26 @@ const DynamicStoryGenerator = ({
   }, [story, selectedNode]);
 
   const generateStory = useCallback(() => {
-    let currentNode = story.nodes[0];
-    let generatedStory = currentNode.content + '\n\n';
-
-    while (true) {
+    const generateNextNode = (currentNode) => {
       const connections = story.connections.filter(
         (conn) => conn.from === currentNode.id
       );
-      if (connections.length === 0) break;
+      if (connections.length === 0) return null;
 
       const randomConnection =
         connections[Math.floor(Math.random() * connections.length)];
-      currentNode = story.nodes.find((node) => node.id === randomConnection.to);
-      generatedStory += currentNode.content + '\n\n';
+      return story.nodes.find((node) => node.id === randomConnection.to);
+    };
+
+    let storyContent = [];
+    let node = story.nodes[0];
+
+    while (node) {
+      storyContent.push(node.content);
+      node = generateNextNode(node);
     }
 
-    return generatedStory;
+    return storyContent.join('\n\n');
   }, [story]);
 
   return (

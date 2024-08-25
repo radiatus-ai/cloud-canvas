@@ -27,7 +27,6 @@ const FlowDiagram = () => {
     modalState,
     setModalState,
     formData,
-    onSubmitForm,
     handleSubmitForm,
     missingConnections,
   } = useFlowDiagram();
