@@ -17,15 +17,15 @@ const StatusDot = styled('div')(({ theme, status }) => ({
   cursor: 'pointer',
   backgroundColor: (() => {
     switch (status) {
-      case 'undeployed':
+      case 'NOT_DEPLOYED':
         return theme?.palette?.grey?.[500] || '#9e9e9e';
-      case 'deploying':
+      case 'DEPLOYING':
         return blue[500];
-      case 'destroying':
+      case 'DESTROYING':
         return yellow[500];
-      case 'deployed':
+      case 'DEPLOYED':
         return theme?.palette?.success?.main || '#4caf50';
-      case 'failed':
+      case 'FAILED':
         return theme?.palette?.error?.main || '#f44336';
       default:
         return theme?.palette?.grey?.[500] || '#9e9e9e';
@@ -41,7 +41,9 @@ const StyledModal = styled(Modal)(() => ({
 
 const ModalContent = styled(Box)(({ theme }) => ({
   backgroundColor: theme?.palette?.background?.paper || '#ffffff',
-  boxShadow: theme?.shadows?.[5] || '0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12)',
+  boxShadow:
+    theme?.shadows?.[5] ||
+    '0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12)',
   borderRadius: theme?.shape?.borderRadius || '4px',
   maxWidth: '90%',
   maxHeight: '90%',
@@ -85,11 +87,11 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
   }, []);
 
   const handleDeploy = useCallback(async () => {
-    setLocalDeployStatus('deploying');
+    setLocalDeployStatus('DEPLOYING');
     try {
       const result = await projectsApi.deployPackage(projectId, data.id, token);
 
-      setLocalDeployStatus('deployed');
+      setLocalDeployStatus('DEPLOYED');
       setCommandOutputs(result.command_outputs || '');
     } catch (error) {
       console.error('Deployment failed:', error);
@@ -101,7 +103,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
   }, [projectId, data.id]);
 
   const handleDestroy = useCallback(async () => {
-    setLocalDeployStatus('destroying');
+    setLocalDeployStatus('DESTROYING');
     try {
       await projectsApi.destroyPackage(projectId, data.id, token);
       setLocalDeployStatus('undeployed');
@@ -131,7 +133,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
   // }, [projectId, data.id]);
 
   const isDeployingOrDestroying =
-    localDeployStatus === 'deploying' || localDeployStatus === 'destroying';
+    localDeployStatus === 'DEPLOYING' || localDeployStatus === 'DESTROYING';
 
   return (
     <Box
@@ -168,7 +170,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
             </IconButton>
           </span>
         </Tooltip>
-        {localDeployStatus !== 'deployed' ? (
+        {localDeployStatus !== 'DEPLOYED' ? (
           <Tooltip title="Deploy">
             <IconButton
               size="small"

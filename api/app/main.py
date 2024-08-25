@@ -6,7 +6,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.api import api_router, router
+from app.api.api import api_router, base_router, provisioner_router
 from app.core.config import settings
 from app.core.logger import get_logger
 from app.core.middleware import TraceContextMiddleware, setup_honeycomb_telemetry
@@ -39,7 +39,8 @@ async def logging_middleware(request: Request, call_next):
 
 # include main api router
 app.include_router(api_router)
-app.include_router(router)
+app.include_router(base_router)
+app.include_router(provisioner_router)
 
 
 @app.exception_handler(RequestValidationError)

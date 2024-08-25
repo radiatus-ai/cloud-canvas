@@ -134,13 +134,13 @@ const useApi = () => {
           parentSpan
         ),
       destroyPackage: (projectId, packageId, token, parentSpan) =>
-          apiCall(
-            ProjectApi,
-            'destroyProjectPackageProjectsProjectIdPackagesPackageIdDeployPost',
-            [projectId, packageId],
-            token,
-            parentSpan
-          ),
+        apiCall(
+          ProjectApi,
+          'destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete',
+          [projectId, packageId],
+          token,
+          parentSpan
+        ),
       // New methods for connections
       listConnections: (projectId, token, parentSpan) =>
         apiCall(

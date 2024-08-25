@@ -2,17 +2,17 @@ gen-clients:
 	openapi-generator-cli generate -i data/openapi-spec.yaml -g javascript -o ./ui/canvas-client
 
 build:
-	docker compose build api-deploy ui-deploy provisioner-deploy
+	docker compose build api-deploy ui-deploy
 
 tag:
 	docker tag cloud-canvas-api-deploy:latest us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/api:latest
 	docker tag cloud-canvas-ui-deploy:latest us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/ui:latest
-	docker tag cloud-canvas-provisioner-deploy:latest us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/provisioner:latest
+# docker tag cloud-canvas-provisioner-deploy:latest us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/provisioner:latest
 
 upload: build tag
 	docker push us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/api:latest
 	docker push us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/ui:latest
-	docker push us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/provisioner:latest
+# docker push us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/provisioner:latest
 
 
 deploy: build tag upload

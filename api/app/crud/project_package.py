@@ -109,6 +109,8 @@ class CRUDProjectPackage(
                 "parameter_data": package.parameter_data,
                 "outputs": package.outputs or {},
             },
+            "action": "DEPLOY",
+            # "secrets": {}
             # "connected_input_data": package.connected_input_data or {},
         }
 
@@ -125,11 +127,27 @@ class CRUDProjectPackage(
         if not package:
             return None
 
-        # Here you would typically trigger your actual destroy process
-        # For now, we'll just set the status to NOT_DEPLOYED
-        package.deploy_status = "NOT_DEPLOYED"
-        await db.commit()
-        await db.refresh(package)
+        # enum isn't working for some reason
+        # package.deploy_status = "DESTROYING"
+        # await db.commit()
+        # await db.refresh(package)
+
+        # Create a dictionary matching the DeploymentMessage struct
+        deployment_message = {
+            "project_id": str(project_id),
+            "package_id": str(package_id),
+            "package": {
+                "type": package.type,
+                "parameter_data": package.parameter_data,
+                "outputs": package.outputs or {},
+            },
+            "action": "DESTROY",
+            # "secrets": {}
+        }
+
+        send_pubsub_message(
+            "rad-dev-canvas-kwm6", "provisioner-topic", deployment_message
+        )
 
         return package
 

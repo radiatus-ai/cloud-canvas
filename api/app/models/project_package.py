@@ -14,7 +14,14 @@ class ProjectPackage(Base):
     project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id"))
     type = Column(String)
     deploy_status = Column(
-        Enum("NOT_DEPLOYED", "DEPLOYING", "DEPLOYED", "FAILED", name="deploy_status")
+        Enum(
+            "NOT_DEPLOYED",
+            "DEPLOYING",
+            "DEPLOYED",
+            "DESTROYING",
+            "FAILED",
+            name="deploy_status",
+        )
     )
     inputs = Column(JSON)
     outputs = Column(JSON)

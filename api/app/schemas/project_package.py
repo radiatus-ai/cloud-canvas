@@ -7,6 +7,7 @@ from pydantic import UUID4, BaseModel
 class DeployStatus(str, Enum):
     NOT_DEPLOYED = "NOT_DEPLOYED"
     DEPLOYING = "DEPLOYING"
+    DESTROYING = "DESTROYING"
     DEPLOYED = "DEPLOYED"
     FAILED = "FAILED"
 

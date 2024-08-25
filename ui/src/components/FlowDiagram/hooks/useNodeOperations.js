@@ -127,6 +127,7 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
     [projectId, token, projectsApi, setNodes]
   );
 
+  // todo: dedupe with CustomNode/NodeHeader.js
   const onDeploy = useCallback(
     async (nodeId) => {
       const node = nodes.find((n) => n.id === nodeId);
