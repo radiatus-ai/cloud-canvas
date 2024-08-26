@@ -20,72 +20,107 @@ import CredentialType from './CredentialType';
  * @version 0.1.0
  */
 class CredentialCreate {
-    /**
-     * Constructs a new <code>CredentialCreate</code>.
-     * @alias module:model/CredentialCreate
-     * @param credentialType {module:model/CredentialType}
-     * @param credentialValue {String}
-     */
-    constructor(credentialType, credentialValue) {
+  /**
+   * Constructs a new <code>CredentialCreate</code>.
+   * @alias module:model/CredentialCreate
+   * @param credentialType {module:model/CredentialType}
+   * @param name {String}
+   * @param credentialValue {String}
+   */
+  constructor(credentialType, name, credentialValue) {
+    CredentialCreate.initialize(this, credentialType, name, credentialValue);
+  }
 
-        CredentialCreate.initialize(this, credentialType, credentialValue);
+  /**
+   * Initializes the fields of this object.
+   * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
+   * Only for internal use.
+   */
+  static initialize(obj, credentialType, name, credentialValue) {
+    obj['credential_type'] = credentialType;
+    obj['name'] = name;
+    obj['credential_value'] = credentialValue;
+  }
+
+  /**
+   * Constructs a <code>CredentialCreate</code> from a plain JavaScript object, optionally creating a new instance.
+   * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @param {module:model/CredentialCreate} obj Optional instance to populate.
+   * @return {module:model/CredentialCreate} The populated <code>CredentialCreate</code> instance.
+   */
+  static constructFromObject(data, obj) {
+    if (data) {
+      obj = obj || new CredentialCreate();
+
+      if (data.hasOwnProperty('credential_type')) {
+        obj['credential_type'] = CredentialType.constructFromObject(
+          data['credential_type']
+        );
+      }
+      if (data.hasOwnProperty('name')) {
+        obj['name'] = ApiClient.convertToType(data['name'], 'String');
+      }
+      if (data.hasOwnProperty('credential_value')) {
+        obj['credential_value'] = ApiClient.convertToType(
+          data['credential_value'],
+          'String'
+        );
+      }
+    }
+    return obj;
+  }
+
+  /**
+   * Validates the JSON data with respect to <code>CredentialCreate</code>.
+   * @param {Object} data The plain JavaScript object bearing properties of interest.
+   * @return {boolean} to indicate whether the JSON data is valid with respect to <code>CredentialCreate</code>.
+   */
+  static validateJSON(data) {
+    // check to make sure all required properties are present in the JSON string
+    for (const property of CredentialCreate.RequiredProperties) {
+      if (!data.hasOwnProperty(property)) {
+        throw new Error(
+          'The required field `' +
+            property +
+            '` is not found in the JSON data: ' +
+            JSON.stringify(data)
+        );
+      }
+    }
+    // ensure the json data is a string
+    if (
+      data['name'] &&
+      !(typeof data['name'] === 'string' || data['name'] instanceof String)
+    ) {
+      throw new Error(
+        'Expected the field `name` to be a primitive type in the JSON string but got ' +
+          data['name']
+      );
+    }
+    // ensure the json data is a string
+    if (
+      data['credential_value'] &&
+      !(
+        typeof data['credential_value'] === 'string' ||
+        data['credential_value'] instanceof String
+      )
+    ) {
+      throw new Error(
+        'Expected the field `credential_value` to be a primitive type in the JSON string but got ' +
+          data['credential_value']
+      );
     }
 
-    /**
-     * Initializes the fields of this object.
-     * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
-     * Only for internal use.
-     */
-    static initialize(obj, credentialType, credentialValue) {
-        obj['credential_type'] = credentialType;
-        obj['credential_value'] = credentialValue;
-    }
-
-    /**
-     * Constructs a <code>CredentialCreate</code> from a plain JavaScript object, optionally creating a new instance.
-     * Copies all relevant properties from <code>data</code> to <code>obj</code> if supplied or a new instance if not.
-     * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @param {module:model/CredentialCreate} obj Optional instance to populate.
-     * @return {module:model/CredentialCreate} The populated <code>CredentialCreate</code> instance.
-     */
-    static constructFromObject(data, obj) {
-        if (data) {
-            obj = obj || new CredentialCreate();
-
-            if (data.hasOwnProperty('credential_type')) {
-                obj['credential_type'] = CredentialType.constructFromObject(data['credential_type']);
-            }
-            if (data.hasOwnProperty('credential_value')) {
-                obj['credential_value'] = ApiClient.convertToType(data['credential_value'], 'String');
-            }
-        }
-        return obj;
-    }
-
-    /**
-     * Validates the JSON data with respect to <code>CredentialCreate</code>.
-     * @param {Object} data The plain JavaScript object bearing properties of interest.
-     * @return {boolean} to indicate whether the JSON data is valid with respect to <code>CredentialCreate</code>.
-     */
-    static validateJSON(data) {
-        // check to make sure all required properties are present in the JSON string
-        for (const property of CredentialCreate.RequiredProperties) {
-            if (!data.hasOwnProperty(property)) {
-                throw new Error("The required field `" + property + "` is not found in the JSON data: " + JSON.stringify(data));
-            }
-        }
-        // ensure the json data is a string
-        if (data['credential_value'] && !(typeof data['credential_value'] === 'string' || data['credential_value'] instanceof String)) {
-            throw new Error("Expected the field `credential_value` to be a primitive type in the JSON string but got " + data['credential_value']);
-        }
-
-        return true;
-    }
-
-
+    return true;
+  }
 }
 
-CredentialCreate.RequiredProperties = ["credential_type", "credential_value"];
+CredentialCreate.RequiredProperties = [
+  'credential_type',
+  'name',
+  'credential_value',
+];
 
 /**
  * @member {module:model/CredentialType} credential_type
@@ -93,13 +128,13 @@ CredentialCreate.RequiredProperties = ["credential_type", "credential_value"];
 CredentialCreate.prototype['credential_type'] = undefined;
 
 /**
+ * @member {String} name
+ */
+CredentialCreate.prototype['name'] = undefined;
+
+/**
  * @member {String} credential_value
  */
 CredentialCreate.prototype['credential_value'] = undefined;
-
-
-
-
-
 
 export default CredentialCreate;

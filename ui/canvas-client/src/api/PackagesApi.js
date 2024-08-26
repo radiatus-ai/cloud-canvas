@@ -476,4 +476,75 @@ export default class PackagesApi {
       callback
     );
   }
+
+  /**
+   * Callback function to receive the result of the updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch operation.
+   * @callback module:api/PackagesApi~updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatchCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/ProjectPackage} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
+
+  /**
+   * Update Project Package
+   * @param {String} projectId The ID of the project
+   * @param {String} packageId The ID of the package
+   * @param {module:model/ProjectPackageUpdate} projectPackageUpdate
+   * @param {module:api/PackagesApi~updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatchCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/ProjectPackage}
+   */
+  updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(
+    projectId,
+    packageId,
+    projectPackageUpdate,
+    callback
+  ) {
+    let postBody = projectPackageUpdate;
+    // verify the required parameter 'projectId' is set
+    if (projectId === undefined || projectId === null) {
+      throw new Error(
+        "Missing the required parameter 'projectId' when calling updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch"
+      );
+    }
+    // verify the required parameter 'packageId' is set
+    if (packageId === undefined || packageId === null) {
+      throw new Error(
+        "Missing the required parameter 'packageId' when calling updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch"
+      );
+    }
+    // verify the required parameter 'projectPackageUpdate' is set
+    if (projectPackageUpdate === undefined || projectPackageUpdate === null) {
+      throw new Error(
+        "Missing the required parameter 'projectPackageUpdate' when calling updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch"
+      );
+    }
+
+    let pathParams = {
+      project_id: projectId,
+      package_id: packageId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
+
+    let authNames = [];
+    let contentTypes = ['application/json'];
+    let accepts = ['application/json'];
+    let returnType = ProjectPackage;
+    return this.apiClient.callApi(
+      '/provisioner/projects/{project_id}/packages/{package_id}',
+      'PATCH',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
 }

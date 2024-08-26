@@ -12,6 +12,7 @@
  */
 
 import ApiClient from '../ApiClient';
+import DeployStatus from './DeployStatus';
 
 /**
  * The ProjectPackageCreate model module.
@@ -27,17 +28,15 @@ class ProjectPackageCreate {
    * @param inputs {Object}
    * @param outputs {Object}
    * @param parameters {Object}
-   * @param projectId {String}
    */
-  constructor(name, type, inputs, outputs, parameters, projectId) {
+  constructor(name, type, inputs, outputs, parameters) {
     ProjectPackageCreate.initialize(
       this,
       name,
       type,
       inputs,
       outputs,
-      parameters,
-      projectId
+      parameters
     );
   }
 
@@ -46,13 +45,12 @@ class ProjectPackageCreate {
    * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
    * Only for internal use.
    */
-  static initialize(obj, name, type, inputs, outputs, parameters, projectId) {
+  static initialize(obj, name, type, inputs, outputs, parameters) {
     obj['name'] = name;
     obj['type'] = type;
     obj['inputs'] = inputs;
     obj['outputs'] = outputs;
     obj['parameters'] = parameters;
-    obj['project_id'] = projectId;
   }
 
   /**
@@ -81,10 +79,9 @@ class ProjectPackageCreate {
       if (data.hasOwnProperty('parameters')) {
         obj['parameters'] = ApiClient.convertToType(data['parameters'], Object);
       }
-      if (data.hasOwnProperty('project_id')) {
-        obj['project_id'] = ApiClient.convertToType(
-          data['project_id'],
-          'String'
+      if (data.hasOwnProperty('deploy_status')) {
+        obj['deploy_status'] = DeployStatus.constructFromObject(
+          data['deploy_status']
         );
       }
     }
@@ -128,19 +125,6 @@ class ProjectPackageCreate {
           data['type']
       );
     }
-    // ensure the json data is a string
-    if (
-      data['project_id'] &&
-      !(
-        typeof data['project_id'] === 'string' ||
-        data['project_id'] instanceof String
-      )
-    ) {
-      throw new Error(
-        'Expected the field `project_id` to be a primitive type in the JSON string but got ' +
-          data['project_id']
-      );
-    }
 
     return true;
   }
@@ -152,7 +136,6 @@ ProjectPackageCreate.RequiredProperties = [
   'inputs',
   'outputs',
   'parameters',
-  'project_id',
 ];
 
 /**
@@ -181,8 +164,8 @@ ProjectPackageCreate.prototype['outputs'] = undefined;
 ProjectPackageCreate.prototype['parameters'] = undefined;
 
 /**
- * @member {String} project_id
+ * @member {module:model/DeployStatus} deploy_status
  */
-ProjectPackageCreate.prototype['project_id'] = undefined;
+ProjectPackageCreate.prototype['deploy_status'] = undefined;
 
 export default ProjectPackageCreate;

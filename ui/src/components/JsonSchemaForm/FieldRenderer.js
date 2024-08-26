@@ -64,13 +64,18 @@ const FieldRenderer = ({
   }
 
   if (fieldSchema.enum) {
+    const options = fieldSchema.enum.map((option, index) => ({
+      value: option,
+      label: fieldSchema.enumNames?.[index] || option,
+    }));
+
     return (
       <FormControl {...commonProps}>
         <InputLabel error={touched && !!error}>{commonProps.label}</InputLabel>
         <Select {...commonProps} label={commonProps.label}>
-          {fieldSchema.enum.map((option) => (
-            <MenuItem key={option} value={option}>
-              {option}
+          {options.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
             </MenuItem>
           ))}
         </Select>

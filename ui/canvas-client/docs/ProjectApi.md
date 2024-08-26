@@ -2,15 +2,16 @@
 
 All URIs are relative to _http://localhost_
 
-| Method                                                                                                                                                         | HTTP request                                                    | Description             |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------- |
-| [**createProjectPackageProjectsProjectIdPackagesPost**](ProjectApi.md#createProjectPackageProjectsProjectIdPackagesPost)                                       | **POST** /projects/{project_id}/packages/                       | Create Project Package  |
-| [**deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete**](ProjectApi.md#deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete)                 | **DELETE** /projects/{project_id}/packages/{package_id}         | Delete Project Package  |
-| [**deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost**](ProjectApi.md#deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost)         | **POST** /projects/{project_id}/packages/{package_id}/deploy    | Deploy Project Package  |
-| [**destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete**](ProjectApi.md#destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete) | **DELETE** /projects/{project_id}/packages/{package_id}/destroy | Destroy Project Package |
-| [**getProjectPackageProjectsProjectIdPackagesPackageIdGet**](ProjectApi.md#getProjectPackageProjectsProjectIdPackagesPackageIdGet)                             | **GET** /projects/{project_id}/packages/{package_id}            | Get Project Package     |
-| [**listProjectPackagesProjectsProjectIdPackagesGet**](ProjectApi.md#listProjectPackagesProjectsProjectIdPackagesGet)                                           | **GET** /projects/{project_id}/packages/                        | List Project Packages   |
-| [**updateProjectPackageProjectsProjectIdPackagesPackageIdPatch**](ProjectApi.md#updateProjectPackageProjectsProjectIdPackagesPackageIdPatch)                   | **PATCH** /projects/{project_id}/packages/{package_id}          | Update Project Package  |
+| Method                                                                                                                                                             | HTTP request                                                       | Description             |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ | ----------------------- |
+| [**createProjectPackageProjectsProjectIdPackagesPost**](ProjectApi.md#createProjectPackageProjectsProjectIdPackagesPost)                                           | **POST** /projects/{project_id}/packages/                          | Create Project Package  |
+| [**deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete**](ProjectApi.md#deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete)                     | **DELETE** /projects/{project_id}/packages/{package_id}            | Delete Project Package  |
+| [**deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost**](ProjectApi.md#deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost)             | **POST** /projects/{project_id}/packages/{package_id}/deploy       | Deploy Project Package  |
+| [**destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete**](ProjectApi.md#destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete)     | **DELETE** /projects/{project_id}/packages/{package_id}/destroy    | Destroy Project Package |
+| [**getProjectPackageProjectsProjectIdPackagesPackageIdGet**](ProjectApi.md#getProjectPackageProjectsProjectIdPackagesPackageIdGet)                                 | **GET** /projects/{project_id}/packages/{package_id}               | Get Project Package     |
+| [**listProjectPackagesProjectsProjectIdPackagesGet**](ProjectApi.md#listProjectPackagesProjectsProjectIdPackagesGet)                                               | **GET** /projects/{project_id}/packages/                           | List Project Packages   |
+| [**updateProjectPackageProjectsProjectIdPackagesPackageIdPatch**](ProjectApi.md#updateProjectPackageProjectsProjectIdPackagesPackageIdPatch)                       | **PATCH** /projects/{project_id}/packages/{package_id}             | Update Project Package  |
+| [**updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch**](ProjectApi.md#updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch) | **PATCH** /provisioner/projects/{project_id}/packages/{package_id} | Update Project Package  |
 
 ## createProjectPackageProjectsProjectIdPackagesPost
 
@@ -314,6 +315,56 @@ let projectId = 'projectId_example'; // String | The ID of the project
 let packageId = 'packageId_example'; // String | The ID of the package
 let projectPackageUpdate = new PlatformApi.ProjectPackageUpdate(); // ProjectPackageUpdate |
 apiInstance.updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(
+  projectId,
+  packageId,
+  projectPackageUpdate,
+  (error, data, response) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log('API called successfully. Returned data: ' + data);
+    }
+  }
+);
+```
+
+### Parameters
+
+| Name                     | Type                                                | Description           | Notes |
+| ------------------------ | --------------------------------------------------- | --------------------- | ----- |
+| **projectId**            | **String**                                          | The ID of the project |
+| **packageId**            | **String**                                          | The ID of the package |
+| **projectPackageUpdate** | [**ProjectPackageUpdate**](ProjectPackageUpdate.md) |                       |
+
+### Return type
+
+[**ProjectPackage**](ProjectPackage.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+## updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch
+
+> ProjectPackage updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, projectPackageUpdate)
+
+Update Project Package
+
+### Example
+
+```javascript
+import PlatformApi from 'platform_api';
+
+let apiInstance = new PlatformApi.ProjectApi();
+let projectId = 'projectId_example'; // String | The ID of the project
+let packageId = 'packageId_example'; // String | The ID of the package
+let projectPackageUpdate = new PlatformApi.ProjectPackageUpdate(); // ProjectPackageUpdate |
+apiInstance.updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(
   projectId,
   packageId,
   projectPackageUpdate,

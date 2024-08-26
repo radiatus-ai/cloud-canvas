@@ -692,6 +692,52 @@ paths:
           content:
             application/json:
               schema: {}
+  "/provisioner/projects/{project_id}/packages/{package_id}":
+    patch:
+      tags:
+        - provisioner
+        - project
+        - packages
+      summary: Update Project Package
+      operationId: update_project_package_provisioner_projects__project_id__packages__package_id__patch
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The ID of the project
+            title: Project Id
+          description: The ID of the project
+        - name: package_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            description: The ID of the package
+            title: Package Id
+          description: The ID of the package
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ProjectPackageUpdate"
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProjectPackage"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
 components:
   schemas:
     Connection:
@@ -759,6 +805,9 @@ components:
       properties:
         credential_type:
           "$ref": "#/components/schemas/CredentialType"
+        name:
+          type: string
+          title: Name
         id:
           type: string
           format: uuid4
@@ -770,6 +819,7 @@ components:
       type: object
       required:
         - credential_type
+        - name
         - id
         - organization_id
       title: Credential
@@ -777,12 +827,16 @@ components:
       properties:
         credential_type:
           "$ref": "#/components/schemas/CredentialType"
+        name:
+          type: string
+          title: Name
         credential_value:
           type: string
           title: Credential Value
       type: object
       required:
         - credential_type
+        - name
         - credential_value
       title: CredentialCreate
     CredentialType:
@@ -809,6 +863,7 @@ components:
       enum:
         - NOT_DEPLOYED
         - DEPLOYING
+        - DESTROYING
         - DEPLOYED
         - FAILED
       title: DeployStatus
@@ -838,6 +893,12 @@ components:
         parameters:
           type: object
           title: Parameters
+        private:
+          anyOf:
+            - type: boolean
+            - type: "null"
+          title: Private
+          default: true
         id:
           type: string
           format: uuid4
@@ -868,6 +929,12 @@ components:
         parameters:
           type: object
           title: Parameters
+        private:
+          anyOf:
+            - type: boolean
+            - type: "null"
+          title: Private
+          default: true
       type: object
       required:
         - name
@@ -889,6 +956,12 @@ components:
           type: string
           format: uuid4
           title: Organization Id
+        credentials:
+          items:
+            "$ref": "#/components/schemas/Credential"
+          type: array
+          title: Credentials
+          default: []
       type: object
       required:
         - name
@@ -906,6 +979,14 @@ components:
               format: uuid4
             - type: "null"
           title: Organization Id
+        credential_ids:
+          anyOf:
+            - items:
+                type: string
+                format: uuid4
+              type: array
+            - type: "null"
+          title: Credential Ids
       type: object
       required:
         - name
@@ -975,10 +1056,11 @@ components:
         parameters:
           type: object
           title: Parameters
-        project_id:
-          type: string
-          format: uuid4
-          title: Project Id
+        deploy_status:
+          anyOf:
+            - "$ref": "#/components/schemas/DeployStatus"
+            - type: "null"
+          default: NOT_DEPLOYED
       type: object
       required:
         - name
@@ -986,7 +1068,6 @@ components:
         - inputs
         - outputs
         - parameters
-        - project_id
       title: ProjectPackageCreate
     ProjectPackageUpdate:
       properties:
@@ -1015,11 +1096,11 @@ components:
             - type: object
             - type: "null"
           title: Parameters
-          default: NOT_DEPLOYED
         deploy_status:
           anyOf:
             - "$ref": "#/components/schemas/DeployStatus"
             - type: "null"
+          default: NOT_DEPLOYED
         output_data:
           anyOf:
             - type: object
@@ -1039,6 +1120,14 @@ components:
             - type: string
             - type: "null"
           title: Name
+        credential_ids:
+          anyOf:
+            - items:
+                type: string
+                format: uuid4
+              type: array
+            - type: "null"
+          title: Credential Ids
       type: object
       title: ProjectUpdate
     ValidationError:

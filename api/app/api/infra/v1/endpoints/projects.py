@@ -19,12 +19,12 @@ async def list_projects(
     skip: int = 0, limit: int = 100, deps: dict = Depends(get_db_and_current_user)
 ):
     db = deps["db"]
-    deps["current_user"]
     organization = deps["organization_id"]
     organization_id = organization.id
-    return await crud_project.list_projects_for_organization(
+    projects = await crud_project.list_projects_for_organization(
         db, skip=skip, limit=limit, organization_id=organization_id
     )
+    return projects
 
 
 # @router.post("/projects/", response_model=Project)

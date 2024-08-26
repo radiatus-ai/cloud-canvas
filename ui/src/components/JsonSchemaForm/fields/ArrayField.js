@@ -89,16 +89,21 @@ const ArrayField = ({ fieldSchema, value, onChange, error }) => {
   const renderArrayItem = useCallback(
     (item, index) => {
       const itemSchema = getItemSchema(index);
-      if (itemSchema.enum && itemSchema.enumNames) {
+      if (itemSchema.enum) {
+        const options = itemSchema.enum.map((value, idx) => ({
+          value,
+          label: itemSchema.enumNames?.[idx] || value,
+        }));
+
         return (
           <Select
             value={item}
             onChange={(e) => handleItemChange(index, e.target.value)}
             fullWidth
           >
-            {itemSchema.enum.map((value, idx) => (
-              <MenuItem key={value} value={value}>
-                {itemSchema.enumNames[idx]}
+            {options.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
               </MenuItem>
             ))}
           </Select>

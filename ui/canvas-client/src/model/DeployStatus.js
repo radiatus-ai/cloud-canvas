@@ -13,47 +13,47 @@
 
 import ApiClient from '../ApiClient';
 /**
-* Enum class DeployStatus.
-* @enum {}
-* @readonly
-*/
+ * Enum class DeployStatus.
+ * @enum {}
+ * @readonly
+ */
 export default class DeployStatus {
+  /**
+   * value: "NOT_DEPLOYED"
+   * @const
+   */
+  NOT_DEPLOYED = 'NOT_DEPLOYED';
 
-        /**
-         * value: "NOT_DEPLOYED"
-         * @const
-         */
-        "NOT_DEPLOYED" = "NOT_DEPLOYED";
+  /**
+   * value: "DEPLOYING"
+   * @const
+   */
+  DEPLOYING = 'DEPLOYING';
 
+  /**
+   * value: "DESTROYING"
+   * @const
+   */
+  DESTROYING = 'DESTROYING';
 
-        /**
-         * value: "DEPLOYING"
-         * @const
-         */
-        "DEPLOYING" = "DEPLOYING";
+  /**
+   * value: "DEPLOYED"
+   * @const
+   */
+  DEPLOYED = 'DEPLOYED';
 
+  /**
+   * value: "FAILED"
+   * @const
+   */
+  FAILED = 'FAILED';
 
-        /**
-         * value: "DEPLOYED"
-         * @const
-         */
-        "DEPLOYED" = "DEPLOYED";
-
-
-        /**
-         * value: "FAILED"
-         * @const
-         */
-        "FAILED" = "FAILED";
-
-
-
-    /**
-    * Returns a <code>DeployStatus</code> enum value from a Javascript object name.
-    * @param {Object} data The plain JavaScript object containing the name of the enum value.
-    * @return {module:model/DeployStatus} The enum <code>DeployStatus</code> value.
-    */
-    static constructFromObject(object) {
-        return object;
-    }
+  /**
+   * Returns a <code>DeployStatus</code> enum value from a Javascript object name.
+   * @param {Object} data The plain JavaScript object containing the name of the enum value.
+   * @return {module:model/DeployStatus} The enum <code>DeployStatus</code> value.
+   */
+  static constructFromObject(object) {
+    return object;
+  }
 }

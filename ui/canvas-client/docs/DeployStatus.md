@@ -2,11 +2,12 @@
 
 ## Enum
 
+- `NOT_DEPLOYED` (value: `"NOT_DEPLOYED"`)
 
-* `NOT_DEPLOYED` (value: `"NOT_DEPLOYED"`)
+- `DEPLOYING` (value: `"DEPLOYING"`)
 
-* `DEPLOYING` (value: `"DEPLOYING"`)
+- `DESTROYING` (value: `"DESTROYING"`)
 
-* `DEPLOYED` (value: `"DEPLOYED"`)
+- `DEPLOYED` (value: `"DEPLOYED"`)
 
-* `FAILED` (value: `"FAILED"`)
+- `FAILED` (value: `"FAILED"`)

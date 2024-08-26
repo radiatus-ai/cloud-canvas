@@ -5,10 +5,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import joinedload
 
+from app.core.logger import get_logger
 from app.crud.base import CRUDBase
 from app.models.credential import Credential
 from app.models.project import Project
 from app.schemas.project import ProjectCreate, ProjectUpdate
+
+logger = get_logger(__name__)
 
 
 class CRUDProject(CRUDBase[Project, ProjectCreate, ProjectUpdate]):
@@ -43,7 +46,7 @@ class CRUDProject(CRUDBase[Project, ProjectCreate, ProjectUpdate]):
             .filter(self.model.id == id)
         )
         result = await db.execute(query)
-        return result.scalar_one_or_none()
+        return result.unique().scalar_one_or_none()
 
     async def list_projects_for_organization(
         self,
@@ -67,12 +70,13 @@ class CRUDProject(CRUDBase[Project, ProjectCreate, ProjectUpdate]):
         self, db: AsyncSession, *, db_obj: Project, obj_in: ProjectUpdate
     ) -> Project:
         update_data = obj_in.dict(exclude_unset=True)
+        logger.info(f"Update data: {update_data}")
         if "credential_ids" in update_data:
             credential_ids = update_data.pop("credential_ids")
-            credentials = await db.execute(
+            credentials_query = await db.execute(
                 select(Credential).where(Credential.id.in_(credential_ids))
             )
-            db_obj.credentials = credentials.scalars().all()
+            db_obj.credentials = credentials_query.unique().scalars().all()
         return await super().update(db, db_obj=db_obj, obj_in=update_data)
 
     async def delete_project(self, db: AsyncSession, *, id: int) -> Project:

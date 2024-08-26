@@ -94,9 +94,16 @@ const Projects = () => {
 
   const handleUpdateProject = async (updatedData) => {
     try {
+      console.log('updatedData before:', updatedData);
+      const updatedMergedData = {
+        ...updatedData,
+        credential_ids:
+          updatedData.credentials || editProject.credentials || [],
+      };
+      console.log('updatedData after:', updatedMergedData);
       const response = await projectsApi.update(
         editProject.id,
-        updatedData,
+        updatedMergedData,
         token
       );
       setProjects(

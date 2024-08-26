@@ -42,14 +42,17 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }) => {
         title: 'Project Credentials',
         items: {
           type: 'string',
-          enum:
-            orgSecrets.length > 0 ? orgSecrets.map((secret) => secret.id) : [],
-          enumNames:
-            orgSecrets.length > 0
-              ? orgSecrets.map((secret) => secret.name)
-              : [],
+          enum: orgSecrets.map((secret) => secret.id),
         },
         uniqueItems: true,
+      },
+    },
+  };
+
+  const uiSchema = {
+    credentials: {
+      'ui:options': {
+        enumNames: orgSecrets.map((secret) => secret.name),
       },
     },
   };
@@ -59,6 +62,7 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }) => {
       isOpen={isOpen}
       onClose={onClose}
       schema={schema}
+      uiSchema={uiSchema}
       onSubmit={onSubmit}
       initialData={project}
       title="Edit Project"
