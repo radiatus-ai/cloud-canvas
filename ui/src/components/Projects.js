@@ -78,8 +78,13 @@ const Projects = () => {
   };
 
   const handleEditProject = (project) => {
-    setEditProject(project);
-    setEditDialogOpen(true);
+    if (project && project.name) {
+      setEditProject(project);
+      setEditDialogOpen(true);
+    } else {
+      console.error('Invalid project data:', project);
+      setError('Unable to edit project. Invalid project data.');
+    }
   };
 
   const handleCloseEditDialog = () => {

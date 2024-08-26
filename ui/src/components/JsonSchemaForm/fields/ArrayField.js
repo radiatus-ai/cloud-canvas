@@ -18,6 +18,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import JsonSchemaForm from '../JsonSchemaForm';
 import { createDefaultValue, createGetItemSchema } from '../utils/schemaUtils';
+import { Select, MenuItem } from '@mui/material';
 
 const ArrayField = ({ fieldSchema, value, onChange, error }) => {
   const [expanded, setExpanded] = useState(null);
@@ -85,6 +86,36 @@ const ArrayField = ({ fieldSchema, value, onChange, error }) => {
     [fieldSchema.title]
   );
 
+  const renderArrayItem = useCallback(
+    (item, index) => {
+      const itemSchema = getItemSchema(index);
+      if (itemSchema.enum && itemSchema.enumNames) {
+        return (
+          <Select
+            value={item}
+            onChange={(e) => handleItemChange(index, e.target.value)}
+            fullWidth
+          >
+            {itemSchema.enum.map((value, idx) => (
+              <MenuItem key={value} value={value}>
+                {itemSchema.enumNames[idx]}
+              </MenuItem>
+            ))}
+          </Select>
+        );
+      }
+
+      return (
+        <JsonSchemaForm
+          schema={itemSchema}
+          initialData={item}
+          onChange={(data) => handleItemChange(index, data)}
+        />
+      );
+    },
+    [getItemSchema, handleItemChange]
+  );
+
   return (
     <Box sx={{ mb: 2 }}>
       <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
@@ -135,11 +166,7 @@ const ArrayField = ({ fieldSchema, value, onChange, error }) => {
                         </AccordionSummary>
                         <AccordionDetails>
                           <Paper elevation={0} sx={{ p: 2 }}>
-                            <JsonSchemaForm
-                              schema={getItemSchema(index)}
-                              initialData={item}
-                              onChange={(data) => handleItemChange(index, data)}
-                            />
+                            {renderArrayItem(item, index)}
                             <Box
                               sx={{
                                 display: 'flex',

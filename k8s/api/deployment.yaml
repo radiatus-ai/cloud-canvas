@@ -60,25 +60,27 @@ spec:
                   name: credential-encryption-key
                   key: API_CREDENTIAL_ENCRYPTION_KEY
             - name: OTEL_SERVICE_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: otel-service-name
-                  key: API_OTEL_SERVICE_NAME
-            - name: OTEL_EXPORTER_OTLP_HEADERS
-              valueFrom:
-                secretKeyRef:
-                  name: otel-exporter-otlp-headers
-                  key: API_OTEL_EXPORTER_OTLP_HEADERS
+              value: canvas-api
+              # valueFrom:
+              #   secretKeyRef:
+              #     name: otel-service-name
+              #     key: API_OTEL_SERVICE_NAME
+            # - name: OTEL_EXPORTER_OTLP_HEADERS
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: otel-exporter-otlp-headers
+            #       key: API_OTEL_EXPORTER_OTLP_HEADERS
             - name: HONEYCOMB_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: honeycomb-api-key
                   key: API_HONEYCOMB_API_KEY
             - name: HONEYCOMB_DATASET
-              valueFrom:
-                secretKeyRef:
-                  name: honeycomb-dataset
-                  key: API_HONEYCOMB_DATASET
+              value: dev
+              # valueFrom:
+              #   secretKeyRef:
+              #     name: honeycomb-dataset
+              #     key: API_HONEYCOMB_DATASET
       # volumes:
       # - name: mysecret
       #   csi:

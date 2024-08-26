@@ -17,10 +17,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import {
-  Brightness4,
-  Brightness7,
-} from '@mui/icons-material';
+import { Brightness4, Brightness7 } from '@mui/icons-material';
 import KeyIcon from '@mui/icons-material/Key';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
@@ -120,30 +117,30 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
           </ListItem>
         ))}
         <ListItem
-            button
-            // component={Link}
-            // to={item.path}
-            onClick={toggleDarkMode}
-            // key={item.text}
-            sx={{
-              '&:hover': {
-                backgroundColor: darkMode
-                  ? 'rgba(255, 255, 255, 0.1)'
-                  : 'rgba(0, 0, 0, 0.1)',
-              },
-            }}
-          >
-            <ListItemIcon sx={{ color: theme.palette.primary.main }}>
-              {/* {item.icon} */}
-              {/* <IconButton onClick={toggleDarkMode} color="inherit" sx={iconStyle}> */}
-              {darkMode ? <Brightness7 /> : <Brightness4 />}
-              {/* </IconButton> */}
-            </ListItemIcon>
-            <ListItemText
-              primary={`Lights ${darkMode ? 'On' : 'Off'}`}
-              sx={{ color: theme.palette.text.primary }}
-            />
-          </ListItem>
+          button
+          // component={Link}
+          // to={item.path}
+          onClick={toggleDarkMode}
+          // key={item.text}
+          sx={{
+            '&:hover': {
+              backgroundColor: darkMode
+                ? 'rgba(255, 255, 255, 0.1)'
+                : 'rgba(0, 0, 0, 0.1)',
+            },
+          }}
+        >
+          <ListItemIcon sx={{ color: theme.palette.primary.main }}>
+            {/* {item.icon} */}
+            {/* <IconButton onClick={toggleDarkMode} color="inherit" sx={iconStyle}> */}
+            {darkMode ? <Brightness7 /> : <Brightness4 />}
+            {/* </IconButton> */}
+          </ListItemIcon>
+          <ListItemText
+            primary={`Lights ${darkMode ? 'On' : 'Off'}`}
+            sx={{ color: theme.palette.text.primary }}
+          />
+        </ListItem>
         <ListItem button onClick={onLogout}>
           <ListItemIcon>
             <ExitToAppIcon />
@@ -158,7 +155,7 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
     if (currentProject) {
       return currentProject.name;
     }
-    return location.pathname === '/' ? 'Projects' : 'Platform';
+    return location.pathname === '/' ? 'Projects' : 'Cloud Canvas';
   };
 
   return (
@@ -215,9 +212,8 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
                 {project.name}
               </MenuItem>
             ))}
-            
           </Menu>
-          
+
           {userInfo && (
             <Avatar
               alt={userInfo.name}

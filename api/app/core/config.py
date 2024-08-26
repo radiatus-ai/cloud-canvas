@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     OTEL_SERVICE_NAME: str = "your-service-name"
     OTEL_EXPORTER_OTLP_PROTOCOL: str = "http/protobuf"
     OTEL_EXPORTER_OTLP_ENDPOINT: str = "https://api.honeycomb.io:443"  # US instance
-    OTEL_EXPORTER_OTLP_HEADERS: str = "x-honeycomb-team=<your-api-key>"
+    # OTEL_EXPORTER_OTLP_HEADERS: str = "x-honeycomb-team=<your-api-key>"
     HONEYCOMB_API_KEY: str
     HONEYCOMB_DATASET: str
 

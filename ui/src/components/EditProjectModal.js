@@ -1,30 +1,37 @@
 import React, { useEffect, useState } from 'react';
+import DynamicModalForm from './DynamicModalForm';
 import { useAuth } from '../contexts/Auth';
 import useApi from '../hooks/useAPI';
-import DynamicModalForm from './DynamicModalForm';
 
 const EditProjectModal = ({ isOpen, onClose, onSubmit, project }) => {
   const [orgSecrets, setOrgSecrets] = useState([]);
-  const { credentials: credentialsApi } = useApi();
+  const { credentials: secretsApi } = useApi();
   const { token } = useAuth();
 
   useEffect(() => {
-    const fetchOrgSecrets = async () => {
-      if (project && project.organization_id) {
-        try {
-          const response = await credentialsApi.listByOrganization(
-            project.organization_id,
-            token
-          );
+    const fetchSecrets = async () => {
+      try {
+        const response = await secretsApi.list(token);
+        if (Array.isArray(response.body)) {
           setOrgSecrets(response.body);
-        } catch (error) {
-          console.error('Error fetching organization secrets:', error);
+          console.log('Secrets fetched:', response.body);
+        } else {
+          console.error('Invalid secrets response format');
         }
+      } catch (error) {
+        console.error('Error fetching secrets:', error);
       }
     };
 
-    fetchOrgSecrets();
-  }, [project, credentialsApi, token]);
+    if (isOpen) {
+      fetchSecrets();
+    }
+  }, [isOpen, secretsApi, token]);
+
+  if (!project) {
+    console.error('Project is null or undefined in EditProjectModal');
+    return null;
+  }
 
   const schema = {
     type: 'object',
@@ -35,8 +42,12 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }) => {
         title: 'Project Credentials',
         items: {
           type: 'string',
-          enum: orgSecrets?.map((secret) => secret.id) || [],
-          enumNames: orgSecrets?.map((secret) => secret.name) || [],
+          enum:
+            orgSecrets.length > 0 ? orgSecrets.map((secret) => secret.id) : [],
+          enumNames:
+            orgSecrets.length > 0
+              ? orgSecrets.map((secret) => secret.name)
+              : [],
         },
         uniqueItems: true,
       },
