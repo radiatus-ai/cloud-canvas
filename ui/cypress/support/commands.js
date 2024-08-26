@@ -30,7 +30,7 @@ Cypress.Commands.add('loginByGoogleApi', () => {
         },
       };
 
-      window.localStorage.setItem('googleCypress', JSON.stringify(userItem));
+      window.localStorage.setItem('authToken', JSON.stringify(userItem));
       cy.reload(); // Add this line to reload the page
     });
   });

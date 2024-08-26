@@ -6,12 +6,14 @@ import {
   ProjectApi,
   handleApiError,
 } from '../clients/canvas-client';
+import { useAuth } from '../contexts/Auth';
 
 const useApi = () => {
   const [error, setError] = useState(null);
+  const { getValidToken, logout } = useAuth();
 
   const apiCall = useCallback(
-    async (ApiClass, method, params = [], token = null, parentSpan = null) => {
+    async (ApiClass, method, params = [], parentSpan = null) => {
       let headers = {};
 
       if (parentSpan) {
@@ -22,7 +24,7 @@ const useApi = () => {
       }
 
       try {
-        const api = createApi(ApiClass, token);
+        const api = await createApi(ApiClass, getValidToken);
         const apiMethod = api[method];
         if (typeof apiMethod !== 'function') {
           throw new Error(`Invalid method ${method} for ${ApiClass.name}`);
@@ -36,10 +38,13 @@ const useApi = () => {
         }
         setError(err.message);
         handleApiError(err);
+        if (err.response && err.response.status === 401) {
+          logout();
+        }
         throw err;
       }
     },
-    []
+    [getValidToken, logout]
   );
 
   const projects = useMemo(

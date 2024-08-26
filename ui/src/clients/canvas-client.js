@@ -10,16 +10,9 @@ const getApiUrl = () => {
   }
 };
 
-const getHeaders = (customToken = null) => {
-  const token = customToken || localStorage.getItem('authToken');
-  return {
-    Authorization: token ? `Bearer ${token}` : undefined,
-  };
-};
-
 let apiClientInstance = null;
 
-const createApiClient = (customToken = null) => {
+const createApiClient = async (getValidToken) => {
   if (apiClientInstance) {
     return apiClientInstance;
   }
@@ -42,9 +35,10 @@ const createApiClient = (customToken = null) => {
     returnType,
     callback
   ) => {
+    const token = await getValidToken();
     const updatedHeaderParams = {
       ...headerParams,
-      ...getHeaders(customToken),
+      Authorization: token ? `Bearer ${token}` : undefined,
     };
 
     try {
@@ -80,8 +74,8 @@ const createApiClient = (customToken = null) => {
 };
 
 // Factory function to create API instances
-export const createApi = (ApiClass, customToken = null) => {
-  const apiClient = createApiClient(customToken);
+export const createApi = async (ApiClass, getValidToken) => {
+  const apiClient = await createApiClient(getValidToken);
   return new ApiClass(apiClient);
 };
 
@@ -99,4 +93,4 @@ export const handleApiError = (error) => {
   // You can add custom error handling logic here, such as showing a notification to the user
 };
 
-export { DefaultApi, ProjectApi};
+export { DefaultApi, ProjectApi };

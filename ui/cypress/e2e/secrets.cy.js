@@ -3,6 +3,10 @@ describe('Secret Creation', () => {
       // Visit the main page and log in before each test
       cy.visit('http://localhost:3000');
       cy.loginByGoogleApi();
+
+      // Add this to check if the token is set correctly
+      cy.window().its('localStorage').invoke('getItem', 'authToken').should('exist');
+
       cy.visit('http://localhost:3000/secrets');
     });
 

@@ -6,45 +6,75 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(() => {
-    const authToken = localStorage.getItem('authToken');
-    if (authToken) return authToken;
+  const [token, setToken] = useState(null);
 
-    const googleCypress = localStorage.getItem('googleCypress');
-    if (googleCypress) {
-      const { token } = JSON.parse(googleCypress);
-      return token;
+  const isTokenExpired = useCallback((token) => {
+    if (!token) return true;
+    try {
+      const decodedToken = jwtDecode(token);
+      return decodedToken.exp * 1000 < Date.now();
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return true;
     }
+  }, []);
 
-    return null;
-  });
-
-  useEffect(() => {
-    console.log('AuthProvider: token changed', token);
+  const refreshToken = useCallback(async () => {
+    try {
+      // Implement your token refresh logic here
+      const response = await fetch('https://auth-service-razsp32k5q-uc.a.run.app/refresh', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (!response.ok) throw new Error('Token refresh failed');
+      const data = await response.json();
+      login(data.user, data.token);
+      return data.token;
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      logout();
+      return null;
+    }
   }, [token]);
 
   const login = useCallback((userData, authToken) => {
-    console.log('AuthProvider: login called');
     localStorage.setItem('authToken', authToken);
     setToken(authToken);
     setUser(userData);
   }, []);
 
   const logout = useCallback(() => {
-    console.log('AuthProvider: logout called');
     localStorage.removeItem('authToken');
     setUser(null);
     setToken(null);
   }, []);
 
+  const getValidToken = useCallback(async () => {
+    if (!token) return null;
+    if (isTokenExpired(token)) {
+      return await refreshToken();
+    }
+    return token;
+  }, [token, isTokenExpired, refreshToken]);
+
+  // Initialize token from localStorage
+  useEffect(() => {
+    const storedToken = localStorage.getItem('authToken');
+    if (storedToken && !isTokenExpired(storedToken)) {
+      setToken(storedToken);
+      // You might want to set the user here as well, if you have that information
+    }
+  }, [isTokenExpired]);
+
   const value = useMemo(
-    () => ({ user, token, login, logout }),
-    [user, token, login, logout]
+    () => ({ user, token, login, logout, getValidToken }),
+    [user, token, login, logout, getValidToken]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
