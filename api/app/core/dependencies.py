@@ -31,6 +31,7 @@ async def get_current_user(request: Request):
     if not token:
         raise HTTPException(status_code=401, detail="No authorization token provided")
 
+    logger.info(f"Token being sent to auth service: {token}")
     async with httpx.AsyncClient() as client:
         response = await client.post(
             f"{settings.AUTH_SERVICE_URL}/api/verify-token",
@@ -41,6 +42,7 @@ async def get_current_user(request: Request):
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
     user = response.json()["user"]
+    # todo: set organization_id from login request
     user["organization_id"] = "2320a0d6-8cbb-4727-8f33-6573d017d980"
 
     return user

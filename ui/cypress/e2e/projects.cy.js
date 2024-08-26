@@ -1,34 +1,40 @@
 describe('Project Creation', () => {
   beforeEach(() => {
-    // Visit the main page and log in before each test
-    cy.visit('http://localhost:3000');
     cy.loginByGoogleApi();
+    cy.visit('http://localhost:3000');
   });
 
   it('should create a new project successfully', () => {
-    // Click on the "Create Project" button
-    cy.contains('button', 'Create Project').click();
+    cy.get('[data-cy="create-project-button"]').click();
 
-    // Wait for the modal to appear
-    cy.get('div[role="dialog"]').should('be.visible');
+    cy.get('[data-cy="project-name-input"]').type('Test Project');
 
-    // Fill in the project name
-    cy.get('label')
-      .contains('Project Name')
-      .parent()
-      .find('input[type="text"]')
-      .type('Test Project');
+    cy.get('[data-cy="create-project-submit"]').click();
 
-    // Submit the form using the button with id "create-project-button"
-    cy.get('#create-project-button').click();
+    cy.get('[data-cy="project-list"]').should('contain', 'Test Project');
 
-    // Assert that the modal is closed
-    cy.get('div[role="dialog"]').should('not.exist');
+    cy.get('[data-cy="error-message"]').should('not.exist');
+  });
 
-    // Assert that the new project is created and visible
-    cy.contains('h2', 'Test Project').should('be.visible');
+  it('should display an error message when project creation fails', () => {
+    cy.intercept('POST', '/api/projects', {
+      statusCode: 500,
+      body: { error: 'Server error' },
+    }).as('createProject');
 
-    // Assert that no error message is shown
-    cy.contains('Failed to create project').should('not.exist');
+    cy.get('[data-cy="create-project-button"]').click();
+
+    cy.get('[data-cy="project-name-input"]').type('Failed Project');
+
+    cy.get('[data-cy="create-project-submit"]').click();
+
+    cy.wait('@createProject');
+
+    cy.get('[data-cy="error-message"]').should(
+      'contain',
+      'Failed to create project'
+    );
+
+    cy.get('[data-cy="project-list"]').should('not.contain', 'Failed Project');
   });
 });

@@ -30,8 +30,23 @@ Cypress.Commands.add('loginByGoogleApi', () => {
         },
       };
 
-      window.localStorage.setItem('authToken', JSON.stringify(userItem));
-      cy.reload(); // Add this line to reload the page
+      // Send the Google token to your backend
+      cy.request({
+        method: 'POST',
+        url: 'https://auth-service-razsp32k5q-uc.a.run.app/login/google',
+        body: { token: id_token },
+      }).then((response) => {
+        expect(response.status).to.eq(200);
+        const { token, user } = response.body;
+
+        // Store the token from your backend
+        window.localStorage.setItem('authToken', token);
+
+        // Store user info if needed
+        window.localStorage.setItem('user', JSON.stringify(user));
+
+        cy.log('Logged in successfully');
+      });
     });
   });
 });
