@@ -17,10 +17,16 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import {
+  Brightness4,
+  Brightness7,
+} from '@mui/icons-material';
 import KeyIcon from '@mui/icons-material/Key';
 import React, { useEffect, useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import apiService from '../apiService';
+import { useThemeContext } from '../contexts/ThemeContext';
+import { useTheme } from '@mui/material/styles';
 
 const Navigation = ({ isAuthenticated, onLogout }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -29,6 +35,8 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentProject, setCurrentProject] = useState(null);
   const location = useLocation();
+  const { darkMode, toggleDarkMode } = useThemeContext();
+  const theme = useTheme();
 
   const projectId = location.pathname.startsWith('/flow/')
     ? location.pathname.split('/')[2]
@@ -111,6 +119,31 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
             <ListItemText primary={item.text} />
           </ListItem>
         ))}
+        <ListItem
+            button
+            // component={Link}
+            // to={item.path}
+            onClick={toggleDarkMode}
+            // key={item.text}
+            sx={{
+              '&:hover': {
+                backgroundColor: darkMode
+                  ? 'rgba(255, 255, 255, 0.1)'
+                  : 'rgba(0, 0, 0, 0.1)',
+              },
+            }}
+          >
+            <ListItemIcon sx={{ color: theme.palette.primary.main }}>
+              {/* {item.icon} */}
+              {/* <IconButton onClick={toggleDarkMode} color="inherit" sx={iconStyle}> */}
+              {darkMode ? <Brightness7 /> : <Brightness4 />}
+              {/* </IconButton> */}
+            </ListItemIcon>
+            <ListItemText
+              primary={`Lights ${darkMode ? 'On' : 'Off'}`}
+              sx={{ color: theme.palette.text.primary }}
+            />
+          </ListItem>
         <ListItem button onClick={onLogout}>
           <ListItemIcon>
             <ExitToAppIcon />
@@ -182,7 +215,9 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
                 {project.name}
               </MenuItem>
             ))}
+            
           </Menu>
+          
           {userInfo && (
             <Avatar
               alt={userInfo.name}

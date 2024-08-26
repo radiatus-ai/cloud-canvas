@@ -151,7 +151,7 @@ const CredentialsList = () => {
             color="primary"
             onClick={() => setCreateCredentialModalOpen(true)}
           >
-            Create Credential
+            Create Secret
           </Button>
         </Box>
         {error && (

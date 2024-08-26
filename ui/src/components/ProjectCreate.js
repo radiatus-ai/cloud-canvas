@@ -36,7 +36,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmit }) => {
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSubmit} disabled={!projectName.trim()}>
+        <Button id="create-project-button" onClick={handleSubmit} disabled={!projectName.trim()}>
           Create
         </Button>
       </DialogActions>
