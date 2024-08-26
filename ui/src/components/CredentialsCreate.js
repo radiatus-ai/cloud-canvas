@@ -52,6 +52,7 @@ const CredentialCreate = ({ isOpen, onClose, onSubmit, organizationId }) => {
         <TextField
           label="Credential Name"
           value={credentialName}
+          data-cy="credential-name-input"
           onChange={handleNameChange}
           fullWidth
           required
@@ -59,7 +60,7 @@ const CredentialCreate = ({ isOpen, onClose, onSubmit, organizationId }) => {
         />
         <FormControl fullWidth margin="normal">
           <InputLabel>Credential Type</InputLabel>
-          <Select value={credentialType} onChange={handleTypeChange} required>
+          <Select value={credentialType} data-cy="credential-type-input" onChange={handleTypeChange} required >
             <MenuItem value="SERVICE_ACCOUNT_KEY">Service Account Key</MenuItem>
             <MenuItem value="SECRET">Secret</MenuItem>
           </Select>
@@ -67,6 +68,7 @@ const CredentialCreate = ({ isOpen, onClose, onSubmit, organizationId }) => {
         <TextField
           label="Credential Value"
           value={credentialValue}
+          data-cy="credential-value-input"
           onChange={handleValueChange}
           fullWidth
           required
@@ -79,6 +81,7 @@ const CredentialCreate = ({ isOpen, onClose, onSubmit, organizationId }) => {
         <Button onClick={onClose}>Cancel</Button>
         <Button
           onClick={handleSubmit}
+          data-cy="submit-secret-button"
           disabled={
             !credentialName.trim() || !credentialType || !credentialValue.trim()
           }

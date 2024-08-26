@@ -149,6 +149,7 @@ const CredentialsList = () => {
           <Button
             variant="contained"
             color="primary"
+            data-cy="create-secret-button"
             onClick={() => setCreateCredentialModalOpen(true)}
           >
             Create Secret

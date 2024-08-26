@@ -8,7 +8,17 @@ describe('Secret Creation', () => {
 
     it('should create a new secret successfully', () => {
       // Click on the "Create Project" button
-      cy.contains('button', 'Create Secret').click();
+      // cy.contains('button', 'Create Secret').click();
+      cy.get('[data-cy="create-secret-button"]').click();
+      cy.get('[data-cy="credential-name-input"]').type('Test Secret');
+      // cy.get('[data-cy="credential-type-input"]').select('Service Account Key');
+      cy.get('[data-cy="credential-type-input"]')
+        .parent()
+        .click()
+        .get('ul > li[data-value="SERVICE_ACCOUNT_KEY"]')
+        .click();
+      cy.get('[data-cy="credential-value-input"]').type('Test Value');
+      cy.get('[data-cy="submit-secret-button"]').click();
 
       // Wait for the modal to appear
     //   cy.get('div[role="dialog"]').should('be.visible');

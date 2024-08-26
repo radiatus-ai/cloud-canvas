@@ -7,3 +7,5 @@ https://medium.com/@amanpal2072004/how-to-generate-refresh-token-and-use-them-to
 https://docs.cypress.io/guides/end-to-end-testing/google-authentication
 
 https://docs.cypress.io/guides/continuous-integration/github-actions
+
+https://docs.cypress.io/guides/references/best-practices
