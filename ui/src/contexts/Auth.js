@@ -11,7 +11,18 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(() => localStorage.getItem('authToken'));
+  const [token, setToken] = useState(() => {
+    const authToken = localStorage.getItem('authToken');
+    if (authToken) return authToken;
+
+    const googleCypress = localStorage.getItem('googleCypress');
+    if (googleCypress) {
+      const { token } = JSON.parse(googleCypress);
+      return token;
+    }
+
+    return null;
+  });
 
   useEffect(() => {
     console.log('AuthProvider: token changed', token);
