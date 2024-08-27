@@ -1,4 +1,6 @@
-from fastapi import APIRouter, Body, Depends, HTTPException, Path
+from os import environ
+
+from fastapi import APIRouter, Body, Depends, Header, HTTPException, Path
 from pydantic import UUID4
 
 from app.core.dependencies import get_db_and_current_user
@@ -11,6 +13,17 @@ from app.schemas.project_package import (
 # this router exists as a temporary way for the provisioner to send updates to the api.
 # the provision will send a success / fail for every package and on success needs to write the output data (artifacts) to the database
 
+
+def verify_canvas_token(x_canvas_token: str = Header(...)):
+    # todo move to config py
+    expected_token = environ.get("CANVAS_API_TOKEN")
+    if not expected_token:
+        raise HTTPException(status_code=500, detail="CANVAS_API_TOKEN not set")
+    if x_canvas_token != expected_token:
+        raise HTTPException(status_code=403, detail="Invalid Canvas API token")
+    return x_canvas_token
+
+
 router = APIRouter(
     prefix="/projects/{project_id}/packages", tags=["project", "packages"]
 )
@@ -22,6 +35,7 @@ async def update_project_package(
     package_id: UUID4 = Path(..., description="The ID of the package"),
     package: ProjectPackageUpdate = Body(...),
     deps: dict = Depends(get_db_and_current_user),
+    _: str = Depends(verify_canvas_token),
 ):
     db = deps["db"]
     existing_package = await crud_project_package.get_package(

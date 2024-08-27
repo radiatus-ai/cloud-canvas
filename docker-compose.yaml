@@ -84,11 +84,11 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: ./ui
-    ports:
-      - 3000:80
+    # ports:
+    #   - 3000:80
     volumes:
-      - ./ui/src:/app/src
-      - ./ui/public:/app/public
+    #   - ./ui/src:/app/src
+    #   - ./ui/public:/app/public
       - ui_deploy_node_modules:/app/node_modules
     environment:
       - REACT_APP_ENV=production

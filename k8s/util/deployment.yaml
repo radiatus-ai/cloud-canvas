@@ -13,8 +13,9 @@ spec:
       labels:
         app: ubuntu
     spec:
+      serviceAccountName: api
       containers:
         - name: ubuntu
-          image: ubuntu:latest
+          image: us-central1-docker.pkg.dev/rad-containers-hmed/shared/ubuntu:latest
           imagePullPolicy: Always
           args: ["tail", "-f", "/dev/null"]

@@ -1,0 +1,25 @@
+steps:
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/rad-containers-hmed/shared/ubuntu:latest', '.']
+
+# Push the container image to Container Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/rad-containers-hmed/shared/ubuntu:latest']
+
+# # Deploy container image to Cloud Run
+# - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+#   entrypoint: gcloud
+#   args:
+#   - 'run'
+#   - 'deploy'
+#   - 'ui'
+#   - '--image'
+#   - 'gcr.io/$PROJECT_ID/ui:$COMMIT_SHA'
+#   - '--region'
+#   - 'us-central1'
+#   - '--platform'
+#   - 'managed'
+
+images:
+- 'us-central1-docker.pkg.dev/rad-containers-hmed/shared/ubuntu:latest'
