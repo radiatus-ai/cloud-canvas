@@ -71,7 +71,7 @@ const CredentialsList = () => {
   const handleEditCredential = (credential) => {
     setEditCredential({
       ...credential,
-      secret: '' // Clear the secret value for security
+      secret: '', // Clear the secret value for security
     });
     setEditDialogOpen(true);
   };
@@ -147,7 +147,7 @@ const CredentialsList = () => {
           }}
         >
           <Typography variant="h4" component="h1">
-            Credentials
+            SECRETS
           </Typography>
           <Button
             variant="contained"
@@ -155,7 +155,7 @@ const CredentialsList = () => {
             data-cy="create-secret-button"
             onClick={() => setCreateCredentialModalOpen(true)}
           >
-            Create Secret
+            CREATE
           </Button>
         </Box>
         {error && (
@@ -179,6 +179,7 @@ const CredentialsList = () => {
                   <IconButton
                     onClick={() => handleEditCredential(credential)}
                     size="small"
+                    color="primary"
                   >
                     <EditIcon />
                   </IconButton>
@@ -208,7 +209,11 @@ const CredentialsList = () => {
           type: 'object',
           properties: {
             name: { type: 'string', title: 'Credential Name', readOnly: true },
-            credential_type: { type: 'string', title: 'Credential Type', readOnly: true },
+            credential_type: {
+              type: 'string',
+              title: 'Credential Type',
+              readOnly: true,
+            },
             secret: { type: 'string', title: 'New Secret Value' },
           },
           required: ['secret'],

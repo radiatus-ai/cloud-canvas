@@ -25,24 +25,6 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const refreshToken = useCallback(async () => {
-    try {
-      // Implement your token refresh logic here
-      const response = await fetch('https://auth-service-razsp32k5q-uc.a.run.app/refresh', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      if (!response.ok) throw new Error('Token refresh failed');
-      const data = await response.json();
-      login(data.user, data.token);
-      return data.token;
-    } catch (error) {
-      console.error('Token refresh failed:', error);
-      logout();
-      return null;
-    }
-  }, [token]);
-
   const login = useCallback((userData, authToken) => {
     localStorage.setItem('authToken', authToken);
     setToken(authToken);
@@ -54,6 +36,27 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setToken(null);
   }, []);
+
+  const refreshToken = useCallback(async () => {
+    try {
+      // Implement your token refresh logic here
+      const response = await fetch(
+        'https://auth-service-razsp32k5q-uc.a.run.app/refresh',
+        {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!response.ok) throw new Error('Token refresh failed');
+      const data = await response.json();
+      login(data.user, data.token);
+      return data.token;
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      logout();
+      return null;
+    }
+  }, [token, login, logout]);
 
   const getValidToken = useCallback(async () => {
     if (!token) return null;

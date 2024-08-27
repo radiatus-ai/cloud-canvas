@@ -10,6 +10,7 @@ import {
   Grid,
   IconButton,
   Typography,
+  useTheme,
 } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -31,6 +32,7 @@ const Projects = () => {
   const { projects: projectsApi } = useApi();
   const { token } = useAuth();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const projectsApiRef = useRef(projectsApi);
   const tokenRef = useRef(token);
@@ -168,15 +170,17 @@ const Projects = () => {
             mb: 2,
           }}
         >
-          <Typography variant="h4" component="h1">
-            Projects
-          </Typography>
+          <Box sx={{ flexGrow: 1 }}>
+            <Typography variant="h4" component="h1">
+              PROJECTS
+            </Typography>
+          </Box>
           <Button
             variant="contained"
             color="primary"
             onClick={() => setCreateProjectModalOpen(true)}
           >
-            Create Project
+            CREATE
           </Button>
         </Box>
         {error && (
@@ -200,12 +204,14 @@ const Projects = () => {
                   <IconButton
                     onClick={() => handleEditProject(project)}
                     size="small"
+                    color="primary"
                   >
                     <EditIcon />
                   </IconButton>
                   <IconButton
                     onClick={() => handleDeleteDialogOpen(project)}
                     size="small"
+                    color="default"
                   >
                     <DeleteIcon />
                   </IconButton>

@@ -1,6 +1,5 @@
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
-import FolderIcon from '@mui/icons-material/Folder';
-import MenuIcon from '@mui/icons-material/Menu';
+import React, { useEffect, useState } from 'react';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import {
   AppBar,
   Avatar,
@@ -17,19 +16,39 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Brightness4, Brightness7 } from '@mui/icons-material';
-import KeyIcon from '@mui/icons-material/Key';
-import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { styled, useTheme } from '@mui/material/styles';
+import MenuIcon from '@mui/icons-material/Menu';
+import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import apiService from '../apiService';
 import { useThemeContext } from '../contexts/ThemeContext';
-import { useTheme } from '@mui/material/styles';
+
+const StyledListItem = styled(ListItem)(({ theme }) => ({
+  borderRadius: theme.shape.borderRadius,
+  marginBottom: theme.spacing(1),
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
+}));
+
+const StyledListItemIcon = styled(ListItemIcon)(({ theme }) => ({
+  minWidth: 40,
+  color: theme.palette.primary.main,
+}));
 
 const Navigation = ({ isAuthenticated, onLogout }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
+  const [userInfo, setUserInfo] = useState({
+    name: 'John Doe',
+    avatar: 'https://example.com/avatar.jpg',
+  });
   const [projects, setProjects] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [userMenuAnchorEl, setUserMenuAnchorEl] = useState(null);
   const [currentProject, setCurrentProject] = useState(null);
   const location = useLocation();
   const { darkMode, toggleDarkMode } = useThemeContext();
@@ -91,71 +110,75 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
     setAnchorEl(null);
   };
 
+  const handleUserMenuClick = (event) => {
+    setUserMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleUserMenuClose = () => {
+    setUserMenuAnchorEl(null);
+  };
+
   const menuItems = [
-    { text: 'Projects', icon: <FolderIcon />, path: '/' },
-    { text: 'Secrets', icon: <KeyIcon />, path: '/secrets' },
-    // Add more menu items as needed
+    { text: 'Projects', icon: <FolderSpecialIcon />, path: '/' },
+    { text: 'Secrets', icon: <VpnKeyIcon />, path: '/secrets' },
   ];
 
   const drawerContent = (
     <Box
-      sx={{ width: 250 }}
+      sx={{
+        width: 250,
+        p: 2,
+        height: '100%',
+        backgroundColor: theme.palette.background.default,
+      }}
       role="presentation"
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
       <List>
         {menuItems.map((item) => (
-          <ListItem
+          <StyledListItem
             button
             key={item.text}
             component={RouterLink}
             to={item.path}
           >
-            <ListItemIcon>{item.icon}</ListItemIcon>
-            <ListItemText primary={item.text} />
-          </ListItem>
+            <StyledListItemIcon>{item.icon}</StyledListItemIcon>
+            <ListItemText
+              primary={item.text}
+              primaryTypographyProps={{ variant: 'h5' }}
+            />
+          </StyledListItem>
         ))}
-        <ListItem
-          button
-          // component={Link}
-          // to={item.path}
-          onClick={toggleDarkMode}
-          // key={item.text}
-          sx={{
-            '&:hover': {
-              backgroundColor: darkMode
-                ? 'rgba(255, 255, 255, 0.1)'
-                : 'rgba(0, 0, 0, 0.1)',
-            },
-          }}
-        >
-          <ListItemIcon sx={{ color: theme.palette.primary.main }}>
-            {/* {item.icon} */}
-            {/* <IconButton onClick={toggleDarkMode} color="inherit" sx={iconStyle}> */}
-            {darkMode ? <Brightness7 /> : <Brightness4 />}
-            {/* </IconButton> */}
-          </ListItemIcon>
+        <StyledListItem button onClick={toggleDarkMode}>
+          <StyledListItemIcon>
+            {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+          </StyledListItemIcon>
           <ListItemText
             primary={`Lights ${darkMode ? 'On' : 'Off'}`}
-            sx={{ color: theme.palette.text.primary }}
+            primaryTypographyProps={{ variant: 'h5' }}
           />
-        </ListItem>
-        <ListItem button onClick={onLogout}>
-          <ListItemIcon>
-            <ExitToAppIcon />
-          </ListItemIcon>
-          <ListItemText primary="Sign Out" />
-        </ListItem>
+        </StyledListItem>
+        <StyledListItem button onClick={onLogout}>
+          <StyledListItemIcon>
+            <LogoutIcon />
+          </StyledListItemIcon>
+          <ListItemText
+            primary="Sign Out"
+            primaryTypographyProps={{ variant: 'h5' }}
+          />
+        </StyledListItem>
       </List>
     </Box>
   );
 
+  // todo: need to be consistent for the ux to be good
   const getTitle = () => {
-    if (currentProject) {
-      return currentProject.name;
-    }
-    return location.pathname === '/' ? 'Projects' : 'Cloud Canvas';
+    // if (currentProject) {
+    //   return currentProject.name;
+    // }
+    // return location.pathname === '/' ? 'Projects' : 'Cloud Canvas';
+    return 'CLOUD CANVAS';
   };
 
   return (
@@ -180,11 +203,19 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
             leaveDelay={200}
           >
             <Typography
-              variant="h4"
+              variant="h1"
               component="div"
               sx={{
                 flexGrow: 1,
                 cursor: currentProject ? 'pointer' : 'default',
+                WebkitTextStroke: '1px',
+                WebkitTextStrokeColor: theme.palette.divider,
+                textShadow: `
+                  -1px -1px 0 ${theme.palette.divider},
+                  1px -1px 0 ${theme.palette.divider},
+                  -1px 1px 0 ${theme.palette.divider},
+                  1px 1px 0 ${theme.palette.divider}
+                `,
                 '&:hover': currentProject
                   ? {
                       textDecoration: 'underline',
@@ -215,15 +246,47 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
           </Menu>
 
           {userInfo && (
-            <Avatar
-              alt={userInfo.name}
-              src={userInfo.avatar}
-              sx={{ width: 40, height: 40 }}
-            />
+            <>
+              <Tooltip title="User menu" arrow>
+                <IconButton
+                  onClick={handleUserMenuClick}
+                  size="large"
+                  edge="end"
+                  color="inherit"
+                >
+                  <Avatar
+                    alt={userInfo.name}
+                    src={userInfo.avatar}
+                    sx={{ width: 40, height: 40 }}
+                  >
+                    {!userInfo.avatar && <AccountCircleIcon />}
+                  </Avatar>
+                </IconButton>
+              </Tooltip>
+              <Menu
+                anchorEl={userMenuAnchorEl}
+                open={Boolean(userMenuAnchorEl)}
+                onClose={handleUserMenuClose}
+              >
+                <MenuItem onClick={handleUserMenuClose}>Profile</MenuItem>
+                <MenuItem onClick={handleUserMenuClose}>My account</MenuItem>
+                <MenuItem onClick={onLogout}>Logout</MenuItem>
+              </Menu>
+            </>
           )}
         </Toolbar>
       </AppBar>
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={toggleDrawer(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: theme.palette.background.default,
+            boxShadow: theme.shadows[5],
+          },
+        }}
+      >
         {drawerContent}
       </Drawer>
     </>

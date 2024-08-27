@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: basic-ingress
+  name: api
   annotations:
     kubernetes.io/ingress.global-static-ip-name: api-1
     networking.gke.io/v1beta1.FrontendConfig: my-frontend-config

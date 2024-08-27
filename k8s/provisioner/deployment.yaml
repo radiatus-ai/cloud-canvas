@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: provisioner
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: provisioner
+  template:
+    metadata:
+      labels:
+        app: provisioner
+    spec:
+      serviceAccountName: provisioner
+      containers:
+        - name: provisioner
+          image: us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/provisioner:latest
+          imagePullPolicy: Always
+          # resources:
+          #   requests:
+          #     memory: "1000Mi"
+          #     cpu: "1000m"
+          #   # limits:
+          #   #   memory: "512Mi"
+          #   #   cpu: "500m"
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: GOOGLE_CLOUD_PROJECT
+              value: rad-dev-canvas-kwm6
+            - name: BUCKET_NAME
+              value: rad-provisioner-state-1234
+            - name: PUBSUB_SUBSCRIPTION_ID
+              value: test-push
+
+      # volumes:
+      # - name: mysecret
+      #   csi:
+      #     driver: secrets-store-gke.csi.k8s.io
+      #     readOnly: true
+      #     volumeAttributes:
+      #       secretProviderClass: secret-manager

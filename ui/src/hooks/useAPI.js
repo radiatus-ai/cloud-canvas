@@ -14,13 +14,13 @@ const useApi = () => {
 
   const apiCall = useCallback(
     async (ApiClass, method, params = [], parentSpan = null) => {
-      let headers = {};
+      // let headers = {};
 
       if (parentSpan) {
         const ctx = trace.setSpan(context.active(), parentSpan);
         const carrier = {};
         propagation.inject(ctx, carrier);
-        headers = { ...carrier };
+        // headers = { ...carrier };
       }
 
       try {

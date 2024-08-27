@@ -8,10 +8,12 @@ import Navigation from './components/Navigation';
 import Projects from './components/Projects';
 import CredentialsList from './components/CredentialsList';
 import { useAuth } from './contexts/Auth';
+import { useTheme } from '@mui/material';
 
 const App = () => {
   const { token, login, logout } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const theme = useTheme();
 
   const handleLogin = useCallback(
     async (decodedToken, authToken) => {
@@ -49,31 +51,48 @@ const App = () => {
 
   if (!token) {
     return (
-      <Container maxWidth="sm" sx={{ mt: 8, textAlign: 'center' }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Welcome to Cloud Canvas
-        </Typography>
-        <Typography variant="body1" gutterBottom>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+          backgroundColor: theme.palette.primary.main,
+        }}
+      >
+        <Container maxWidth="sm" sx={{ mt: 8, textAlign: 'center' }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Welcome To
+          </Typography>
+          <Typography variant="h3" component="h1" gutterBottom>
+            CLOUD CANVAS
+          </Typography>
+          {/* <Typography variant="body1" gutterBottom>
           Please sign in to continue
-        </Typography>
-        <Box mt={4}>
-          {isLoading ? (
-            <CircularProgress />
-          ) : (
-            <AuthenticationComponent
-              onLogin={handleLogin}
-              onError={handleLoginError}
-            />
-          )}
-        </Box>
-      </Container>
+        </Typography> */}
+          <Box mt={4}>
+            {isLoading ? (
+              <CircularProgress />
+            ) : (
+              <AuthenticationComponent
+                onLogin={handleLogin}
+                onError={handleLoginError}
+              />
+            )}
+          </Box>
+        </Container>
+      </Box>
     );
   }
 
   return (
     <Router>
       <Box
-        sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+          // backgroundColor: theme.palette.primary.main,
+        }}
       >
         <Navigation onLogout={logout} />
         <Box component="main" sx={{ flexGrow: 1, p: 0, overflow: 'hidden' }}>

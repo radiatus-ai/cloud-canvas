@@ -48,7 +48,7 @@ const ThemeContextProvider = ({ children }) => {
     <GlobalStyles
       styles={{
         body: {
-          backgroundColor: darkMode ? '#121212' : '#ffffff',
+          backgroundColor: theme.palette.background.default,
           color: darkMode ? '#ffffff' : '#000000',
         },
       }}
