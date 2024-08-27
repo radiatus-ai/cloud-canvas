@@ -8,6 +8,10 @@ spec:
   selector:
     matchLabels:
       app: provisioner
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
   template:
     metadata:
       labels:
