@@ -351,7 +351,7 @@ No authorization required
 
 ## updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch
 
-> ProjectPackage updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, projectPackageUpdate)
+> ProjectPackage updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, xCanvasToken, projectPackageUpdate)
 
 Update Project Package
 
@@ -363,10 +363,12 @@ import PlatformApi from 'platform_api';
 let apiInstance = new PlatformApi.PackagesApi();
 let projectId = 'projectId_example'; // String | The ID of the project
 let packageId = 'packageId_example'; // String | The ID of the package
+let xCanvasToken = 'xCanvasToken_example'; // String |
 let projectPackageUpdate = new PlatformApi.ProjectPackageUpdate(); // ProjectPackageUpdate |
 apiInstance.updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(
   projectId,
   packageId,
+  xCanvasToken,
   projectPackageUpdate,
   (error, data, response) => {
     if (error) {
@@ -384,6 +386,7 @@ apiInstance.updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPat
 | ------------------------ | --------------------------------------------------- | --------------------- | ----- |
 | **projectId**            | **String**                                          | The ID of the project |
 | **packageId**            | **String**                                          | The ID of the package |
+| **xCanvasToken**         | **String**                                          |                       |
 | **projectPackageUpdate** | [**ProjectPackageUpdate**](ProjectPackageUpdate.md) |                       |
 
 ### Return type

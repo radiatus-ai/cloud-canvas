@@ -51,4 +51,3 @@ src/model/ProjectPackageUpdate.js
 src/model/ProjectUpdate.js
 src/model/ValidationError.js
 src/model/ValidationErrorLocInner.js
-test/api/ProvisionerApi.spec.js

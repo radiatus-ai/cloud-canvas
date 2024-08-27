@@ -1,5 +1,11 @@
 gen-clients:
+	cd api && make gen-openapi-spec
 	openapi-generator-cli generate -i data/openapi-spec.yaml -g javascript -o ./ui/canvas-client
+	./cleanup-gen-ui-client.sh
+	rm -rf ./ui/canvas-client/dist
+	cd ui/canvas-client && npm run build
+	cd ui && npm install
+	echo "UI client generated and built"
 
 build:
 	docker compose build api-deploy ui-deploy
