@@ -1,3 +1,6 @@
+// these hooks are complicated, its still in flux
+/* eslint-disable no-unused-vars */
+
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEdgesState, useNodesState } from 'reactflow';

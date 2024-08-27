@@ -13,7 +13,7 @@ class CRUDPackage(CRUDBase[Package, PackageCreate, PackageUpdate]):
     async def get_packages(
         self, db: AsyncSession, *, skip: int = 0, limit: int = 100
     ) -> List[Package]:
-        query = select(Package).offset(skip).limit(limit)
+        query = select(Package).order_by(Package.type).offset(skip).limit(limit)
         result = await db.execute(query)
         return result.scalars().all()
 

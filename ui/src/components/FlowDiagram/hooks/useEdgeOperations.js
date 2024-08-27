@@ -1,3 +1,6 @@
+// these hooks are complicated, its still in flux
+/* eslint-disable no-unused-vars */
+
 import { useCallback, useEffect, useState } from 'react';
 import { addEdge, useEdgesState } from 'reactflow';
 import { useAuth } from '../../../contexts/Auth';

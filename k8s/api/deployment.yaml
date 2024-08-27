@@ -65,11 +65,11 @@ spec:
               #   secretKeyRef:
               #     name: otel-service-name
               #     key: API_OTEL_SERVICE_NAME
-            # - name: OTEL_EXPORTER_OTLP_HEADERS
-            #   valueFrom:
-            #     secretKeyRef:
-            #       name: otel-exporter-otlp-headers
-            #       key: API_OTEL_EXPORTER_OTLP_HEADERS
+            - name: OTEL_EXPORTER_OTLP_HEADERS
+              valueFrom:
+                secretKeyRef:
+                  name: otel-exporter-otlp-headers
+                  key: API_OTEL_EXPORTER_OTLP_HEADERS
             - name: HONEYCOMB_API_KEY
               valueFrom:
                 secretKeyRef:

@@ -30,9 +30,16 @@ deploy: build tag upload
 		&& gcloud run services update-traffic ui --to-latest --region us-central1 --project=rad-dev-canvas-kwm6
 
 
-# gcloud run deploy api \
-# 		--image=us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/api:latest \
-# 		--execution-environment=gen2 \
-# 		--region=us-central1 \
-# 		--project=rad-dev-canvas-kwm6 \
-# 		&& gcloud run services update-traffic api --to-latest --region us-central1 --project=rad-dev-canvas-kwm6 && \
+# it's incredible how easy it was to set this up.
+# should have done this forever ago.
+build-cloudbuild:
+	gcloud builds submit --project=rad-containers-hmed --config=cloudbuild.yaml .
+
+deploy-cloudbuild: build-cloudbuild
+	kubectl delete pods --selector=app=api
+	gcloud run deploy ui \
+		--image=us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/ui:latest \
+		--execution-environment=gen2 \
+		--region=us-central1 \
+		--project=rad-dev-canvas-kwm6 \
+		&& gcloud run services update-traffic ui --to-latest --region us-central1 --project=rad-dev-canvas-kwm6

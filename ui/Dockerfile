@@ -7,11 +7,10 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
+COPY . .
+
 # Install dependencies
 RUN npm ci
-
-# Copy the rest of the code
-COPY . .
 
 # Set the environment variable for production
 ENV REACT_APP_ENV=production
