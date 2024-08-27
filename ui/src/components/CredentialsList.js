@@ -69,7 +69,10 @@ const CredentialsList = () => {
   };
 
   const handleEditCredential = (credential) => {
-    setEditCredential(credential);
+    setEditCredential({
+      ...credential,
+      secret: '' // Clear the secret value for security
+    });
     setEditDialogOpen(true);
   };
 
@@ -82,7 +85,7 @@ const CredentialsList = () => {
     try {
       const response = await credentialsApi.update(
         editCredential.id,
-        updatedData,
+        { secret: updatedData.secret },
         token
       );
       setCredentials(
@@ -204,13 +207,11 @@ const CredentialsList = () => {
         schema={{
           type: 'object',
           properties: {
-            name: { type: 'string', title: 'Credential Name' },
-            credential_type: {
-              type: 'string',
-              title: 'Credential Type',
-              enum: ['API_KEY', 'GITHUB_PAT', 'GCP_SERVICE_ACCOUNT'],
-            },
+            name: { type: 'string', title: 'Credential Name', readOnly: true },
+            credential_type: { type: 'string', title: 'Credential Type', readOnly: true },
+            secret: { type: 'string', title: 'New Secret Value' },
           },
+          required: ['secret'],
         }}
         onSubmit={handleUpdateCredential}
         initialData={editCredential}

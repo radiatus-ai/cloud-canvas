@@ -7,9 +7,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.crud.base import CRUDBase
+from app.crud.project import project as crud_project
 from app.models.project import Project
 from app.models.project_package import ProjectPackage
 from app.schemas.project_package import ProjectPackageCreate, ProjectPackageUpdate
+
+from app.core.logger import get_logger
+
+logger = get_logger(__name__)
 
 
 def send_pubsub_message(project_id: str, topic_id: str, message_data: dict):
@@ -102,9 +107,13 @@ class CRUDProjectPackage(
         await db.refresh(package)
 
         # Fetch credentials associated with the project
-        query = select(Project).where(Project.id == project_id)
-        result = await db.execute(query)
-        project = result.scalars().first()
+        # query = select(Project).where(Project.id == project_id)
+        # result = await db.execute(query)
+        # project = result.scalars().first()
+        project = await crud_project.get(db, id=project_id)
+        await db.refresh(project)
+
+        logger.info(f"Project credentials: {project.credentials}")
 
         credentials = {}
         if project and project.credentials:
@@ -144,9 +153,11 @@ class CRUDProjectPackage(
         # await db.refresh(package)
 
         # Fetch credentials associated with the project
-        query = select(Project).where(Project.id == project_id)
-        result = await db.execute(query)
-        project = result.scalars().first()
+        # query = select(Project).where(Project.id == project_id)
+        # result = await db.execute(query)
+        # project = result.scalars().first()
+        project = await crud_project.get(db, id=project_id)
+        await db.refresh(project)
 
         credentials = {}
         if project and project.credentials:
