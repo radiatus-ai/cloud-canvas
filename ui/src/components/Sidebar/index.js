@@ -76,7 +76,7 @@ const Sidebar = () => {
             // textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
           }}
         >
-          Packages
+          PACKAGES
         </Typography>
       </Box>
       <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />

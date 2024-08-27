@@ -28,6 +28,18 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
           env:
             - name: GOOGLE_CLOUD_PROJECT
               value: rad-dev-canvas-kwm6
@@ -35,11 +47,3 @@ spec:
               value: rad-provisioner-state-1234
             - name: PUBSUB_SUBSCRIPTION_ID
               value: test-push
-
-      # volumes:
-      # - name: mysecret
-      #   csi:
-      #     driver: secrets-store-gke.csi.k8s.io
-      #     readOnly: true
-      #     volumeAttributes:
-      #       secretProviderClass: secret-manager

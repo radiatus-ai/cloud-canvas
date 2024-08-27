@@ -4,5 +4,5 @@ metadata:
   name: api
   namespace: default
   annotations:
-    iam.gke.io/gcp-service-account: canvas-api@rad-dev-canvas-kwm6.iam.gserviceaccount.com
+    iam.gke.io/gcp-service-account: app-api@rad-dev-canvas-kwm6.iam.gserviceaccount.com
 automountServiceAccountToken: true

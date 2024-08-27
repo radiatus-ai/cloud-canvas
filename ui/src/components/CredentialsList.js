@@ -68,13 +68,13 @@ const CredentialsList = () => {
     }
   };
 
-  const handleEditCredential = (credential) => {
+  const handleEditCredential = useCallback((credential) => {
     setEditCredential({
       ...credential,
       secret: '', // Clear the secret value for security
     });
     setEditDialogOpen(true);
-  };
+  }, []);
 
   const handleCloseEditDialog = () => {
     setEditDialogOpen(false);
@@ -203,7 +203,7 @@ const CredentialsList = () => {
       />
 
       <DynamicModalForm
-        isOpen={editDialogOpen}
+        isOpen={editDialogOpen && editCredential !== null}
         onClose={handleCloseEditDialog}
         schema={{
           type: 'object',
@@ -219,7 +219,7 @@ const CredentialsList = () => {
           required: ['secret'],
         }}
         onSubmit={handleUpdateCredential}
-        initialData={editCredential}
+        initialData={editCredential || {}}
         title="Edit Credential"
       />
 

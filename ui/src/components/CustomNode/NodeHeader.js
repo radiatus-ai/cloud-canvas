@@ -165,6 +165,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
                 p: 0.5,
                 opacity: isDeployingOrDestroying ? 0.5 : 1,
               }}
+              color="primary"
             >
               <EditIcon fontSize="small" />
             </IconButton>
@@ -180,6 +181,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
                 ml: 0.5,
                 p: 0.5,
                 opacity: isDeployingOrDestroying ? 0.5 : 1,
+                color: '#0cc421',
               }}
             >
               <PlayArrowIcon fontSize="small" />

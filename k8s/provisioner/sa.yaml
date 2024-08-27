@@ -4,5 +4,5 @@ metadata:
   name: provisioner
   namespace: default
   annotations:
-    iam.gke.io/gcp-service-account: provisioner@rad-dev-canvas-kwm6.iam.gserviceaccount.com
+    iam.gke.io/gcp-service-account: app-provisioner@rad-dev-canvas-kwm6.iam.gserviceaccount.com
 automountServiceAccountToken: true

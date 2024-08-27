@@ -5,11 +5,11 @@ import { useParams } from 'react-router-dom';
 import 'reactflow/dist/style.css';
 import HandleComponent from './HandleComponent';
 import NodeHeader from './NodeHeader';
+import { grey } from '@mui/material/colors';
 
-// todo: remove fallbacks and fix theme provider
 const NodeContainer = styled(Box)(({ theme }) => ({
   padding: theme?.spacing?.(1.5) || '12px',
-  border: `1px solid ${theme?.palette?.divider || '#e0e0e0'}`,
+  border: `1px solid ${grey[300]}`,
   borderRadius: theme?.shape?.borderRadius || '4px',
   background: theme?.palette?.background?.paper || '#ffffff',
   minWidth: '180px',
