@@ -17,7 +17,8 @@ class CredentialCreate(CredentialBase):
 
 
 class CredentialUpdate(BaseModel):
-    credential_type: Optional[CredentialType] = None
+    # CREDENTIAL TYPE CANNOT BE CHANGED
+    # credential_type: Optional[CredentialType] = None
     credential_value: Optional[str] = None
 
 

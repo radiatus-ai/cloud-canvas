@@ -1,10 +1,9 @@
----
 openapi: 3.1.0
 info:
   title: Platform API
   version: 0.1.0
 paths:
-  "/projects/{project_id}/connections/":
+  /projects/{project_id}/connections/:
     get:
       summary: List Connections
       operationId: list_connections_projects__project_id__connections__get
@@ -24,14 +23,14 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/Connection"
+                  $ref: "#/components/schemas/Connection"
                 title: Response List Connections Projects  Project Id  Connections  Get
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     post:
       summary: Create Connection
       operationId: create_connection_projects__project_id__connections__post
@@ -48,21 +47,21 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ConnectionCreate"
+              $ref: "#/components/schemas/ConnectionCreate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Connection"
+                $ref: "#/components/schemas/Connection"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/projects/{project_id}/connections/{connection_id}":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /projects/{project_id}/connections/{connection_id}:
     delete:
       summary: Delete Connection
       operationId: delete_connection_projects__project_id__connections__connection_id__delete
@@ -87,14 +86,14 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Connection"
+                $ref: "#/components/schemas/Connection"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/credentials/":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /credentials/:
     get:
       summary: List Credentials
       operationId: list_credentials_credentials__get
@@ -121,14 +120,14 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/Credential"
+                  $ref: "#/components/schemas/Credential"
                 title: Response List Credentials Credentials  Get
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     post:
       summary: Create Credential
       operationId: create_credential_credentials__post
@@ -137,21 +136,21 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/CredentialCreate"
+              $ref: "#/components/schemas/CredentialCreate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Credential"
+                $ref: "#/components/schemas/Credential"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/credentials/{credential_id}":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /credentials/{credential_id}:
     get:
       summary: Get Credential
       operationId: get_credential_credentials__credential_id__get
@@ -169,13 +168,13 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Credential"
+                $ref: "#/components/schemas/Credential"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     patch:
       summary: Update Credential
       operationId: update_credential_credentials__credential_id__patch
@@ -192,20 +191,20 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/CredentialUpdate"
+              $ref: "#/components/schemas/CredentialUpdate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Credential"
+                $ref: "#/components/schemas/Credential"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     delete:
       summary: Delete Credential
       operationId: delete_credential_credentials__credential_id__delete
@@ -223,14 +222,14 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Credential"
+                $ref: "#/components/schemas/Credential"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/packages":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /packages:
     get:
       summary: List All Packages
       operationId: list_all_packages_packages_get
@@ -257,14 +256,14 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/Package"
+                  $ref: "#/components/schemas/Package"
                 title: Response List All Packages Packages Get
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     post:
       summary: Create Global Package
       operationId: create_global_package_packages_post
@@ -273,21 +272,21 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/PackageCreate"
+              $ref: "#/components/schemas/PackageCreate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Package"
+                $ref: "#/components/schemas/Package"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/projects/{project_id}/packages/":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /projects/{project_id}/packages/:
     get:
       tags:
         - project
@@ -329,14 +328,14 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/ProjectPackage"
+                  $ref: "#/components/schemas/ProjectPackage"
                 title: Response List Project Packages Projects  Project Id  Packages  Get
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     post:
       tags:
         - project
@@ -358,21 +357,21 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ProjectPackageCreate"
+              $ref: "#/components/schemas/ProjectPackageCreate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ProjectPackage"
+                $ref: "#/components/schemas/ProjectPackage"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/projects/{project_id}/packages/{package_id}":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /projects/{project_id}/packages/{package_id}:
     get:
       tags:
         - project
@@ -404,13 +403,13 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ProjectPackage"
+                $ref: "#/components/schemas/ProjectPackage"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     patch:
       tags:
         - project
@@ -441,20 +440,20 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ProjectPackageUpdate"
+              $ref: "#/components/schemas/ProjectPackageUpdate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ProjectPackage"
+                $ref: "#/components/schemas/ProjectPackage"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     delete:
       tags:
         - project
@@ -486,14 +485,14 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ProjectPackage"
+                $ref: "#/components/schemas/ProjectPackage"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/projects/{project_id}/packages/{package_id}/deploy":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /projects/{project_id}/packages/{package_id}/deploy:
     post:
       tags:
         - project
@@ -525,14 +524,14 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ProjectPackage"
+                $ref: "#/components/schemas/ProjectPackage"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/projects/{project_id}/packages/{package_id}/destroy":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /projects/{project_id}/packages/{package_id}/destroy:
     delete:
       tags:
         - project
@@ -564,14 +563,14 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ProjectPackage"
+                $ref: "#/components/schemas/ProjectPackage"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/projects/":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /projects/:
     get:
       summary: List Projects
       operationId: list_projects_projects__get
@@ -598,14 +597,14 @@ paths:
               schema:
                 type: array
                 items:
-                  "$ref": "#/components/schemas/Project"
+                  $ref: "#/components/schemas/Project"
                 title: Response List Projects Projects  Get
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     post:
       summary: Create Project
       operationId: create_project_projects__post
@@ -614,7 +613,7 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ProjectCreate"
+              $ref: "#/components/schemas/ProjectCreate"
       responses:
         "200":
           description: Successful Response
@@ -626,8 +625,8 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/projects/{project_id}":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /projects/{project_id}:
     patch:
       summary: Update Project
       operationId: update_project_projects__project_id__patch
@@ -644,20 +643,20 @@ paths:
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ProjectUpdate"
+              $ref: "#/components/schemas/ProjectUpdate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Project"
+                $ref: "#/components/schemas/Project"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
     delete:
       summary: Delete Project
       operationId: delete_project_projects__project_id__delete
@@ -675,14 +674,14 @@ paths:
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Project"
+                $ref: "#/components/schemas/Project"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
-  "/":
+                $ref: "#/components/schemas/HTTPValidationError"
+  /:
     get:
       summary: Root
       operationId: root__get
@@ -692,7 +691,7 @@ paths:
           content:
             application/json:
               schema: {}
-  "/provisioner/projects/{project_id}/packages/{package_id}":
+  /provisioner/projects/{project_id}/packages/{package_id}:
     patch:
       tags:
         - provisioner
@@ -719,25 +718,31 @@ paths:
             description: The ID of the package
             title: Package Id
           description: The ID of the package
+        - name: x-canvas-token
+          in: header
+          required: true
+          schema:
+            type: string
+            title: X-Canvas-Token
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/ProjectPackageUpdate"
+              $ref: "#/components/schemas/ProjectPackageUpdate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ProjectPackage"
+                $ref: "#/components/schemas/ProjectPackage"
         "422":
           description: Validation Error
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/HTTPValidationError"
+                $ref: "#/components/schemas/HTTPValidationError"
 components:
   schemas:
     Connection:
@@ -804,7 +809,7 @@ components:
     Credential:
       properties:
         credential_type:
-          "$ref": "#/components/schemas/CredentialType"
+          $ref: "#/components/schemas/CredentialType"
         name:
           type: string
           title: Name
@@ -826,7 +831,7 @@ components:
     CredentialCreate:
       properties:
         credential_type:
-          "$ref": "#/components/schemas/CredentialType"
+          $ref: "#/components/schemas/CredentialType"
         name:
           type: string
           title: Name
@@ -847,10 +852,6 @@ components:
       title: CredentialType
     CredentialUpdate:
       properties:
-        credential_type:
-          anyOf:
-            - "$ref": "#/components/schemas/CredentialType"
-            - type: "null"
         credential_value:
           anyOf:
             - type: string
@@ -871,7 +872,7 @@ components:
       properties:
         detail:
           items:
-            "$ref": "#/components/schemas/ValidationError"
+            $ref: "#/components/schemas/ValidationError"
           type: array
           title: Detail
       type: object
@@ -958,7 +959,7 @@ components:
           title: Organization Id
         credentials:
           items:
-            "$ref": "#/components/schemas/Credential"
+            $ref: "#/components/schemas/Credential"
           type: array
           title: Credentials
           default: []
@@ -1017,7 +1018,7 @@ components:
           format: uuid4
           title: Project Id
         deploy_status:
-          "$ref": "#/components/schemas/DeployStatus"
+          $ref: "#/components/schemas/DeployStatus"
         output_data:
           anyOf:
             - type: object
@@ -1058,7 +1059,7 @@ components:
           title: Parameters
         deploy_status:
           anyOf:
-            - "$ref": "#/components/schemas/DeployStatus"
+            - $ref: "#/components/schemas/DeployStatus"
             - type: "null"
           default: NOT_DEPLOYED
       type: object
@@ -1098,7 +1099,7 @@ components:
           title: Parameters
         deploy_status:
           anyOf:
-            - "$ref": "#/components/schemas/DeployStatus"
+            - $ref: "#/components/schemas/DeployStatus"
             - type: "null"
           default: NOT_DEPLOYED
         output_data:

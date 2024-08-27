@@ -489,6 +489,7 @@ export default class PackagesApi {
    * Update Project Package
    * @param {String} projectId The ID of the project
    * @param {String} packageId The ID of the package
+   * @param {String} xCanvasToken
    * @param {module:model/ProjectPackageUpdate} projectPackageUpdate
    * @param {module:api/PackagesApi~updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatchCallback} callback The callback function, accepting three arguments: error, data, response
    * data is of type: {@link module:model/ProjectPackage}
@@ -496,6 +497,7 @@ export default class PackagesApi {
   updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(
     projectId,
     packageId,
+    xCanvasToken,
     projectPackageUpdate,
     callback
   ) {
@@ -512,6 +514,12 @@ export default class PackagesApi {
         "Missing the required parameter 'packageId' when calling updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch"
       );
     }
+    // verify the required parameter 'xCanvasToken' is set
+    if (xCanvasToken === undefined || xCanvasToken === null) {
+      throw new Error(
+        "Missing the required parameter 'xCanvasToken' when calling updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch"
+      );
+    }
     // verify the required parameter 'projectPackageUpdate' is set
     if (projectPackageUpdate === undefined || projectPackageUpdate === null) {
       throw new Error(
@@ -524,7 +532,9 @@ export default class PackagesApi {
       package_id: packageId,
     };
     let queryParams = {};
-    let headerParams = {};
+    let headerParams = {
+      'x-canvas-token': xCanvasToken,
+    };
     let formParams = {};
 
     let authNames = [];

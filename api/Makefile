@@ -4,9 +4,8 @@ start:
 test:
 	poetry run pytest tests -W ignore::DeprecationWarning
 
-import:
-	poetry run python import-repo/import.py
-
+gen-openapi-spec:
+	poetry run python scripts/gen_openapi_spec.py
 
 migrate:
 	poetry run alembic revision --autogenerate -m "init db"
