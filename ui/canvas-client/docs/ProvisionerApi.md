@@ -8,7 +8,7 @@ All URIs are relative to _http://localhost_
 
 ## updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch
 
-> ProjectPackage updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, xCanvasToken, projectPackageUpdate)
+> Object updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, xCanvasToken, appSchemasProvisionerProjectPackageProjectPackageUpdate)
 
 Update Project Package
 
@@ -21,12 +21,13 @@ let apiInstance = new PlatformApi.ProvisionerApi();
 let projectId = 'projectId_example'; // String | The ID of the project
 let packageId = 'packageId_example'; // String | The ID of the package
 let xCanvasToken = 'xCanvasToken_example'; // String |
-let projectPackageUpdate = new PlatformApi.ProjectPackageUpdate(); // ProjectPackageUpdate |
+let appSchemasProvisionerProjectPackageProjectPackageUpdate =
+  new PlatformApi.AppSchemasProvisionerProjectPackageProjectPackageUpdate(); // AppSchemasProvisionerProjectPackageProjectPackageUpdate |
 apiInstance.updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(
   projectId,
   packageId,
   xCanvasToken,
-  projectPackageUpdate,
+  appSchemasProvisionerProjectPackageProjectPackageUpdate,
   (error, data, response) => {
     if (error) {
       console.error(error);
@@ -39,16 +40,16 @@ apiInstance.updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPat
 
 ### Parameters
 
-| Name                     | Type                                                | Description           | Notes |
-| ------------------------ | --------------------------------------------------- | --------------------- | ----- |
-| **projectId**            | **String**                                          | The ID of the project |
-| **packageId**            | **String**                                          | The ID of the package |
-| **xCanvasToken**         | **String**                                          |                       |
-| **projectPackageUpdate** | [**ProjectPackageUpdate**](ProjectPackageUpdate.md) |                       |
+| Name                                                        | Type                                                                                                                      | Description           | Notes |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------- | ----- |
+| **projectId**                                               | **String**                                                                                                                | The ID of the project |
+| **packageId**                                               | **String**                                                                                                                | The ID of the package |
+| **xCanvasToken**                                            | **String**                                                                                                                |                       |
+| **appSchemasProvisionerProjectPackageProjectPackageUpdate** | [**AppSchemasProvisionerProjectPackageProjectPackageUpdate**](AppSchemasProvisionerProjectPackageProjectPackageUpdate.md) |                       |
 
 ### Return type
 
-[**ProjectPackage**](ProjectPackage.md)
+**Object**
 
 ### Authorization
 

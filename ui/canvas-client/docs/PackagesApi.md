@@ -301,7 +301,7 @@ No authorization required
 
 ## updateProjectPackageProjectsProjectIdPackagesPackageIdPatch
 
-> ProjectPackage updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, projectPackageUpdate)
+> ProjectPackage updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, appSchemasProjectPackageProjectPackageUpdate)
 
 Update Project Package
 
@@ -313,11 +313,12 @@ import PlatformApi from 'platform_api';
 let apiInstance = new PlatformApi.PackagesApi();
 let projectId = 'projectId_example'; // String | The ID of the project
 let packageId = 'packageId_example'; // String | The ID of the package
-let projectPackageUpdate = new PlatformApi.ProjectPackageUpdate(); // ProjectPackageUpdate |
+let appSchemasProjectPackageProjectPackageUpdate =
+  new PlatformApi.AppSchemasProjectPackageProjectPackageUpdate(); // AppSchemasProjectPackageProjectPackageUpdate |
 apiInstance.updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(
   projectId,
   packageId,
-  projectPackageUpdate,
+  appSchemasProjectPackageProjectPackageUpdate,
   (error, data, response) => {
     if (error) {
       console.error(error);
@@ -330,11 +331,11 @@ apiInstance.updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(
 
 ### Parameters
 
-| Name                     | Type                                                | Description           | Notes |
-| ------------------------ | --------------------------------------------------- | --------------------- | ----- |
-| **projectId**            | **String**                                          | The ID of the project |
-| **packageId**            | **String**                                          | The ID of the package |
-| **projectPackageUpdate** | [**ProjectPackageUpdate**](ProjectPackageUpdate.md) |                       |
+| Name                                             | Type                                                                                                | Description           | Notes |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------- | --------------------- | ----- |
+| **projectId**                                    | **String**                                                                                          | The ID of the project |
+| **packageId**                                    | **String**                                                                                          | The ID of the package |
+| **appSchemasProjectPackageProjectPackageUpdate** | [**AppSchemasProjectPackageProjectPackageUpdate**](AppSchemasProjectPackageProjectPackageUpdate.md) |                       |
 
 ### Return type
 
@@ -351,7 +352,7 @@ No authorization required
 
 ## updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch
 
-> ProjectPackage updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, xCanvasToken, projectPackageUpdate)
+> Object updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(projectId, packageId, xCanvasToken, appSchemasProvisionerProjectPackageProjectPackageUpdate)
 
 Update Project Package
 
@@ -364,12 +365,13 @@ let apiInstance = new PlatformApi.PackagesApi();
 let projectId = 'projectId_example'; // String | The ID of the project
 let packageId = 'packageId_example'; // String | The ID of the package
 let xCanvasToken = 'xCanvasToken_example'; // String |
-let projectPackageUpdate = new PlatformApi.ProjectPackageUpdate(); // ProjectPackageUpdate |
+let appSchemasProvisionerProjectPackageProjectPackageUpdate =
+  new PlatformApi.AppSchemasProvisionerProjectPackageProjectPackageUpdate(); // AppSchemasProvisionerProjectPackageProjectPackageUpdate |
 apiInstance.updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(
   projectId,
   packageId,
   xCanvasToken,
-  projectPackageUpdate,
+  appSchemasProvisionerProjectPackageProjectPackageUpdate,
   (error, data, response) => {
     if (error) {
       console.error(error);
@@ -382,16 +384,16 @@ apiInstance.updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPat
 
 ### Parameters
 
-| Name                     | Type                                                | Description           | Notes |
-| ------------------------ | --------------------------------------------------- | --------------------- | ----- |
-| **projectId**            | **String**                                          | The ID of the project |
-| **packageId**            | **String**                                          | The ID of the package |
-| **xCanvasToken**         | **String**                                          |                       |
-| **projectPackageUpdate** | [**ProjectPackageUpdate**](ProjectPackageUpdate.md) |                       |
+| Name                                                        | Type                                                                                                                      | Description           | Notes |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------- | ----- |
+| **projectId**                                               | **String**                                                                                                                | The ID of the project |
+| **packageId**                                               | **String**                                                                                                                | The ID of the package |
+| **xCanvasToken**                                            | **String**                                                                                                                |                       |
+| **appSchemasProvisionerProjectPackageProjectPackageUpdate** | [**AppSchemasProvisionerProjectPackageProjectPackageUpdate**](AppSchemasProvisionerProjectPackageProjectPackageUpdate.md) |                       |
 
 ### Return type
 
-[**ProjectPackage**](ProjectPackage.md)
+**Object**
 
 ### Authorization
 

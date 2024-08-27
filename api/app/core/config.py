@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     CREDENTIAL_ENCRYPTION_KEY: str
     AUTH_SERVICE_URL: str = "https://auth-service-razsp32k5q-uc.a.run.app"
     API_TOKEN: str
+    # only used by the provisioner to update deployments and save outputs artifacts
+    PROVISIONER_API_TOKEN: str = "foo-bar"
 
     OTEL_SERVICE_NAME: str = "your-service-name"
     OTEL_EXPORTER_OTLP_PROTOCOL: str = "http/protobuf"

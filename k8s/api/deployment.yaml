@@ -23,10 +23,9 @@ spec:
           image: us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/api:latest
           imagePullPolicy: Always
           resources:
-            # Autopilot minimums / defaults
             requests:
-              memory: "1000Mi"
-              cpu: "1000m"
+              memory: "512Mi"
+              cpu: "500m"
             # limits:
             #   memory: "512Mi"
             #   cpu: "500m"

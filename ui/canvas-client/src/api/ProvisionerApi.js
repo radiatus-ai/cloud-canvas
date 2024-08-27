@@ -12,9 +12,8 @@
  */
 
 import ApiClient from '../ApiClient';
+import AppSchemasProvisionerProjectPackageProjectPackageUpdate from '../model/AppSchemasProvisionerProjectPackageProjectPackageUpdate';
 import HTTPValidationError from '../model/HTTPValidationError';
-import ProjectPackage from '../model/ProjectPackage';
-import ProjectPackageUpdate from '../model/ProjectPackageUpdate';
 
 /**
  * Provisioner service.
@@ -37,7 +36,7 @@ export default class ProvisionerApi {
    * Callback function to receive the result of the updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch operation.
    * @callback module:api/ProvisionerApi~updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatchCallback
    * @param {String} error Error message, if any.
-   * @param {module:model/ProjectPackage} data The data returned by the service call.
+   * @param {Object} data The data returned by the service call.
    * @param {String} response The complete HTTP response.
    */
 
@@ -46,18 +45,18 @@ export default class ProvisionerApi {
    * @param {String} projectId The ID of the project
    * @param {String} packageId The ID of the package
    * @param {String} xCanvasToken
-   * @param {module:model/ProjectPackageUpdate} projectPackageUpdate
+   * @param {module:model/AppSchemasProvisionerProjectPackageProjectPackageUpdate} appSchemasProvisionerProjectPackageProjectPackageUpdate
    * @param {module:api/ProvisionerApi~updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatchCallback} callback The callback function, accepting three arguments: error, data, response
-   * data is of type: {@link module:model/ProjectPackage}
+   * data is of type: {@link Object}
    */
   updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(
     projectId,
     packageId,
     xCanvasToken,
-    projectPackageUpdate,
+    appSchemasProvisionerProjectPackageProjectPackageUpdate,
     callback
   ) {
-    let postBody = projectPackageUpdate;
+    let postBody = appSchemasProvisionerProjectPackageProjectPackageUpdate;
     // verify the required parameter 'projectId' is set
     if (projectId === undefined || projectId === null) {
       throw new Error(
@@ -76,10 +75,13 @@ export default class ProvisionerApi {
         "Missing the required parameter 'xCanvasToken' when calling updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch"
       );
     }
-    // verify the required parameter 'projectPackageUpdate' is set
-    if (projectPackageUpdate === undefined || projectPackageUpdate === null) {
+    // verify the required parameter 'appSchemasProvisionerProjectPackageProjectPackageUpdate' is set
+    if (
+      appSchemasProvisionerProjectPackageProjectPackageUpdate === undefined ||
+      appSchemasProvisionerProjectPackageProjectPackageUpdate === null
+    ) {
       throw new Error(
-        "Missing the required parameter 'projectPackageUpdate' when calling updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch"
+        "Missing the required parameter 'appSchemasProvisionerProjectPackageProjectPackageUpdate' when calling updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch"
       );
     }
 
@@ -96,7 +98,7 @@ export default class ProvisionerApi {
     let authNames = [];
     let contentTypes = ['application/json'];
     let accepts = ['application/json'];
-    let returnType = ProjectPackage;
+    let returnType = Object;
     return this.apiClient.callApi(
       '/provisioner/projects/{project_id}/packages/{package_id}',
       'PATCH',

@@ -12,10 +12,11 @@
  */
 
 import ApiClient from '../ApiClient';
+import AppSchemasProjectPackageProjectPackageUpdate from '../model/AppSchemasProjectPackageProjectPackageUpdate';
+import AppSchemasProvisionerProjectPackageProjectPackageUpdate from '../model/AppSchemasProvisionerProjectPackageProjectPackageUpdate';
 import HTTPValidationError from '../model/HTTPValidationError';
 import ProjectPackage from '../model/ProjectPackage';
 import ProjectPackageCreate from '../model/ProjectPackageCreate';
-import ProjectPackageUpdate from '../model/ProjectPackageUpdate';
 
 /**
  * Project service.
@@ -418,17 +419,17 @@ export default class ProjectApi {
    * Update Project Package
    * @param {String} projectId The ID of the project
    * @param {String} packageId The ID of the package
-   * @param {module:model/ProjectPackageUpdate} projectPackageUpdate
+   * @param {module:model/AppSchemasProjectPackageProjectPackageUpdate} appSchemasProjectPackageProjectPackageUpdate
    * @param {module:api/ProjectApi~updateProjectPackageProjectsProjectIdPackagesPackageIdPatchCallback} callback The callback function, accepting three arguments: error, data, response
    * data is of type: {@link module:model/ProjectPackage}
    */
   updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(
     projectId,
     packageId,
-    projectPackageUpdate,
+    appSchemasProjectPackageProjectPackageUpdate,
     callback
   ) {
-    let postBody = projectPackageUpdate;
+    let postBody = appSchemasProjectPackageProjectPackageUpdate;
     // verify the required parameter 'projectId' is set
     if (projectId === undefined || projectId === null) {
       throw new Error(
@@ -441,10 +442,13 @@ export default class ProjectApi {
         "Missing the required parameter 'packageId' when calling updateProjectPackageProjectsProjectIdPackagesPackageIdPatch"
       );
     }
-    // verify the required parameter 'projectPackageUpdate' is set
-    if (projectPackageUpdate === undefined || projectPackageUpdate === null) {
+    // verify the required parameter 'appSchemasProjectPackageProjectPackageUpdate' is set
+    if (
+      appSchemasProjectPackageProjectPackageUpdate === undefined ||
+      appSchemasProjectPackageProjectPackageUpdate === null
+    ) {
       throw new Error(
-        "Missing the required parameter 'projectPackageUpdate' when calling updateProjectPackageProjectsProjectIdPackagesPackageIdPatch"
+        "Missing the required parameter 'appSchemasProjectPackageProjectPackageUpdate' when calling updateProjectPackageProjectsProjectIdPackagesPackageIdPatch"
       );
     }
 
@@ -481,7 +485,7 @@ export default class ProjectApi {
    * Callback function to receive the result of the updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch operation.
    * @callback module:api/ProjectApi~updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatchCallback
    * @param {String} error Error message, if any.
-   * @param {module:model/ProjectPackage} data The data returned by the service call.
+   * @param {Object} data The data returned by the service call.
    * @param {String} response The complete HTTP response.
    */
 
@@ -490,18 +494,18 @@ export default class ProjectApi {
    * @param {String} projectId The ID of the project
    * @param {String} packageId The ID of the package
    * @param {String} xCanvasToken
-   * @param {module:model/ProjectPackageUpdate} projectPackageUpdate
+   * @param {module:model/AppSchemasProvisionerProjectPackageProjectPackageUpdate} appSchemasProvisionerProjectPackageProjectPackageUpdate
    * @param {module:api/ProjectApi~updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatchCallback} callback The callback function, accepting three arguments: error, data, response
-   * data is of type: {@link module:model/ProjectPackage}
+   * data is of type: {@link Object}
    */
   updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(
     projectId,
     packageId,
     xCanvasToken,
-    projectPackageUpdate,
+    appSchemasProvisionerProjectPackageProjectPackageUpdate,
     callback
   ) {
-    let postBody = projectPackageUpdate;
+    let postBody = appSchemasProvisionerProjectPackageProjectPackageUpdate;
     // verify the required parameter 'projectId' is set
     if (projectId === undefined || projectId === null) {
       throw new Error(
@@ -520,10 +524,13 @@ export default class ProjectApi {
         "Missing the required parameter 'xCanvasToken' when calling updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch"
       );
     }
-    // verify the required parameter 'projectPackageUpdate' is set
-    if (projectPackageUpdate === undefined || projectPackageUpdate === null) {
+    // verify the required parameter 'appSchemasProvisionerProjectPackageProjectPackageUpdate' is set
+    if (
+      appSchemasProvisionerProjectPackageProjectPackageUpdate === undefined ||
+      appSchemasProvisionerProjectPackageProjectPackageUpdate === null
+    ) {
       throw new Error(
-        "Missing the required parameter 'projectPackageUpdate' when calling updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch"
+        "Missing the required parameter 'appSchemasProvisionerProjectPackageProjectPackageUpdate' when calling updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch"
       );
     }
 
@@ -540,7 +547,7 @@ export default class ProjectApi {
     let authNames = [];
     let contentTypes = ['application/json'];
     let accepts = ['application/json'];
-    let returnType = ProjectPackage;
+    let returnType = Object;
     return this.apiClient.callApi(
       '/provisioner/projects/{project_id}/packages/{package_id}',
       'PATCH',

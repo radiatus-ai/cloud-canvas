@@ -440,7 +440,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ProjectPackageUpdate"
+              $ref: "#/components/schemas/app__schemas__project_package__ProjectPackageUpdate"
       responses:
         "200":
           description: Successful Response
@@ -729,14 +729,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ProjectPackageUpdate"
+              $ref: "#/components/schemas/app__schemas__provisioner_project_package__ProjectPackageUpdate"
       responses:
         "200":
           description: Successful Response
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/ProjectPackage"
+              schema: {}
         "422":
           description: Validation Error
           content:
@@ -1070,7 +1069,45 @@ components:
         - outputs
         - parameters
       title: ProjectPackageCreate
-    ProjectPackageUpdate:
+    ProjectUpdate:
+      properties:
+        name:
+          anyOf:
+            - type: string
+            - type: "null"
+          title: Name
+        credential_ids:
+          anyOf:
+            - items:
+                type: string
+                format: uuid4
+              type: array
+            - type: "null"
+          title: Credential Ids
+      type: object
+      title: ProjectUpdate
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+              - type: string
+              - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+        - loc
+        - msg
+        - type
+      title: ValidationError
+    app__schemas__project_package__ProjectPackageUpdate:
       properties:
         name:
           anyOf:
@@ -1114,41 +1151,17 @@ components:
           title: Parameter Data
       type: object
       title: ProjectPackageUpdate
-    ProjectUpdate:
+    app__schemas__provisioner_project_package__ProjectPackageUpdate:
       properties:
-        name:
+        deploy_status:
           anyOf:
-            - type: string
+            - $ref: "#/components/schemas/DeployStatus"
             - type: "null"
-          title: Name
-        credential_ids:
+          default: NOT_DEPLOYED
+        output_data:
           anyOf:
-            - items:
-                type: string
-                format: uuid4
-              type: array
+            - type: object
             - type: "null"
-          title: Credential Ids
+          title: Output Data
       type: object
-      title: ProjectUpdate
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-              - type: string
-              - type: integer
-          type: array
-          title: Location
-        msg:
-          type: string
-          title: Message
-        type:
-          type: string
-          title: Error Type
-      type: object
-      required:
-        - loc
-        - msg
-        - type
-      title: ValidationError
+      title: ProjectPackageUpdate

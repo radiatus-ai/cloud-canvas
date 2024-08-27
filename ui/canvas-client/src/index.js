@@ -12,6 +12,8 @@
  */
 
 import ApiClient from './ApiClient';
+import AppSchemasProjectPackageProjectPackageUpdate from './model/AppSchemasProjectPackageProjectPackageUpdate';
+import AppSchemasProvisionerProjectPackageProjectPackageUpdate from './model/AppSchemasProvisionerProjectPackageProjectPackageUpdate';
 import Connection from './model/Connection';
 import ConnectionCreate from './model/ConnectionCreate';
 import Credential from './model/Credential';
@@ -26,7 +28,6 @@ import Project from './model/Project';
 import ProjectCreate from './model/ProjectCreate';
 import ProjectPackage from './model/ProjectPackage';
 import ProjectPackageCreate from './model/ProjectPackageCreate';
-import ProjectPackageUpdate from './model/ProjectPackageUpdate';
 import ProjectUpdate from './model/ProjectUpdate';
 import ValidationError from './model/ValidationError';
 import ValidationErrorLocInner from './model/ValidationErrorLocInner';
@@ -72,6 +73,18 @@ export {
    * @property {module:ApiClient}
    */
   ApiClient,
+
+  /**
+   * The AppSchemasProjectPackageProjectPackageUpdate model constructor.
+   * @property {module:model/AppSchemasProjectPackageProjectPackageUpdate}
+   */
+  AppSchemasProjectPackageProjectPackageUpdate,
+
+  /**
+   * The AppSchemasProvisionerProjectPackageProjectPackageUpdate model constructor.
+   * @property {module:model/AppSchemasProvisionerProjectPackageProjectPackageUpdate}
+   */
+  AppSchemasProvisionerProjectPackageProjectPackageUpdate,
 
   /**
    * The Connection model constructor.
@@ -156,12 +169,6 @@ export {
    * @property {module:model/ProjectPackageCreate}
    */
   ProjectPackageCreate,
-
-  /**
-   * The ProjectPackageUpdate model constructor.
-   * @property {module:model/ProjectPackageUpdate}
-   */
-  ProjectPackageUpdate,
 
   /**
    * The ProjectUpdate model constructor.

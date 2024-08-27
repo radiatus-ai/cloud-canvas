@@ -159,6 +159,8 @@ All URIs are relative to _http://localhost_
 
 ## Documentation for Models
 
+- [PlatformApi.AppSchemasProjectPackageProjectPackageUpdate](docs/AppSchemasProjectPackageProjectPackageUpdate.md)
+- [PlatformApi.AppSchemasProvisionerProjectPackageProjectPackageUpdate](docs/AppSchemasProvisionerProjectPackageProjectPackageUpdate.md)
 - [PlatformApi.Connection](docs/Connection.md)
 - [PlatformApi.ConnectionCreate](docs/ConnectionCreate.md)
 - [PlatformApi.Credential](docs/Credential.md)
@@ -173,7 +175,6 @@ All URIs are relative to _http://localhost_
 - [PlatformApi.ProjectCreate](docs/ProjectCreate.md)
 - [PlatformApi.ProjectPackage](docs/ProjectPackage.md)
 - [PlatformApi.ProjectPackageCreate](docs/ProjectPackageCreate.md)
-- [PlatformApi.ProjectPackageUpdate](docs/ProjectPackageUpdate.md)
 - [PlatformApi.ProjectUpdate](docs/ProjectUpdate.md)
 - [PlatformApi.ValidationError](docs/ValidationError.md)
 - [PlatformApi.ValidationErrorLocInner](docs/ValidationErrorLocInner.md)

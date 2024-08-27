@@ -2,6 +2,8 @@
 .gitignore
 .travis.yml
 README.md
+docs/AppSchemasProjectPackageProjectPackageUpdate.md
+docs/AppSchemasProvisionerProjectPackageProjectPackageUpdate.md
 docs/Connection.md
 docs/ConnectionCreate.md
 docs/Credential.md
@@ -19,7 +21,6 @@ docs/ProjectApi.md
 docs/ProjectCreate.md
 docs/ProjectPackage.md
 docs/ProjectPackageCreate.md
-docs/ProjectPackageUpdate.md
 docs/ProjectUpdate.md
 docs/ProvisionerApi.md
 docs/ValidationError.md
@@ -33,6 +34,8 @@ src/api/PackagesApi.js
 src/api/ProjectApi.js
 src/api/ProvisionerApi.js
 src/index.js
+src/model/AppSchemasProjectPackageProjectPackageUpdate.js
+src/model/AppSchemasProvisionerProjectPackageProjectPackageUpdate.js
 src/model/Connection.js
 src/model/ConnectionCreate.js
 src/model/Credential.js
@@ -47,7 +50,8 @@ src/model/Project.js
 src/model/ProjectCreate.js
 src/model/ProjectPackage.js
 src/model/ProjectPackageCreate.js
-src/model/ProjectPackageUpdate.js
 src/model/ProjectUpdate.js
 src/model/ValidationError.js
 src/model/ValidationErrorLocInner.js
+test/model/AppSchemasProjectPackageProjectPackageUpdate.spec.js
+test/model/AppSchemasProvisionerProjectPackageProjectPackageUpdate.spec.js
