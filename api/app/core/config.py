@@ -7,7 +7,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Platform API"
+    PROJECT_NAME: str = "Canvas API"
     API_V1_STR: str = "/api/v1"
     SECRET_KEY: str = "my-32-character-ultra-secure-and-ultra-long-secret"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
@@ -16,9 +16,9 @@ class Settings(BaseSettings):
     AUTH_SERVICE_URL: str = "https://auth-service-razsp32k5q-uc.a.run.app"
     API_TOKEN: str
     # only used by the provisioner to update deployments and save outputs artifacts
-    PROVISIONER_API_TOKEN: str = "foo-bar"
+    PROVISIONER_API_TOKEN: str = "foobar"
 
-    OTEL_SERVICE_NAME: str = "your-service-name"
+    OTEL_SERVICE_NAME: str = "api"
     OTEL_EXPORTER_OTLP_PROTOCOL: str = "http/protobuf"
     OTEL_EXPORTER_OTLP_ENDPOINT: str = "https://api.honeycomb.io:443"  # US instance
     OTEL_EXPORTER_OTLP_HEADERS: str = "x-honeycomb-team=<your-api-key>"

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Body, Depends, Header, HTTPException, Path
 from pydantic import UUID4
 
 from app.core.config import settings
-from app.core.dependencies import get_db_and_current_user
+from app.core.dependencies import get_db
 from app.crud.project_package import project_package as crud_project_package
 from app.schemas.provisioner_project_package import ProjectPackageUpdate
 
@@ -15,7 +15,10 @@ def verify_canvas_token(x_canvas_token: str = Header(...)):
     if not expected_token:
         raise HTTPException(status_code=500, detail="PROVISIONER_API_TOKEN not set")
     if x_canvas_token != expected_token:
-        raise HTTPException(status_code=403, detail="Invalid Canvas API token")
+        raise HTTPException(
+            status_code=403,
+            detail="Invalid Canvas API token, expected: " + expected_token,
+        )
     return x_canvas_token
 
 
@@ -29,7 +32,7 @@ async def update_project_package(
     project_id: UUID4 = Path(..., description="The ID of the project"),
     package_id: UUID4 = Path(..., description="The ID of the package"),
     package: ProjectPackageUpdate = Body(...),
-    deps: dict = Depends(get_db_and_current_user),
+    deps: dict = Depends(get_db),
     _: str = Depends(verify_canvas_token),
 ):
     db = deps["db"]
@@ -40,6 +43,8 @@ async def update_project_package(
         raise HTTPException(
             status_code=404, detail="ProjectPackage not found in this project"
         )
+    print("package", package)
+    print("package.deploy_status", package.deploy_status)
 
     await crud_project_package.update_package(
         db, db_obj=existing_package, obj_in=package

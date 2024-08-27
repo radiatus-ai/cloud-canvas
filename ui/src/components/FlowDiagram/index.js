@@ -4,6 +4,7 @@ import { ReactFlowProvider } from 'reactflow';
 import Sidebar from '../Sidebar';
 import FlowCanvas from './components/FlowCanvas';
 import ModalsContainer from './components/ModalsContainer';
+import LoadingScreen from './components/LoadingScreen';
 import { useFlowDiagram } from './hooks/useFlowDiagram';
 
 const FlowDiagram = () => {
@@ -47,7 +48,7 @@ const FlowDiagram = () => {
   // }, [nodes, onOpenModal, onDeploy, onDeleteNode]);
 
   if (isLoading) {
-    return <div>Loading infrastructure data...</div>;
+    return <LoadingScreen />;
   }
 
   if (error) {

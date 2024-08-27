@@ -66,6 +66,17 @@ async def get_db_and_current_user(
     }
 
 
+async def get_db(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    trace_context: Optional[trace.SpanContext] = Depends(get_trace_context),
+):
+    return {
+        "db": db,
+        "trace_context": trace_context,
+    }
+
+
 async def ensure_organization_reference(
     db: AsyncSession,
     organization_id: UUID,

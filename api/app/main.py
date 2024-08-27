@@ -69,6 +69,7 @@ app.add_middleware(
         "https://6db5-76-102-100-3.ngrok-free.app",
         "https://dev.r7ai.net",
         "https://canvas.dev.r7ai.net",
+        "https://provisioner.dev.r7ai.net",
         "*",
     ],
     allow_credentials=True,
