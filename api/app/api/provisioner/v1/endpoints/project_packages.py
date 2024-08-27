@@ -3,8 +3,11 @@ from pydantic import UUID4
 
 from app.core.config import settings
 from app.core.dependencies import get_db
+from app.core.logger import get_logger
 from app.crud.project_package import project_package as crud_project_package
 from app.schemas.provisioner_project_package import ProjectPackageUpdate
+
+logger = get_logger(__name__)
 
 # this router exists as a temporary way for the provisioner to send updates to the api.
 # the provision will send a success / fail for every package and on success needs to write the output data (artifacts) to the database
@@ -43,8 +46,8 @@ async def update_project_package(
         raise HTTPException(
             status_code=404, detail="ProjectPackage not found in this project"
         )
-    print("package", package)
-    print("package.deploy_status", package.deploy_status)
+    logger.info("package", package)
+    logger.info("package.deploy_status", package.deploy_status)
 
     await crud_project_package.update_package(
         db, db_obj=existing_package, obj_in=package

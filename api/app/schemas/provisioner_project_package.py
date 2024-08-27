@@ -13,5 +13,6 @@ class ProjectPackageUpdate(BaseModel):
     # outputs: Optional[Dict[str, Any]] = None
     # parameters: Optional[Dict[str, Any]] = None
     deploy_status: DeployStatus
+    # deploy_status: str
     output_data: Optional[Dict[str, Any]] = None
     # parameter_data: Optional[Dict[str, Any]] = None

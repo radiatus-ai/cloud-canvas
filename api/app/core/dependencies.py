@@ -31,7 +31,7 @@ async def get_current_user(request: Request):
     if not token:
         raise HTTPException(status_code=401, detail="No authorization token provided")
 
-    logger.info(f"Token being sent to auth service: {token}")
+    logger.debug(f"Token being sent to auth service: {token}")
     async with httpx.AsyncClient() as client:
         response = await client.post(
             f"{settings.AUTH_SERVICE_URL}/api/verify-token",

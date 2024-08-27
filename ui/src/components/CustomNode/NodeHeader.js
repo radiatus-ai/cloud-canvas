@@ -66,17 +66,13 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
   const { token } = useAuth();
   const { projects: projectsApi } = useApi();
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
-  const [localDeployStatus, setLocalDeployStatus] = useState(
-    data.deploy_status
-  );
   const [commandOutputs, setCommandOutputs] = useState(
     data.command_outputs || ''
   );
 
   useEffect(() => {
-    setLocalDeployStatus(data.deploy_status);
     setCommandOutputs(data.command_outputs || '');
-  }, [data.deploy_status, data.command_outputs]);
+  }, [data.command_outputs]);
 
   const handleOpenStatusModal = useCallback(() => {
     setIsStatusModalOpen(true);
@@ -87,15 +83,11 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
   }, []);
 
   const handleDeploy = useCallback(async () => {
-    setLocalDeployStatus('DEPLOYING');
     try {
       const result = await projectsApi.deployPackage(projectId, data.id, token);
-
-      setLocalDeployStatus('DEPLOYED');
       setCommandOutputs(result.command_outputs || '');
     } catch (error) {
       console.error('Deployment failed:', error);
-      setLocalDeployStatus('failed');
       setCommandOutputs(
         'Deployment failed. Please check the logs for more information.'
       );
@@ -103,37 +95,20 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
   }, [projectId, data.id, projectsApi, token]);
 
   const handleDestroy = useCallback(async () => {
-    setLocalDeployStatus('DESTROYING');
     try {
-      await projectsApi.destroyPackage(projectId, data.id, token);
-      setLocalDeployStatus('UNDEPLOYED');
-      setCommandOutputs('Package successfully destroyed.');
+      const result = await projectsApi.destroyPackage(
+        projectId,
+        data.id,
+        token
+      );
+      setCommandOutputs(result.command_outputs || '');
     } catch (error) {
       console.error('Destruction failed:', error);
-      setLocalDeployStatus('failed');
       setCommandOutputs(
         'Destruction failed. Please check the logs for more information.'
       );
     }
   }, [projectId, data.id, projectsApi, token]);
-
-  // const handleDelete = useCallback(async () => {
-  //   try {
-  //     await apiService.deletePackage(projectId, data.id);
-  //     // The parent component should handle removing the node from the state
-  //     // Call the onDeleteNode callback to remove the node from the parent component
-  //     // todo: redo when moving to real backend
-  //     onDeleteNode(data.id);
-  //   } catch (error) {
-  //     console.error('Deletion failed:', error);
-  //     setCommandOutputs(
-  //       'Deletion failed. Please check the logs for more information.'
-  //     );
-  //   }
-  // }, [projectId, data.id]);
-
-  const isDeployingOrDestroying =
-    localDeployStatus === 'DEPLOYING' || localDeployStatus === 'DESTROYING';
 
   return (
     <Box
@@ -148,9 +123,9 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
         {data.label}
       </Typography>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Tooltip title={`Status: ${localDeployStatus}`}>
+        <Tooltip title={`Status: ${data.deploy_status}`}>
           <StatusDot
-            status={localDeployStatus}
+            status={data.deploy_status}
             onClick={handleOpenStatusModal}
           />
         </Tooltip>
@@ -159,30 +134,19 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
             <IconButton
               size="small"
               onClick={onOpenModal}
-              disabled={isDeployingOrDestroying}
-              sx={{
-                ml: 0.5,
-                p: 0.5,
-                opacity: isDeployingOrDestroying ? 0.5 : 1,
-              }}
+              sx={{ ml: 0.5, p: 0.5 }}
               color="primary"
             >
               <EditIcon fontSize="small" />
             </IconButton>
           </span>
         </Tooltip>
-        {localDeployStatus !== 'DEPLOYED' ? (
+        {data.deploy_status !== 'DEPLOYED' ? (
           <Tooltip title="Deploy">
             <IconButton
               size="small"
               onClick={handleDeploy}
-              disabled={isDeployingOrDestroying}
-              sx={{
-                ml: 0.5,
-                p: 0.5,
-                opacity: isDeployingOrDestroying ? 0.5 : 1,
-                color: '#0cc421',
-              }}
+              sx={{ ml: 0.5, p: 0.5, color: '#0cc421' }}
             >
               <PlayArrowIcon fontSize="small" />
             </IconButton>
@@ -192,12 +156,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
             <IconButton
               size="small"
               onClick={handleDestroy}
-              disabled={isDeployingOrDestroying}
-              sx={{
-                ml: 0.5,
-                p: 0.5,
-                opacity: isDeployingOrDestroying ? 0.5 : 1,
-              }}
+              sx={{ ml: 0.5, p: 0.5 }}
             >
               <StopIcon fontSize="small" />
             </IconButton>
@@ -208,12 +167,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
             <IconButton
               size="small"
               onClick={onDeleteNode}
-              disabled={isDeployingOrDestroying}
-              sx={{
-                ml: 0.5,
-                p: 0.5,
-                opacity: isDeployingOrDestroying ? 0.5 : 1,
-              }}
+              sx={{ ml: 0.5, p: 0.5 }}
             >
               <DeleteIcon fontSize="small" />
             </IconButton>
