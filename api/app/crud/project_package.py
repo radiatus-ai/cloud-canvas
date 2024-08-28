@@ -6,13 +6,14 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
+from app.core.logger import get_logger
 from app.crud.base import CRUDBase
 from app.crud.project import project as crud_project
-from app.models.project import Project
 from app.models.project_package import ProjectPackage
 from app.schemas.project_package import ProjectPackageCreate, ProjectPackageUpdate
-
-from app.core.logger import get_logger
+from app.schemas.provisioner_project_package import (
+    ProjectPackageUpdate as ProvisionerProjectPackageUpdate,
+)
 
 logger = get_logger(__name__)
 
@@ -87,6 +88,20 @@ class CRUDProjectPackage(
 
     async def update_package(
         self, db: AsyncSession, *, db_obj: ProjectPackage, obj_in: ProjectPackageUpdate
+    ) -> ProjectPackage:
+        update_data = obj_in.dict(exclude_unset=True)
+        for field, value in update_data.items():
+            setattr(db_obj, field, value)
+        await db.commit()
+        await db.refresh(db_obj)
+        return db_obj
+
+    async def provisioner_update_package(
+        self,
+        db: AsyncSession,
+        *,
+        db_obj: ProjectPackage,
+        obj_in: ProvisionerProjectPackageUpdate,
     ) -> ProjectPackage:
         update_data = obj_in.dict(exclude_unset=True)
         for field, value in update_data.items():

@@ -16,3 +16,7 @@ class ProjectPackageUpdate(BaseModel):
     # deploy_status: str
     output_data: Optional[Dict[str, Any]] = None
     # parameter_data: Optional[Dict[str, Any]] = None
+
+    # ugh so important
+    class Config:
+        use_enum_values = True

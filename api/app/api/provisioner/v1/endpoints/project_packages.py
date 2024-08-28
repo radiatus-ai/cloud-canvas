@@ -46,11 +46,14 @@ async def update_project_package(
         raise HTTPException(
             status_code=404, detail="ProjectPackage not found in this project"
         )
-    logger.info("package", package)
-    logger.info("package.deploy_status", package.deploy_status)
 
-    await crud_project_package.update_package(
+    await crud_project_package.provisioner_update_package(
         db, db_obj=existing_package, obj_in=package
     )
+    # background_tasks.add_task(
+    #     publish_message,
+    #     f"project_package_{package_id}",
+    #     {"action": "update", "package_id": str(package_id), "project_id": str(project_id)}
+    # )
     # don't return anything to the provisioner. if the update fails at the database level, the provisioner will retry
     return {"success": True}
