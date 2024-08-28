@@ -46,11 +46,9 @@ const JsonSchemaForm = forwardRef(
       severity: 'success',
     });
 
-    // Memoize the schema and initialData
     const memoizedSchema = useMemo(() => schema, [schema]);
     const memoizedInitialData = useMemo(() => initialData, [initialData]);
 
-    // Memoize the default values calculation
     const defaultValues = useMemo(() => {
       const newFormData = { ...memoizedInitialData };
       if (memoizedSchema) {
@@ -149,7 +147,11 @@ const JsonSchemaForm = forwardRef(
 
     useImperativeHandle(ref, () => ({
       submit: handleSubmit,
-      validate: () => validateForm(memoizedSchema, formData),
+      validate: () => {
+        const validationResult = validateForm(memoizedSchema, formData);
+        setErrors(validationResult.errors);
+        return validationResult;
+      },
       getData: () => formData,
     }));
 

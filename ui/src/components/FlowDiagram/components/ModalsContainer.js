@@ -16,7 +16,7 @@ import DynamicModalForm from '../../DynamicModalForm';
 const ModalsContainer = ({
   modalState,
   setModalState,
-  nodes = [], // Provide a default value
+  nodes = [],
   onSubmitForm,
   handleNameSubmit,
   checkRequiredConnections,
@@ -50,10 +50,11 @@ const ModalsContainer = ({
       try {
         const result = await onSubmitForm(selectedNodeId, newFormData);
         console.log('ModalsContainer - Form submission result:', result);
+        handleCloseModal();
       } catch (error) {
         console.error('ModalsContainer - Error submitting form:', error);
+        // Optionally, you can display an error message to the user here
       }
-      handleCloseModal();
     } else {
       console.warn(
         'ModalsContainer - Unable to submit form: missing selectedNodeId or onSubmitForm'
@@ -82,7 +83,7 @@ const ModalsContainer = ({
       <DynamicModalForm
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        schema={schema} // Use modalState.schema instead of selectedNode.data.parameters
+        schema={schema}
         onSubmit={handleSubmitForm}
         initialData={formData}
         title={`Edit Parameters for ${selectedNode?.data?.label || 'Node'}`}

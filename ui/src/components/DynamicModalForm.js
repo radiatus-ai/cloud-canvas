@@ -42,16 +42,23 @@ const DynamicModalForm = ({
     }
   }, [isOpen, memoizedInitialData]);
 
-  const handleSubmit = (data) => {
-    onSubmit(data);
-    onClose();
+  const handleSubmit = async () => {
+    if (formRef.current) {
+      const { isValid, errors } = await formRef.current.validate();
+      if (isValid) {
+        const data = formRef.current.getData();
+        onSubmit(data);
+        onClose();
+      } else {
+        console.log('Form validation failed:', errors);
+        // Optionally, you can display these errors to the user
+      }
+    }
   };
 
   const customComponents = useMemo(
     () => ({
       gcpRegions: GCPRegionsComponent,
-      // uncomment to test region dropdown
-      // region: GCPRegionsComponent,
     }),
     []
   );
@@ -85,7 +92,7 @@ const DynamicModalForm = ({
           Cancel
         </Button>
         <Button
-          onClick={() => formRef.current && formRef.current.submit()}
+          onClick={handleSubmit}
           color="primary"
           variant="contained"
         >
@@ -97,40 +104,3 @@ const DynamicModalForm = ({
 };
 
 export default React.memo(DynamicModalForm);
-
-// const onSubmitForm = useCallback(
-//   async (newFormData) => {
-//     if (!selectedNodeId) return;
-//     console.log('submitting form');
-
-//     try {
-//       const updatedPackage = await apiService.updatePackage(
-//         projectId,
-//         selectedNodeId,
-//         { parameter_data: newFormData }
-//       );
-
-//       setNodes((nds) =>
-//         nds.map((node) =>
-//           node.id === selectedNodeId
-//             ? {
-//                 ...node,
-//                 data: {
-//                   ...node.data,
-//                   parameter_data: updatedPackage.parameter_data,
-//                   parameters: updatedPackage.parameters,
-//                 },
-//               }
-//             : node
-//         )
-//       );
-
-//       setFormData(updatedPackage.parameter_data);
-//       onCloseModal();
-//     } catch (error) {
-//       console.error('Error updating package:', error);
-//       // You might want to show an error message to the user here
-//     }
-//   },
-//   [selectedNodeId, projectId, setNodes, onCloseModal]
-// );

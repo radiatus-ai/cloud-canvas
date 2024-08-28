@@ -61,11 +61,37 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
     : null;
 
   useEffect(() => {
-    console.log('user', user);
     if (user) {
+      let defaultAvatar;
+      switch (true) {
+        case user.email.endsWith('will@radiatus.io'):
+          defaultAvatar = 'https://avatars.githubusercontent.com/u/651833?v=4&size=64';
+          break;
+        case user.email.endsWith('mo@radiatus.io'):
+          defaultAvatar = 'https://avatars.githubusercontent.com/u/13317653?v=4&size=64';
+          break;
+        case user.email.endsWith('eric@radiatus.io'):
+          defaultAvatar = 'https://avatars.githubusercontent.com/u/9451328?v=4&size=64';
+          break;
+        case user.email.endsWith('ahmed@radiatus.io'):
+        case user.email.endsWith('phil@radiatus.io'):
+          defaultAvatar = 'https://avatars.githubusercontent.com/u/43769063?v=4&size=64';
+          break;
+        case user.email.endsWith('pradeep@radiatus.io'):
+          defaultAvatar = 'https://avatars.githubusercontent.com/u/11217764?v=4&size=64';
+          break;
+        case user.email.endsWith('thomas@radiatus.io'):
+          defaultAvatar = 'https://avatars.githubusercontent.com/u/5421738?v=4&size=64';
+          break;
+
+        default:
+          defaultAvatar =
+            'https://api.dicebear.com/9.x/personas/svg?seed=Casper';
+      }
+
       setUserInfo({
-        name: user.email, // Assuming the user object has an email field
-        avatar: user.avatar || 'https://example.com/default-avatar.jpg', // Use a default avatar if not provided
+        name: user.email,
+        avatar: user.avatar || defaultAvatar,
       });
     }
   }, [user]);
@@ -262,7 +288,7 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
             <>
               <Tooltip title="User menu" arrow>
                 <IconButton
-                  onClick={handleUserMenuClick}
+                  // onClick={handleUserMenuClick}
                   size="large"
                   edge="end"
                   color="inherit"
@@ -276,7 +302,7 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
                   </Avatar>
                 </IconButton>
               </Tooltip>
-              <Menu
+              {/* <Menu
                 anchorEl={userMenuAnchorEl}
                 open={Boolean(userMenuAnchorEl)}
                 onClose={handleUserMenuClose}
@@ -284,7 +310,7 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
                 <MenuItem onClick={handleUserMenuClose}>Profile</MenuItem>
                 <MenuItem onClick={handleUserMenuClose}>My account</MenuItem>
                 <MenuItem onClick={onLogout}>Logout</MenuItem>
-              </Menu>
+              </Menu> */}
             </>
           )}
         </Toolbar>
