@@ -50,7 +50,6 @@ build-ui-cloudbuild-kaniko:
 	gcloud builds submit --project=rad-containers-hmed --config=cloudbuild-ui-kaniko.yaml --substitutions=SHORT_SHA=$(SHORT_SHA) .
 
 deploy-ui-cloudbuild-kaniko: build-ui-cloudbuild-kaniko
-	kubectl set image deployment/ui ui=us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/ui:$(SHORT_SHA)
 	gcloud run deploy ui \
 		--image=us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/ui:$(SHORT_SHA) \
 		--execution-environment=gen2 \

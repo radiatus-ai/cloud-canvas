@@ -1,15 +1,8 @@
-from enum import Enum
 from typing import Any, Dict, Optional
 
 from pydantic import UUID4, BaseModel
 
-
-class DeployStatus(str, Enum):
-    NOT_DEPLOYED = "NOT_DEPLOYED"
-    DEPLOYING = "DEPLOYING"
-    DESTROYING = "DESTROYING"
-    DEPLOYED = "DEPLOYED"
-    FAILED = "FAILED"
+from app.models.project_package import ProjectPackageStatus
 
 
 class ProjectPackageBase(BaseModel):
@@ -21,7 +14,7 @@ class ProjectPackageBase(BaseModel):
 
 
 class ProjectPackageCreate(ProjectPackageBase):
-    deploy_status: Optional[DeployStatus] = DeployStatus.NOT_DEPLOYED
+    deploy_status: Optional[ProjectPackageStatus] = ProjectPackageStatus.NOT_DEPLOYED
     pass
 
 
@@ -31,7 +24,7 @@ class ProjectPackageUpdate(BaseModel):
     inputs: Optional[Dict[str, Any]] = None
     outputs: Optional[Dict[str, Any]] = None
     parameters: Optional[Dict[str, Any]] = None
-    deploy_status: Optional[DeployStatus] = DeployStatus.NOT_DEPLOYED
+    deploy_status: Optional[ProjectPackageStatus] = ProjectPackageStatus.NOT_DEPLOYED
     output_data: Optional[Dict[str, Any]] = None
     parameter_data: Optional[Dict[str, Any]] = None
 
@@ -39,7 +32,7 @@ class ProjectPackageUpdate(BaseModel):
 class ProjectPackage(ProjectPackageBase):
     id: UUID4
     project_id: UUID4
-    deploy_status: DeployStatus
+    deploy_status: ProjectPackageStatus
     output_data: Optional[Dict[str, Any]] = None
     parameter_data: Optional[Dict[str, Any]] = None
 
