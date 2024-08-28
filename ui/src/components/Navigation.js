@@ -26,6 +26,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import apiService from '../apiService';
 import { useThemeContext } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/Auth';
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
@@ -53,35 +54,47 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
   const location = useLocation();
   const { darkMode, toggleDarkMode } = useThemeContext();
   const theme = useTheme();
+  const { user } = useAuth();
 
   const projectId = location.pathname.startsWith('/flow/')
     ? location.pathname.split('/')[2]
     : null;
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        const info = await apiService.getUserInfo();
-        setUserInfo(info);
-      } catch (error) {
-        console.error('Failed to fetch user info:', error);
-      }
-    };
-
-    const fetchProjects = async () => {
-      try {
-        const projectsList = await apiService.fetchProjects();
-        setProjects(projectsList);
-      } catch (error) {
-        console.error('Failed to fetch projects:', error);
-      }
-    };
-
-    if (isAuthenticated) {
-      fetchUserInfo();
-      fetchProjects();
+    console.log('user', user);
+    if (user) {
+      setUserInfo({
+        name: user.email, // Assuming the user object has an email field
+        avatar: user.avatar || 'https://example.com/default-avatar.jpg', // Use a default avatar if not provided
+      });
     }
-  }, [isAuthenticated]);
+  }, [user]);
+
+  // todo: wire this up using the new clients
+  // useEffect(() => {
+  //   const fetchUserInfo = async () => {
+  //     try {
+  //       const info = await apiService.getUserInfo();
+  //       setUserInfo(info);
+  //     } catch (error) {
+  //       console.error('Failed to fetch user info:', error);
+  //     }
+  //   };
+
+  //   const fetchProjects = async () => {
+  //     try {
+  //       const projectsList = await apiService.fetchProjects();
+  //       setProjects(projectsList);
+  //     } catch (error) {
+  //       console.error('Failed to fetch projects:', error);
+  //     }
+  //   };
+
+  //   if (isAuthenticated) {
+  //     fetchUserInfo();
+  //     fetchProjects();
+  //   }
+  // }, [isAuthenticated]);
 
   useEffect(() => {
     if (projectId && projects.length > 0) {

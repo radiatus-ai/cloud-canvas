@@ -72,7 +72,6 @@ const FlowDiagram = () => {
           onDrop={onDrop}
           onDragOver={onDragOver}
           reactFlowWrapper={reactFlowWrapper}
-          maxZoom={1.0}
         />
         <ModalsContainer
           modalState={modalState}

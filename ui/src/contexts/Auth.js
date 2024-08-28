@@ -27,12 +27,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = useCallback((userData, authToken) => {
     localStorage.setItem('authToken', authToken);
+    localStorage.setItem('userData', JSON.stringify(userData));
     setToken(authToken);
     setUser(userData);
   }, []);
 
   const logout = useCallback(() => {
     localStorage.removeItem('authToken');
+    localStorage.removeItem('userData');
     setUser(null);
     setToken(null);
   }, []);
@@ -72,6 +74,10 @@ export const AuthProvider = ({ children }) => {
     if (storedToken && !isTokenExpired(storedToken)) {
       setToken(storedToken);
       // You might want to set the user here as well, if you have that information
+    }
+    const storedUser = localStorage.getItem('userData');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
   }, [isTokenExpired]);
 

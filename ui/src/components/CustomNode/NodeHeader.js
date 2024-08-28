@@ -9,6 +9,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/Auth';
 import useApi from '../../hooks/useAPI';
 
+const successColor = '#0cc421';
+const editColor = '#007bff';
+
 const StatusDot = styled('div')(({ theme, status }) => ({
   width: 8,
   height: 8,
@@ -24,7 +27,7 @@ const StatusDot = styled('div')(({ theme, status }) => ({
       case 'DESTROYING':
         return yellow[500];
       case 'DEPLOYED':
-        return theme?.palette?.success?.main || '#4caf50';
+        return successColor;
       case 'FAILED':
         return theme?.palette?.error?.main || '#f44336';
       default:
