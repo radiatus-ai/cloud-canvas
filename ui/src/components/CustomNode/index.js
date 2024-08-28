@@ -29,14 +29,21 @@ const getApiUrl = () => {
 };
 
 const getAuthToken = () => {
-  // Return the authentication token
-  return localStorage.getItem('authToken'); // Example implementation
+  return localStorage.getItem('authToken');
 };
 
-const CustomNode = memo(({ data, updateNodeData }) => {
+const CustomNode = memo(({ data, isConnectable }) => {
   const { projectId } = useParams();
   const wsRef = useRef(null);
   const [error, setError] = useState(null);
+  const [nodeData, setNodeData] = useState(data);
+
+  const updateNodeData = useCallback((updater) => {
+    setNodeData((prevData) => {
+      const newData = typeof updater === 'function' ? updater(prevData) : updater;
+      return { ...prevData, ...newData };
+    });
+  }, []);
 
   const setupWebSocket = useCallback(() => {
     if (wsRef.current) {
@@ -44,32 +51,31 @@ const CustomNode = memo(({ data, updateNodeData }) => {
     }
 
     const authToken = getAuthToken();
-    const ws = new WebSocket(`${getApiUrl()}/projects/${projectId}/packages/${data.id}/ws?token=${authToken}`);
+    const ws = new WebSocket(`${getApiUrl()}/projects/${projectId}/packages/${nodeData.id}/ws?token=${authToken}`);
 
-    console.log('WebSocket connecting to:', `${getApiUrl()}/projects/${projectId}/packages/${data.id}/ws?token=${authToken}`);
+    console.log('WebSocket connecting to:', `${getApiUrl()}/projects/${projectId}/packages/${nodeData.id}/ws?token=${authToken}`);
 
     let heartbeatInterval;
 
     ws.onopen = () => {
       console.log('WebSocket connected');
-      // Request initial update
-      ws.send(JSON.stringify({ type: 'request_update' }));
+      setError(null); // Clear any previous errors
+      ws.send(JSON.stringify({ type: 'request_initial' }));
 
-      // Start heartbeat
       heartbeatInterval = setInterval(() => {
         if (ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify({ type: 'heartbeat' }));
         }
-      }, 30000); // Send heartbeat every 30 seconds
+      }, 30000);
     };
 
     ws.onmessage = (event) => {
       try {
         console.log('WebSocket message:', event);
         const message = JSON.parse(event.data);
-        console.log('WebSocket message:', message);
-        // this only has id in it
+        console.log('Parsed WebSocket message:', message);
         if (message.type === 'package_update') {
+          setError(null); // Clear any previous errors
           updateNodeData((prevData) => ({
             ...prevData,
             deploy_status: message.data.deploy_status,
@@ -89,11 +95,9 @@ const CustomNode = memo(({ data, updateNodeData }) => {
         console.log(`WebSocket closed cleanly, code=${event.code}, reason=${event.reason}`);
       } else {
         console.error('WebSocket connection died');
-        if (event.code === 1008) { // Policy violation, often used for auth failures
+        if (event.code === 1008) {
           setError('Authentication failed. Please log in again.');
-          // Implement logic to redirect to login or refresh auth token
         } else {
-          // Attempt to reconnect after a delay
           setTimeout(setupWebSocket, 5000);
         }
       }
@@ -114,19 +118,19 @@ const CustomNode = memo(({ data, updateNodeData }) => {
         clearInterval(heartbeatInterval);
       }
     };
-  }, [projectId, data.id, updateNodeData]);
+  }, [projectId, nodeData.id, updateNodeData]);
 
   useEffect(() => {
     const cleanup = setupWebSocket();
     return cleanup;
   }, [setupWebSocket]);
 
-  if (data.inputs.properties === undefined) {
-    data.inputs.properties = {};
-    data.outputs.properties = {};
+  if (nodeData.inputs.properties === undefined) {
+    nodeData.inputs.properties = {};
+    nodeData.outputs.properties = {};
   }
 
-  const inputHandles = Object.entries(data.inputs.properties).map(
+  const inputHandles = Object.entries(nodeData.inputs.properties).map(
     ([input, schema], index, array) => (
       <HandleComponent
         key={`input-${input}`}
@@ -136,11 +140,12 @@ const CustomNode = memo(({ data, updateNodeData }) => {
         schema={schema}
         index={index}
         total={array.length}
+        isConnectable={isConnectable}
       />
     )
   );
 
-  const outputHandles = Object.entries(data.outputs.properties).map(
+  const outputHandles = Object.entries(nodeData.outputs.properties).map(
     ([output, schema], index, array) => (
       <HandleComponent
         key={`output-${output}`}
@@ -150,6 +155,7 @@ const CustomNode = memo(({ data, updateNodeData }) => {
         schema={schema}
         index={index}
         total={array.length}
+        isConnectable={isConnectable}
       />
     )
   );
@@ -157,17 +163,18 @@ const CustomNode = memo(({ data, updateNodeData }) => {
   return (
     <NodeContainer>
       <NodeHeader
-        data={data}
+        data={nodeData}
         projectId={projectId}
-        updateNodeData={data.updateNodeData}
-        onOpenModal={data.onOpenModal}
-        onDeleteNode={data.onDelete}
+        updateNodeData={updateNodeData}
+        onOpenModal={nodeData.onOpenModal}
+        onDeleteNode={nodeData.onDelete}
       />
       <Typography variant="caption" color="text.secondary">
-        {data.type}
+        {nodeData.type}
       </Typography>
       {inputHandles}
       {outputHandles}
+      {error && <Typography color="error">{error}</Typography>}
     </NodeContainer>
   );
 });

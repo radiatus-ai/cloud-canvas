@@ -92,12 +92,13 @@ async def update_project_package(
         db, db_obj=existing_package, obj_in=package
     )
 
-    # Convert SQLAlchemy model to dict, then to JSON string
-    package_dict = sqlalchemy_to_dict(updated_package)
-    package_json = json.dumps(package_dict, default=str)
+    # Convert SQLAlchemy model to Pydantic model
+    package_pydantic = ProjectPackage.from_orm(updated_package)
 
     # Broadcast the update to all connected WebSocket clients
-    await broadcast_package_update(package_id=package_id, package_data=package_json)
+    await broadcast_package_update(
+        package_id=package_id, package_data=package_pydantic.dict()
+    )
 
     return updated_package
 
@@ -167,10 +168,17 @@ async def websocket_endpoint(
             try:
                 message = json.loads(data)
                 logger.info(f"Received message: {message}")
-                if message.get("type") == "request_update":
-                    # db = deps["db"]
-                    # package = await crud_project_package.get_package(db, id=package_id)
-
+                db = deps["db"]
+                package = await crud_project_package.get_package(
+                    db, id=package_id, project_id=project_id
+                )
+                logger.info(f"Package: {package}")
+                status = package.deploy_status
+                logger.info(f"Package: {status}")
+                if (
+                    message.get("type") == "request_update"
+                    or message.get("type") == "package_update"
+                ):
                     # if package and package.project_id == project_id:
                     #     await websocket.send_text(json.dumps({
                     #         "type": "package_update",
@@ -182,6 +190,30 @@ async def websocket_endpoint(
                     #     "data": {"id": "53af8da2-dfcb-45e4-98ab-d8cf244c0850", "deploy_status": "DEPLOYING"}
                     # }))
                     logger.info(f"Sending package update for {package_id}")
+                    await websocket.send_text(
+                        json.dumps(
+                            {
+                                "type": "package_update",
+                                "data": {
+                                    "id": str(package_id),
+                                    "deploy_status": status.value,
+                                },
+                            }
+                        )
+                    )
+                elif message.get("type") == "request_initial":
+                    logger.info(f"Sending initial package update for {package_id}")
+                    await websocket.send_text(
+                        json.dumps(
+                            {
+                                "type": "package_update",
+                                "data": {
+                                    "id": str(package_id),
+                                    "deploy_status": status.value,
+                                },
+                            }
+                        )
+                    )
             except json.JSONDecodeError:
                 logger.error(f"Received invalid JSON: {data}")
                 await websocket.send_text(
@@ -196,10 +228,6 @@ async def websocket_endpoint(
 
 
 async def broadcast_package_update(package_id: UUID4, package_data: dict):
-    message = json.dumps({"type": "package_update", "data": package_data})
+    message = json.dumps({"type": "package_update", "data": package_data}, default=str)
     logger.info(f"Broadcasting message: {message}")
     await connection_manager.broadcast_to_package(package_id, message)
-
-
-def sqlalchemy_to_dict(obj):
-    return {c.key: getattr(obj, c.key) for c in obj.__table__.columns}
