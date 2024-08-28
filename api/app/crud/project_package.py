@@ -14,6 +14,7 @@ from app.schemas.project_package import ProjectPackageCreate, ProjectPackageUpda
 from app.schemas.provisioner_project_package import (
     ProjectPackageUpdate as ProvisionerProjectPackageUpdate,
 )
+from app.crud.connection import connection as crud_connection
 
 logger = get_logger(__name__)
 
@@ -121,10 +122,6 @@ class CRUDProjectPackage(
         await db.commit()
         await db.refresh(package)
 
-        # Fetch credentials associated with the project
-        # query = select(Project).where(Project.id == project_id)
-        # result = await db.execute(query)
-        # project = result.scalars().first()
         project = await crud_project.get(db, id=project_id)
         await db.refresh(project)
 
@@ -135,7 +132,21 @@ class CRUDProjectPackage(
             for credential in project.credentials:
                 credentials[credential.name] = credential.credential_value
 
-        # Create a dictionary matching the DeploymentMessage struct
+        # Fetch connections for this package
+        connections = await crud_connection.get_connections_by_project(db, project_id=project_id)
+        connected_input_data = {}
+        for connection in connections:
+            if connection.target_package_id == package_id:
+                query = select(ProjectPackage).where(ProjectPackage.id == connection.source_package_id)
+                result = await db.execute(query)
+                source_package = result.scalars().first()
+                # connected_input_data[str(connection.source_handle)] = source_package.outputs
+                # just to try
+                connected_input_data[str(connection.source_handle)] = {
+                    # "id": "id-of-network",
+                    "id": "https://www.googleapis.com/compute/v1/projects/rad-dev-dogfood-n437/global/networks/nexxxttt",
+                }
+
         deployment_message = {
             "project_id": str(project_id),
             "package_id": str(package_id),
@@ -146,7 +157,7 @@ class CRUDProjectPackage(
             },
             "action": "DEPLOY",
             "secrets": credentials,
-            # "connected_input_data": package.connected_input_data or {},
+            "connected_input_data": connected_input_data,
         }
 
         send_pubsub_message(
@@ -162,15 +173,6 @@ class CRUDProjectPackage(
         if not package:
             return None
 
-        # enum isn't working for some reason
-        # package.deploy_status = "DESTROYING"
-        # await db.commit()
-        # await db.refresh(package)
-
-        # Fetch credentials associated with the project
-        # query = select(Project).where(Project.id == project_id)
-        # result = await db.execute(query)
-        # project = result.scalars().first()
         project = await crud_project.get(db, id=project_id)
         await db.refresh(project)
 
@@ -179,7 +181,13 @@ class CRUDProjectPackage(
             for credential in project.credentials:
                 credentials[credential.name] = credential.credential_value
 
-        # Create a dictionary matching the DeploymentMessage struct
+        # Fetch connections for this package
+        connections = await crud_connection.get_connections_by_project(db, project_id=project_id)
+        connected_input_data = {}
+        for connection in connections:
+            if connection.target_id == package_id:
+                connected_input_data[str(connection.source_handle)] = connection.connection_data
+
         deployment_message = {
             "project_id": str(project_id),
             "package_id": str(package_id),
@@ -190,6 +198,7 @@ class CRUDProjectPackage(
             },
             "action": "DESTROY",
             "secrets": credentials,
+            "connected_input_data": connected_input_data,
         }
 
         send_pubsub_message(
