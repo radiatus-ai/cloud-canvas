@@ -37,10 +37,13 @@ const CustomNode = memo(({ data, isConnectable }) => {
   const wsRef = useRef(null);
   const [error, setError] = useState(null);
   const [nodeData, setNodeData] = useState(data);
+  const [reconnectAttempts, setReconnectAttempts] = useState(0);
+  const maxReconnectAttempts = 5;
 
   const updateNodeData = useCallback((updater) => {
     setNodeData((prevData) => {
-      const newData = typeof updater === 'function' ? updater(prevData) : updater;
+      const newData =
+        typeof updater === 'function' ? updater(prevData) : updater;
       return { ...prevData, ...newData };
     });
   }, []);
@@ -51,22 +54,37 @@ const CustomNode = memo(({ data, isConnectable }) => {
     }
 
     const authToken = getAuthToken();
-    const ws = new WebSocket(`${getApiUrl()}/projects/${projectId}/packages/${nodeData.id}/ws?token=${authToken}`);
+    const ws = new WebSocket(
+      `${getApiUrl()}/projects/${projectId}/packages/${
+        nodeData.id
+      }/ws?token=${authToken}`
+    );
 
-    console.log('WebSocket connecting to:', `${getApiUrl()}/projects/${projectId}/packages/${nodeData.id}/ws?token=${authToken}`);
+    console.log(
+      'WebSocket connecting to:',
+      `${getApiUrl()}/projects/${projectId}/packages/${
+        nodeData.id
+      }/ws?token=${authToken}`
+    );
 
-    let heartbeatInterval;
+    let pingTimeout;
+    const heartbeatInterval = 30000;
+    const pingInterval = 5000;
+
+    const heartbeat = () => {
+      clearTimeout(pingTimeout);
+
+      pingTimeout = setTimeout(() => {
+        console.log('WebSocket connection is dead. Closing socket.');
+        ws.close();
+      }, pingInterval + 1000);
+    };
 
     ws.onopen = () => {
       console.log('WebSocket connected');
       setError(null); // Clear any previous errors
       ws.send(JSON.stringify({ type: 'request_initial' }));
-
-      heartbeatInterval = setInterval(() => {
-        if (ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify({ type: 'heartbeat' }));
-        }
-      }, 30000);
+      heartbeat();
     };
 
     ws.onmessage = (event) => {
@@ -90,15 +108,33 @@ const CustomNode = memo(({ data, isConnectable }) => {
       }
     };
 
+    const intervalId = setInterval(() => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: 'ping' }));
+      }
+    }, heartbeatInterval);
+
     ws.onclose = (event) => {
       if (event.wasClean) {
-        console.log(`WebSocket closed cleanly, code=${event.code}, reason=${event.reason}`);
+        console.log(
+          `WebSocket closed cleanly, code=${event.code}, reason=${event.reason}`
+        );
+        setReconnectAttempts(0); // Reset attempts on clean close
       } else {
-        console.error('WebSocket connection died');
+        console.error('WebSocket connection died', event);
         if (event.code === 1008) {
           setError('Authentication failed. Please log in again.');
+        } else if (reconnectAttempts < maxReconnectAttempts) {
+          const backoffTime = getBackoffTime(reconnectAttempts);
+          console.log(`Attempting to reconnect in ${backoffTime}ms...`);
+          setTimeout(() => {
+            setReconnectAttempts((prev) => prev + 1);
+            setupWebSocket();
+          }, backoffTime);
         } else {
-          setTimeout(setupWebSocket, 5000);
+          setError(
+            'Failed to reconnect after multiple attempts. Please refresh the page.'
+          );
         }
       }
     };
@@ -114,15 +150,35 @@ const CustomNode = memo(({ data, isConnectable }) => {
       if (wsRef.current) {
         wsRef.current.close();
       }
-      if (heartbeatInterval) {
-        clearInterval(heartbeatInterval);
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+      if (pingTimeout) {
+        clearTimeout(pingTimeout);
       }
     };
-  }, [projectId, nodeData.id, updateNodeData]);
+  }, [projectId, nodeData.id, updateNodeData, reconnectAttempts]);
 
   useEffect(() => {
-    const cleanup = setupWebSocket();
-    return cleanup;
+    const handleOnline = () => {
+      console.log('Network is back online. Reconnecting WebSocket...');
+      setupWebSocket();
+    };
+
+    const handleOffline = () => {
+      console.log(
+        'Network is offline. WebSocket will attempt to reconnect when online.'
+      );
+      setError('Network is offline. Reconnecting when online...');
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
   }, [setupWebSocket]);
 
   if (nodeData.inputs.properties === undefined) {
@@ -180,3 +236,10 @@ const CustomNode = memo(({ data, isConnectable }) => {
 });
 
 export default CustomNode;
+
+const getBackoffTime = (attempt) => {
+  const baseDelay = 1000; // 1 second
+  const maxDelay = 30000; // 30 seconds
+  const jitter = Math.random() * 1000; // Random delay between 0-1000ms
+  return Math.min(Math.pow(2, attempt) * baseDelay + jitter, maxDelay);
+};
