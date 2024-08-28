@@ -5,43 +5,42 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNodesState } from 'reactflow';
 import { useAuth } from '../../../contexts/Auth';
 import useApi from '../../../hooks/useAPI';
+import transformPackagesToNodes from './transform';
 
-const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
+const useNodeOperations = (
+  projectId,
+  projectData,
+  nodes,
+  setNodes,
+  edges,
+  setEdges,
+  reactFlowWrapper
+) => {
   const { token } = useAuth();
   const { projects: projectsApi } = useApi();
-  // const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log('projectData', projectData);
-    if (projectData && projectData.packages) {
-      setNodes(transformPackagesToNodes(projectData.packages));
+    if (
+      projectData &&
+      projectData.packages &&
+      projectData.connections &&
+      reactFlowWrapper.current
+    ) {
+      const canvasWidth = reactFlowWrapper.current.offsetWidth;
+      const canvasHeight = reactFlowWrapper.current.offsetHeight;
+      const { nodes: transformedNodes, edges: transformedEdges } =
+        transformPackagesToNodes(
+          projectData.packages,
+          projectData.connections,
+          canvasWidth,
+          canvasHeight
+        );
+      setNodes(transformedNodes);
+      setEdges(transformedEdges);
     }
-  }, [projectData, setNodes]);
-
-  const transformPackagesToNodes = (packages) => {
-    console.log('packages', packages);
-    return (packages || []).map((pkg, index) => ({
-      id: pkg.id,
-      type: 'custom',
-      // position: pkg.position && typeof pkg.position.x === 'number' && typeof pkg.position.y === 'number'
-      //   ? pkg.position
-      //   : { x: Math.random() * 500, y: Math.random() * 500 }, // Generate random position if invalid
-      // position: { x: 250, y: 250 },
-      position: { x: 250 * (index + 1), y: 100 * (index + 1) },
-      data: {
-        id: pkg.id,
-        label: pkg.name || '',
-        type: pkg.type || '',
-        inputs: pkg.inputs || {},
-        outputs: pkg.outputs || {},
-        parameters: pkg.parameters || {},
-        parameter_data: pkg.parameter_data || {},
-        deploy_status: pkg.deploy_status || 'NOT_DEPLOYED',
-      },
-    }));
-  };
+  }, [projectData, setNodes, reactFlowWrapper]);
 
   const onOpenModal = useCallback(
     (nodeId) => {
@@ -256,7 +255,6 @@ const useNodeOperations = (projectId, projectData, nodes, setNodes) => {
   return {
     nodes,
     setNodes,
-    // onNodesChange,
     onOpenModal,
     onSubmitForm,
     onDeleteNode,

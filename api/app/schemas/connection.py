@@ -11,7 +11,7 @@ class ConnectionBase(BaseModel):
 
 
 class ConnectionCreate(ConnectionBase):
-    project_id: UUID4
+    pass
 
 
 class ConnectionUpdate(BaseModel):

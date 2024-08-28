@@ -10,7 +10,7 @@ const useProjectData = () => {
   const [projectData, setProjectData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  const fetchRef = useRef(null); // Use a ref to track the current fetch
+  const fetchRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,7 +21,6 @@ const useProjectData = () => {
           projectsApi.listConnections(projectId, token),
         ]);
 
-        // Check if the component is still interested in this fetch result
         if (fetchRef.current !== fetchData) return;
         console.log('packagesResponse', packagesResponse);
         console.log('connectionsResponse', connectionsResponse);
@@ -39,12 +38,9 @@ const useProjectData = () => {
       }
     };
 
-    // Assign the fetch function to the ref to track it
     fetchRef.current = fetchData;
-
     fetchData();
 
-    // Cleanup function to reset the ref
     return () => {
       fetchRef.current = null;
     };
