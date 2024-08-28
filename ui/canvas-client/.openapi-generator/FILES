@@ -53,5 +53,3 @@ src/model/ProjectPackageCreate.js
 src/model/ProjectUpdate.js
 src/model/ValidationError.js
 src/model/ValidationErrorLocInner.js
-test/model/AppSchemasProjectPackageProjectPackageUpdate.spec.js
-test/model/AppSchemasProvisionerProjectPackageProjectPackageUpdate.spec.js

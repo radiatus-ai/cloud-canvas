@@ -1,4 +1,4 @@
-# PlatformApi.ProvisionerApi
+# CanvasApi.ProvisionerApi
 
 All URIs are relative to _http://localhost_
 
@@ -15,14 +15,14 @@ Update Project Package
 ### Example
 
 ```javascript
-import PlatformApi from 'platform_api';
+import CanvasApi from 'canvas_api';
 
-let apiInstance = new PlatformApi.ProvisionerApi();
+let apiInstance = new CanvasApi.ProvisionerApi();
 let projectId = 'projectId_example'; // String | The ID of the project
 let packageId = 'packageId_example'; // String | The ID of the package
 let xCanvasToken = 'xCanvasToken_example'; // String |
 let appSchemasProvisionerProjectPackageProjectPackageUpdate =
-  new PlatformApi.AppSchemasProvisionerProjectPackageProjectPackageUpdate(); // AppSchemasProvisionerProjectPackageProjectPackageUpdate |
+  new CanvasApi.AppSchemasProvisionerProjectPackageProjectPackageUpdate(); // AppSchemasProvisionerProjectPackageProjectPackageUpdate |
 apiInstance.updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(
   projectId,
   packageId,

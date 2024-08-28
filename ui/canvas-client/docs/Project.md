@@ -1,4 +1,4 @@
-# PlatformApi.Project
+# CanvasApi.Project
 
 ## Properties
 

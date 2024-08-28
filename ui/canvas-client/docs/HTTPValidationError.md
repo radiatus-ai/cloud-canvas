@@ -1,7 +1,7 @@
-# PlatformApi.HTTPValidationError
+# CanvasApi.HTTPValidationError
 
 ## Properties
 
-Name | Type | Description | Notes
------------- | ------------- | ------------- | -------------
-**detail** | [**[ValidationError]**](ValidationError.md) |  | [optional]
+| Name       | Type                                        | Description | Notes      |
+| ---------- | ------------------------------------------- | ----------- | ---------- |
+| **detail** | [**[ValidationError]**](ValidationError.md) |             | [optional] |

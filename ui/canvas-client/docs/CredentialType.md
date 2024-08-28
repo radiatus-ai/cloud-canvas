@@ -1,8 +1,7 @@
-# PlatformApi.CredentialType
+# CanvasApi.CredentialType
 
 ## Enum
 
+- `SERVICE_ACCOUNT_KEY` (value: `"SERVICE_ACCOUNT_KEY"`)
 
-* `SERVICE_ACCOUNT_KEY` (value: `"SERVICE_ACCOUNT_KEY"`)
-
-* `SECRET` (value: `"SECRET"`)
+- `SECRET` (value: `"SECRET"`)

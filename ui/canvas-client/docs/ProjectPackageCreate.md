@@ -1,4 +1,4 @@
-# PlatformApi.ProjectPackageCreate
+# CanvasApi.ProjectPackageCreate
 
 ## Properties
 

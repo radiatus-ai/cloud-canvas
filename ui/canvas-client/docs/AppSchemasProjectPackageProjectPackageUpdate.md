@@ -1,4 +1,4 @@
-# PlatformApi.AppSchemasProjectPackageProjectPackageUpdate
+# CanvasApi.AppSchemasProjectPackageProjectPackageUpdate
 
 ## Properties
 

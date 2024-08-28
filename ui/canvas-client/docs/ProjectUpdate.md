@@ -1,4 +1,4 @@
-# PlatformApi.ProjectUpdate
+# CanvasApi.ProjectUpdate
 
 ## Properties
 

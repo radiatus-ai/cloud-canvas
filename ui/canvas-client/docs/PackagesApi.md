@@ -1,4 +1,4 @@
-# PlatformApi.PackagesApi
+# CanvasApi.PackagesApi
 
 All URIs are relative to _http://localhost_
 
@@ -22,11 +22,11 @@ Create Project Package
 ### Example
 
 ```javascript
-import PlatformApi from 'platform_api';
+import CanvasApi from 'canvas_api';
 
-let apiInstance = new PlatformApi.PackagesApi();
+let apiInstance = new CanvasApi.PackagesApi();
 let projectId = 'projectId_example'; // String | The ID of the project
-let projectPackageCreate = new PlatformApi.ProjectPackageCreate(); // ProjectPackageCreate |
+let projectPackageCreate = new CanvasApi.ProjectPackageCreate(); // ProjectPackageCreate |
 apiInstance.createProjectPackageProjectsProjectIdPackagesPost(
   projectId,
   projectPackageCreate,
@@ -69,9 +69,9 @@ Delete Project Package
 ### Example
 
 ```javascript
-import PlatformApi from 'platform_api';
+import CanvasApi from 'canvas_api';
 
-let apiInstance = new PlatformApi.PackagesApi();
+let apiInstance = new CanvasApi.PackagesApi();
 let projectId = 'projectId_example'; // String | The ID of the project
 let packageId = 'packageId_example'; // String | The ID of the package
 apiInstance.deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete(
@@ -116,9 +116,9 @@ Deploy Project Package
 ### Example
 
 ```javascript
-import PlatformApi from 'platform_api';
+import CanvasApi from 'canvas_api';
 
-let apiInstance = new PlatformApi.PackagesApi();
+let apiInstance = new CanvasApi.PackagesApi();
 let projectId = 'projectId_example'; // String | The ID of the project
 let packageId = 'packageId_example'; // String | The ID of the package
 apiInstance.deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost(
@@ -163,9 +163,9 @@ Destroy Project Package
 ### Example
 
 ```javascript
-import PlatformApi from 'platform_api';
+import CanvasApi from 'canvas_api';
 
-let apiInstance = new PlatformApi.PackagesApi();
+let apiInstance = new CanvasApi.PackagesApi();
 let projectId = 'projectId_example'; // String | The ID of the project
 let packageId = 'packageId_example'; // String | The ID of the package
 apiInstance.destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete(
@@ -210,9 +210,9 @@ Get Project Package
 ### Example
 
 ```javascript
-import PlatformApi from 'platform_api';
+import CanvasApi from 'canvas_api';
 
-let apiInstance = new PlatformApi.PackagesApi();
+let apiInstance = new CanvasApi.PackagesApi();
 let projectId = 'projectId_example'; // String | The ID of the project
 let packageId = 'packageId_example'; // String | The ID of the package
 apiInstance.getProjectPackageProjectsProjectIdPackagesPackageIdGet(
@@ -257,9 +257,9 @@ List Project Packages
 ### Example
 
 ```javascript
-import PlatformApi from 'platform_api';
+import CanvasApi from 'canvas_api';
 
-let apiInstance = new PlatformApi.PackagesApi();
+let apiInstance = new CanvasApi.PackagesApi();
 let projectId = 'projectId_example'; // String | The ID of the project
 let opts = {
   skip: 0, // Number |
@@ -308,13 +308,13 @@ Update Project Package
 ### Example
 
 ```javascript
-import PlatformApi from 'platform_api';
+import CanvasApi from 'canvas_api';
 
-let apiInstance = new PlatformApi.PackagesApi();
+let apiInstance = new CanvasApi.PackagesApi();
 let projectId = 'projectId_example'; // String | The ID of the project
 let packageId = 'packageId_example'; // String | The ID of the package
 let appSchemasProjectPackageProjectPackageUpdate =
-  new PlatformApi.AppSchemasProjectPackageProjectPackageUpdate(); // AppSchemasProjectPackageProjectPackageUpdate |
+  new CanvasApi.AppSchemasProjectPackageProjectPackageUpdate(); // AppSchemasProjectPackageProjectPackageUpdate |
 apiInstance.updateProjectPackageProjectsProjectIdPackagesPackageIdPatch(
   projectId,
   packageId,
@@ -359,14 +359,14 @@ Update Project Package
 ### Example
 
 ```javascript
-import PlatformApi from 'platform_api';
+import CanvasApi from 'canvas_api';
 
-let apiInstance = new PlatformApi.PackagesApi();
+let apiInstance = new CanvasApi.PackagesApi();
 let projectId = 'projectId_example'; // String | The ID of the project
 let packageId = 'packageId_example'; // String | The ID of the package
 let xCanvasToken = 'xCanvasToken_example'; // String |
 let appSchemasProvisionerProjectPackageProjectPackageUpdate =
-  new PlatformApi.AppSchemasProvisionerProjectPackageProjectPackageUpdate(); // AppSchemasProvisionerProjectPackageProjectPackageUpdate |
+  new CanvasApi.AppSchemasProvisionerProjectPackageProjectPackageUpdate(); // AppSchemasProvisionerProjectPackageProjectPackageUpdate |
 apiInstance.updateProjectPackageProvisionerProjectsProjectIdPackagesPackageIdPatch(
   projectId,
   packageId,

@@ -1,4 +1,4 @@
-# PlatformApi.CredentialCreate
+# CanvasApi.CredentialCreate
 
 ## Properties
 

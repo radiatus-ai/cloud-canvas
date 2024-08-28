@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Platform API
+  title: Canvas API
   version: 0.1.0
 paths:
   /projects/{project_id}/connections/:
@@ -1154,14 +1154,13 @@ components:
     app__schemas__provisioner_project_package__ProjectPackageUpdate:
       properties:
         deploy_status:
-          anyOf:
-            - $ref: "#/components/schemas/DeployStatus"
-            - type: "null"
-          default: NOT_DEPLOYED
+          $ref: "#/components/schemas/DeployStatus"
         output_data:
           anyOf:
             - type: object
             - type: "null"
           title: Output Data
       type: object
+      required:
+        - deploy_status
       title: ProjectPackageUpdate

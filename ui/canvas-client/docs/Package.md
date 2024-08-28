@@ -1,4 +1,4 @@
-# PlatformApi.Package
+# CanvasApi.Package
 
 ## Properties
 
