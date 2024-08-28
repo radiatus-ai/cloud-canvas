@@ -14,6 +14,7 @@ RUN npm ci
 
 # Set the environment variable for production
 ENV REACT_APP_ENV=production
+ENV HTTPS=true
 
 # Build the app
 RUN npm run build

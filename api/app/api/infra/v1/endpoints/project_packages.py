@@ -1,3 +1,4 @@
+import json
 from typing import List
 
 from fastapi import (
@@ -7,10 +8,13 @@ from fastapi import (
     HTTPException,
     Path,
     Query,
+    WebSocket,
 )
 from pydantic import UUID4
 
-from app.core.dependencies import get_db_and_current_user
+from app.core.dependencies import get_db_and_current_user, get_db_without_trace
+from app.core.logger import get_logger
+from app.core.websocket_manager import ConnectionManager
 from app.crud.project_package import project_package as crud_project_package
 from app.schemas.project_package import (
     ProjectPackage,
@@ -18,8 +22,10 @@ from app.schemas.project_package import (
     ProjectPackageUpdate,
 )
 
-# Initialize WebSocket manager
-# websocket_manager = WebSocketManager()
+logger = get_logger(__name__)
+
+# Initialize ConnectionManager
+connection_manager = ConnectionManager()
 
 router = APIRouter(
     prefix="/projects/{project_id}/packages", tags=["project", "packages"]
@@ -82,15 +88,16 @@ async def update_project_package(
             status_code=404, detail="ProjectPackage not found in this project"
         )
 
-    # Log the package update in JSON format
-    print(f"ProjectPackage update: {package.parameter_data}")
-
     updated_package = await crud_project_package.update_package(
         db, db_obj=existing_package, obj_in=package
     )
 
+    # Convert SQLAlchemy model to dict, then to JSON string
+    package_dict = sqlalchemy_to_dict(updated_package)
+    package_json = json.dumps(package_dict, default=str)
+
     # Broadcast the update to all connected WebSocket clients
-    await broadcast_package_update(project_id, package_id, updated_package.dict())
+    await broadcast_package_update(package_id=package_id, package_data=package_json)
 
     return updated_package
 
@@ -136,57 +143,63 @@ async def delete_project_package(
     return await crud_project_package.delete_package(db, id=package_id)
 
 
-# # add web socket endpoint to update the package in real time
-# @router.websocket("/{project_id}/{package_id}/ws")
-# async def websocket_endpoint(
-#     websocket: WebSocket,
-#     project_id: UUID4 = Path(..., description="The ID of the project"),
-#     package_id: UUID4 = Path(..., description="The ID of the package"),
-#     deps: dict = Depends(get_db_and_current_user),
-# ):
-#     await websocket.accept()
-#     await websocket_manager.connect(websocket, f"{project_id}:{package_id}")
+socket_router = APIRouter(
+    prefix="/projects/{project_id}/packages", tags=["project", "packages"]
+)
 
-#     try:
-#         while True:
-#             # Wait for messages from the client
-#             data = await websocket.receive_text()
-
-#             # Process the received message (you can customize this part)
-#             message = json.loads(data)
-#             if message.get("type") == "request_update":
-#                 # Fetch the latest package data
-#                 db = deps["db"]
-#                 package = await crud_project_package.get_package(db, id=package_id)
-
-#                 if package and package.project_id == project_id:
-#                     # Send the updated package data to the client
-#                     await websocket_manager.send_personal_message(
-#                         json.dumps({"type": "package_update", "data": package.dict()}),
-#                         websocket,
-#                     )
-#                 else:
-#                     await websocket_manager.send_personal_message(
-#                         json.dumps(
-#                             {
-#                                 "type": "error",
-#                                 "message": "Package not found or not in this project",
-#                             }
-#                         ),
-#                         websocket,
-#                     )
-
-#             # You can add more message types and handlers here
-
-#     except WebSocketDisconnect:
-#         websocket_manager.disconnect(websocket, f"{project_id}:{package_id}")
+from fastapi import WebSocketDisconnect
 
 
-# # Add this method to the router to broadcast updates to all connected clients
-# async def broadcast_package_update(
-#     project_id: UUID4, package_id: UUID4, package_data: dict
-# ):
-#     await websocket_manager.broadcast(
-#         json.dumps({"type": "package_update", "data": package_data}),
-#         f"{project_id}:{package_id}",
-#     )
+@socket_router.websocket("/{package_id}/ws")
+async def websocket_endpoint(
+    websocket: WebSocket,
+    project_id: UUID4 = Path(..., description="The ID of the project"),
+    package_id: UUID4 = Path(..., description="The ID of the package"),
+    deps: dict = Depends(get_db_without_trace),
+):
+    await websocket.accept()
+    # await connection_manager.connect(websocket, project_id, package_id)
+    try:
+        await connection_manager.connect(websocket, project_id, package_id)
+
+        while True:
+            data = await websocket.receive_text()
+            try:
+                message = json.loads(data)
+                logger.info(f"Received message: {message}")
+                if message.get("type") == "request_update":
+                    # db = deps["db"]
+                    # package = await crud_project_package.get_package(db, id=package_id)
+
+                    # if package and package.project_id == project_id:
+                    #     await websocket.send_text(json.dumps({
+                    #         "type": "package_update",
+                    #         "data": package.dict()
+                    #     }))
+                    # else:
+                    # await websocket.send_text(json.dumps({
+                    #     "type": "package_update",
+                    #     "data": {"id": "53af8da2-dfcb-45e4-98ab-d8cf244c0850", "deploy_status": "DEPLOYING"}
+                    # }))
+                    logger.info(f"Sending package update for {package_id}")
+            except json.JSONDecodeError:
+                logger.error(f"Received invalid JSON: {data}")
+                await websocket.send_text(
+                    json.dumps({"type": "error", "message": "Invalid JSON received"})
+                )
+    except WebSocketDisconnect:
+        logger.info(
+            f"WebSocket disconnected for project {project_id}, package {package_id}"
+        )
+    finally:
+        connection_manager.disconnect(websocket)
+
+
+async def broadcast_package_update(package_id: UUID4, package_data: dict):
+    message = json.dumps({"type": "package_update", "data": package_data})
+    logger.info(f"Broadcasting message: {message}")
+    await connection_manager.broadcast_to_package(package_id, message)
+
+
+def sqlalchemy_to_dict(obj):
+    return {c.key: getattr(obj, c.key) for c in obj.__table__.columns}

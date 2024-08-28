@@ -13,10 +13,10 @@ const successColor = '#0cc421';
 const editColor = '#007bff';
 
 const StatusDot = styled('div')(({ theme, status }) => ({
-  width: 8,
-  height: 8,
+  width: 12, // Increased from 8
+  height: 12, // Increased from 8
   borderRadius: '50%',
-  marginLeft: '4px',
+  marginLeft: '6px', // Slightly increased margin
   cursor: 'pointer',
   backgroundColor: (() => {
     switch (status) {

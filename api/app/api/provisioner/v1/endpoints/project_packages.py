@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Body, Depends, Header, HTTPException, Path
 from pydantic import UUID4
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.infra.v1.endpoints.project_packages import broadcast_package_update
 from app.core.config import settings
 from app.core.dependencies import get_db
 from app.core.logger import get_logger
@@ -35,10 +37,9 @@ async def update_project_package(
     project_id: UUID4 = Path(..., description="The ID of the project"),
     package_id: UUID4 = Path(..., description="The ID of the package"),
     package: ProjectPackageUpdate = Body(...),
-    deps: dict = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
     _: str = Depends(verify_canvas_token),
 ):
-    db = deps["db"]
     existing_package = await crud_project_package.get_package(
         db, id=package_id, project_id=project_id
     )
@@ -49,6 +50,9 @@ async def update_project_package(
 
     await crud_project_package.provisioner_update_package(
         db, db_obj=existing_package, obj_in=package
+    )
+    await broadcast_package_update(
+        package_id, {"id": str(package_id), "deploy_status": package.deploy_status}
     )
     # background_tasks.add_task(
     #     publish_message,

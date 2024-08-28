@@ -24,7 +24,6 @@ import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import apiService from '../apiService';
 import { useThemeContext } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/Auth';
 

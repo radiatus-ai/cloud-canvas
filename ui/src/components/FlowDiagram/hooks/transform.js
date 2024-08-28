@@ -26,9 +26,9 @@ const transformPackagesToNodes = (
     }))
   );
 
-  // Use d3-dag to create a hierarchical layout
+  // Modify the layout to be horizontal
   const layout = sugiyama()
-    .nodeSize([150, 100]) // Set a fixed node size
+    .nodeSize([100, 150]) // Swap width and height for horizontal layout
     .layering(layeringLongestPath())
     .decross(decrossTwoLayer())
     .coord(coordCenter());
@@ -47,11 +47,11 @@ const transformPackagesToNodes = (
     maxY = Math.max(maxY, node.y);
   }
 
-  // Calculate scaling factors
+  // Swap x and y scales for horizontal layout
   const horizontalPadding = 50;
   const verticalPadding = 50;
-  const xScale = (canvasWidth - 2 * horizontalPadding) / (maxX - minX || 1);
-  const yScale = (canvasHeight - 2 * verticalPadding) / (maxY - minY || 1);
+  const xScale = (canvasHeight - 2 * verticalPadding) / (maxY - minY || 1);
+  const yScale = (canvasWidth - 2 * horizontalPadding) / (maxX - minX || 1);
 
   // Transform the layout into ReactFlow nodes
   const nodes = [];
@@ -61,8 +61,8 @@ const transformPackagesToNodes = (
       id: pkg.id,
       type: 'custom',
       position: {
-        x: (node.x - minX) * xScale + horizontalPadding,
-        y: (node.y - minY) * yScale + verticalPadding,
+        x: (node.y - minY) * xScale + verticalPadding, // Swap x and y
+        y: (node.x - minX) * yScale + horizontalPadding, // Swap x and y
       },
       data: {
         id: pkg.id,

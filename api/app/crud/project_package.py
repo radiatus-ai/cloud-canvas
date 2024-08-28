@@ -8,13 +8,13 @@ from sqlalchemy.future import select
 
 from app.core.logger import get_logger
 from app.crud.base import CRUDBase
+from app.crud.connection import connection as crud_connection
 from app.crud.project import project as crud_project
 from app.models.project_package import ProjectPackage
 from app.schemas.project_package import ProjectPackageCreate, ProjectPackageUpdate
 from app.schemas.provisioner_project_package import (
     ProjectPackageUpdate as ProvisionerProjectPackageUpdate,
 )
-from app.crud.connection import connection as crud_connection
 
 logger = get_logger(__name__)
 
@@ -133,11 +133,15 @@ class CRUDProjectPackage(
                 credentials[credential.name] = credential.credential_value
 
         # Fetch connections for this package
-        connections = await crud_connection.get_connections_by_project(db, project_id=project_id)
+        connections = await crud_connection.get_connections_by_project(
+            db, project_id=project_id
+        )
         connected_input_data = {}
         for connection in connections:
             if connection.target_package_id == package_id:
-                query = select(ProjectPackage).where(ProjectPackage.id == connection.source_package_id)
+                query = select(ProjectPackage).where(
+                    ProjectPackage.id == connection.source_package_id
+                )
                 result = await db.execute(query)
                 source_package = result.scalars().first()
                 # connected_input_data[str(connection.source_handle)] = source_package.outputs
@@ -182,11 +186,17 @@ class CRUDProjectPackage(
                 credentials[credential.name] = credential.credential_value
 
         # Fetch connections for this package
-        connections = await crud_connection.get_connections_by_project(db, project_id=project_id)
+        connections = await crud_connection.get_connections_by_project(
+            db, project_id=project_id
+        )
         connected_input_data = {}
         for connection in connections:
-            if connection.target_id == package_id:
-                connected_input_data[str(connection.source_handle)] = connection.connection_data
+            if connection.target_package_id == package_id:
+                # todo handle
+                connected_input_data[str(connection.source_handle)] = {
+                    # "id": "id-of-network",
+                    "id": "https://www.googleapis.com/compute/v1/projects/rad-dev-dogfood-n437/global/networks/nexxxttt",
+                }
 
         deployment_message = {
             "project_id": str(project_id),
