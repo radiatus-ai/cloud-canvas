@@ -3,6 +3,7 @@ from api.infra.v1.endpoints import (
     credentials,
     packages,
     project_packages,
+    project_packages_ws,
     projects,
 )
 from api.provisioner.v1.endpoints import (
@@ -33,4 +34,4 @@ provisioner_router = APIRouter(prefix="/provisioner", tags=["provisioner"])
 provisioner_router.include_router(provisioner_project_packages.router)
 
 socket_router = APIRouter()
-socket_router.include_router(project_packages.socket_router)
+socket_router.include_router(project_packages_ws.router)

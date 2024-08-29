@@ -1,4 +1,5 @@
 start:
+	$(gcloud beta emulators pubsub env-init)
 	poetry run opentelemetry-instrument uvicorn app.main:app --host=0.0.0.0 --port=8000 --reload
 
 test:
@@ -21,3 +22,19 @@ upload:
 					--region=us-west2 \
 					--project=ada-test-1234 \
 					&& gcloud run services update-traffic platform-api --to-latest --region us-west2
+
+start-pubsub-emulator:
+	$(gcloud beta emulators pubsub env-init)
+	gcloud beta emulators pubsub start --project=rad-dev --host-port=0.0.0.0:8192
+
+start-pubsub-emulator-ui:
+	docker run -p 4200:80 ghcr.io/neoscript/pubsub-emulator-ui:latest
+# ps aux | grep pubsub | grep host | awk '{ print $2}' | xargs kill -9
+
+# for testing the endpoint, only during initial setup
+test-pubsub:
+	curl -X POST "http://127.0.0.1:8000/publish" -H "Content-Type: application/json" -d '{"message": "Hello, Pub/Sub!"}'
+
+flake:
+	poetry run lint
+	poetry run autoflake

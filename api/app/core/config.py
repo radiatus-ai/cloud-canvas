@@ -18,6 +18,11 @@ class Settings(BaseSettings):
     # only used by the provisioner to update deployments and save outputs artifacts
     PROVISIONER_API_TOKEN: str = "foobar"
 
+    # the subs
+    PUBSUB_EMULATOR_HOST: str = "localhost:8929"
+    PUBSUB_PROJECT_ID: str = "rad-dev-canvas-kwm6"
+    PUBSUB_TOPIC_NAME: str = "provisioner-topic"
+
     OTEL_SERVICE_NAME: str = "api"
     OTEL_EXPORTER_OTLP_PROTOCOL: str = "http/protobuf"
     OTEL_EXPORTER_OTLP_ENDPOINT: str = "https://api.honeycomb.io:443"  # US instance

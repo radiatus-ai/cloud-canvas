@@ -1,7 +1,7 @@
 import json
 from typing import List, Optional
 
-from google.cloud import pubsub_v1
+from core.pubsub import PubSubMessenger
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -17,41 +17,6 @@ from app.schemas.provisioner_project_package import (
 )
 
 logger = get_logger(__name__)
-
-
-def send_pubsub_message(project_id: str, topic_id: str, message_data: dict):
-    """
-    Sends a message to a Google Cloud Pub/Sub topic.
-
-    Args:
-        project_id (str): The GCP project ID.
-        topic_id (str): The Pub/Sub topic ID.
-        message_data (dict): The message data to be sent.
-
-    Returns:
-        str: The published message ID.
-    """
-    # Initialize a Publisher client
-    publisher = pubsub_v1.PublisherClient()
-
-    # Create the topic path
-    topic_path = publisher.topic_path(project_id, topic_id)
-
-    # Convert the message data to JSON string
-    message_json = json.dumps(message_data)
-
-    # Encode the JSON string to bytes
-    message_bytes = message_json.encode("utf-8")
-
-    # Publish the message
-    try:
-        publish_future = publisher.publish(topic_path, data=message_bytes)
-        message_id = publish_future.result()  # Wait for the publish to complete
-        print(f"Message published with ID: {message_id}")
-        return message_id
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        raise
 
 
 class CRUDProjectPackage(
@@ -139,15 +104,7 @@ class CRUDProjectPackage(
         connected_input_data = {}
         for connection in connections:
             if connection.target_package_id == package_id:
-                query = select(ProjectPackage).where(
-                    ProjectPackage.id == connection.source_package_id
-                )
-                result = await db.execute(query)
-                source_package = result.scalars().first()
-                # connected_input_data[str(connection.source_handle)] = source_package.outputs
-                # just to try
                 connected_input_data[str(connection.source_handle)] = {
-                    # "id": "id-of-network",
                     "id": "https://www.googleapis.com/compute/v1/projects/rad-dev-dogfood-n437/global/networks/nexxxttt",
                 }
 
@@ -164,9 +121,16 @@ class CRUDProjectPackage(
             "connected_input_data": connected_input_data,
         }
 
-        send_pubsub_message(
-            "rad-dev-canvas-kwm6", "provisioner-topic", deployment_message
-        )
+        publisher = PubSubMessenger()
+        result = publisher.publish_message(json.dumps(deployment_message))
+
+        if result.startswith("error"):
+            logger.error(f"Failed to publish deployment message: {result}")
+            package.deploy_status = "FAILED"
+            await db.commit()
+            await db.refresh(package)
+        else:
+            logger.info(f"Successfully published deployment message: {result}")
 
         return package
 
@@ -211,9 +175,16 @@ class CRUDProjectPackage(
             "connected_input_data": connected_input_data,
         }
 
-        send_pubsub_message(
-            "rad-dev-canvas-kwm6", "provisioner-topic", deployment_message
-        )
+        publisher = PubSubMessenger()
+        result = publisher.publish_message(json.dumps(deployment_message))
+
+        if result.startswith("error"):
+            logger.error(f"Failed to publish deployment message: {result}")
+            package.deploy_status = "FAILED"
+            await db.commit()
+            await db.refresh(package)
+        else:
+            logger.info(f"Successfully published deployment message: {result}")
 
         return package
 

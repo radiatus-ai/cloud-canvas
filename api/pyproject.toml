@@ -4,12 +4,12 @@ version = "0.1.0"
 description = ""
 authors = ["Will Beebe"]
 readme = "README.md"
-packages = [{include = "*", from="app"}]
+packages = [{ include = "*", from = "app" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
 fastapi = "^0.110.0"
-pydantic = {extras = ["email"], version = "^2.8.2"}
+pydantic = { extras = ["email"], version = "^2.8.2" }
 uvicorn = "^0.30.1"
 pydantic-settings = "^2.3.4"
 python-jose = "^3.3.0"
@@ -32,13 +32,16 @@ httpx = "^0.27.0"
 pyyaml = "^6.0.2"
 google-cloud-pubsub = "^2.23.0"
 websockets = "^13.0"
+autoflake = "^2.3.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^8.1.1"
 pytest-asyncio = "^0.23.7"
+ruff = "^0.3.0"
 
-# [tool.poetry.scripts]
-# start = "src.app:start"
+[tool.poetry.scripts]
+lint = "ruff check ."
+autoflake = "autoflake --in-place --remove-all-unused-imports src tests"
 
 [tool.poetry.group.dev.dependencies]
 pytest-dotenv = "^0.5.2"
@@ -47,23 +50,24 @@ pytest-asyncio = "^0.23.7"
 httpx = "^0.27.0"
 aiosqlite = "^0.20.0"
 
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 
 [tool.pytest]
-env_files = [ ".env"]
+env_files = [".env"]
 asyncio_mode = "auto"
 
 [tool.ruff]
 select = [
-    "E",   # pycodestyle errors
-    "F",   # pyflakes
-    "W",   # pycodestyle warnings
-    "I",   # isort
-    "C",   # flake8-comprehensions
-    "B",   # flake8-bugbear
+    "E", # pycodestyle errors
+    "F", # pyflakes
+    "W", # pycodestyle warnings
+    "I", # isort
+    "C", # flake8-comprehensions
+    "B", # flake8-bugbear
 ]
-ignore = ["E501", "B008"]  # line length violations
+ignore = ["E501", "B008"] # line length violations
 
 # Enable Pyflakes `F401` rule to detect unused imports
 extend-select = ["F401"]
@@ -81,7 +85,12 @@ target-version = "py311"
 known-first-party = ["app"]
 
 [tool.ruff.flake8-bugbear]
-extend-immutable-calls = ["fastapi.Depends", "fastapi.params.Depends", "fastapi.Query", "fastapi.params.Query"]
+extend-immutable-calls = [
+    "fastapi.Depends",
+    "fastapi.params.Depends",
+    "fastapi.Query",
+    "fastapi.params.Query",
+]
 
 [build-system]
 requires = ["poetry-core"]

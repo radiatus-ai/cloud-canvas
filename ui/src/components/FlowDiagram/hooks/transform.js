@@ -5,7 +5,6 @@ import {
   decrossTwoLayer,
   coordCenter,
 } from 'd3-dag';
-// import { graphStratify, sugiyama } from 'd3-dag';
 
 const transformPackagesToNodes = (
   packages,
@@ -26,9 +25,9 @@ const transformPackagesToNodes = (
     }))
   );
 
-  // Modify the layout to be horizontal
+  // Modify the layout to be horizontal with reduced spacing
   const layout = sugiyama()
-    .nodeSize([100, 150]) // Swap width and height for horizontal layout
+    .nodeSize([80, 100]) // Reduced node size
     .layering(layeringLongestPath())
     .decross(decrossTwoLayer())
     .coord(coordCenter());
@@ -47,11 +46,19 @@ const transformPackagesToNodes = (
     maxY = Math.max(maxY, node.y);
   }
 
-  // Swap x and y scales for horizontal layout
-  const horizontalPadding = 50;
-  const verticalPadding = 50;
-  const xScale = (canvasHeight - 2 * verticalPadding) / (maxY - minY || 1);
-  const yScale = (canvasWidth - 2 * horizontalPadding) / (maxX - minX || 1);
+  // Adjust scaling and add max width/height constraints
+  const horizontalPadding = 30; // Reduced padding
+  const verticalPadding = 30; // Reduced padding
+  const maxWidth = Math.min(canvasWidth, 800); // Reduced max width
+  const maxHeight = Math.min(canvasHeight, 600); // Reduced max height
+  const xScale = Math.min(
+    (maxHeight - 2 * verticalPadding) / (maxY - minY || 1),
+    100
+  ); // Reduced scale
+  const yScale = Math.min(
+    (maxWidth - 2 * horizontalPadding) / (maxX - minX || 1),
+    150
+  ); // Reduced scale
 
   // Transform the layout into ReactFlow nodes
   const nodes = [];
@@ -61,8 +68,14 @@ const transformPackagesToNodes = (
       id: pkg.id,
       type: 'custom',
       position: {
-        x: (node.y - minY) * xScale + verticalPadding, // Swap x and y
-        y: (node.x - minX) * yScale + horizontalPadding, // Swap x and y
+        x:
+          (node.y - minY) * xScale +
+          verticalPadding +
+          (maxHeight - (maxY - minY) * xScale) / 2,
+        y:
+          (node.x - minX) * yScale +
+          horizontalPadding +
+          (maxWidth - (maxX - minX) * yScale) / 2,
       },
       data: {
         id: pkg.id,
