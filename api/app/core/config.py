@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     PROVISIONER_API_TOKEN: str = "foobar"
 
     # the subs
-    PUBSUB_EMULATOR_HOST: str = None
+    PUBSUB_EMULATOR_HOST: str = "NONE"
     PUBSUB_PROJECT_ID: str = "rad-dev-canvas-kwm6"
     PUBSUB_TOPIC_NAME: str = "provisioner-topic"
 

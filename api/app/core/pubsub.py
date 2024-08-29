@@ -17,7 +17,7 @@ class PubSubMessenger:
         self.topic_id = settings.PUBSUB_TOPIC_NAME
         emulator_host = settings.PUBSUB_EMULATOR_HOST
 
-        if emulator_host:
+        if emulator_host != "NONE":
             logger.info(f"Using Pub/Sub emulator at {emulator_host}")
             os.environ["PUBSUB_EMULATOR_HOST"] = emulator_host
             self.publisher = pubsub_v1.PublisherClient()
