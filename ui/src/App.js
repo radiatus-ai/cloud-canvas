@@ -86,7 +86,7 @@ const App = () => {
       </Box>
     );
   }
-  debugger;
+  // debugger;
 
   return (
     <Router>
