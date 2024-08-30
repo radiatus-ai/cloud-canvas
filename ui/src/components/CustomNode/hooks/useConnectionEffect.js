@@ -7,13 +7,14 @@ const useConnectionEffect = (connectionStatus, sendJsonMessage, setError) => {
     }
   }, [connectionStatus, sendJsonMessage]);
 
-  useEffect(() => {
-    if (connectionStatus === 'Closed') {
-      setError('WebSocket connection closed. Please refresh the page.');
-    } else {
-      setError(null);
-    }
-  }, [connectionStatus, setError]);
+  // figure out good UX later, if we even
+  // useEffect(() => {
+  //   if (connectionStatus === 'Closed') {
+  //     setError('WebSocket connection closed. Please refresh the page.');
+  //   } else {
+  //     setError(null);
+  //   }
+  // }, [connectionStatus, setError]);
 };
 
 export default useConnectionEffect;

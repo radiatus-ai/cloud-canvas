@@ -138,6 +138,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
   const renderActionButton = () => {
     switch (data.deploy_status) {
       case 'NOT_DEPLOYED':
+      case 'FAILED':
         return (
           <Tooltip title="Deploy">
             <IconButton
@@ -203,7 +204,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
         {data.label}
       </Typography>
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Tooltip title={`Status: ${data.deploy_status}`}>
+        <Tooltip title="Logs">
           <StatusDot
             status={data.deploy_status}
             onClick={handleOpenStatusModal}

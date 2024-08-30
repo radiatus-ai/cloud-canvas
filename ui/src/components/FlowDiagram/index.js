@@ -7,7 +7,7 @@ import ModalsContainer from './components/ModalsContainer';
 import LoadingScreen from './components/LoadingScreen';
 import { useFlowDiagram } from './hooks/useFlowDiagram';
 
-const SIDEBAR_WIDTH = '250px'; // Adjust this value as needed
+const SIDEBAR_WIDTH = '195px'; // Adjust this value as needed
 
 const FlowDiagram = () => {
   const {

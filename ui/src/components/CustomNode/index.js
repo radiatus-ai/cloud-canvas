@@ -26,7 +26,7 @@ const NodeContainer = styled(Box)(({ theme }) => ({
 const StatusContainer = styled(Box)({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'flex-end',
+  justifyContent: 'flex-start', // Changed from 'flex-end' to 'flex-start'
   marginTop: '8px',
 });
 
@@ -101,12 +101,6 @@ const CustomNode = memo(({ data, isConnectable }) => {
         onOpenModal={nodeData.onOpenModal}
         onDeleteNode={nodeData.onDelete}
       />
-      <Typography variant="caption" color="text.secondary">
-        {nodeData.type}
-      </Typography>
-      {inputHandles}
-      {outputHandles}
-      {error && <Typography color="error">{error}</Typography>}
       <StatusContainer>
         {renderConnectionStatus()}
         <Typography
@@ -118,6 +112,12 @@ const CustomNode = memo(({ data, isConnectable }) => {
           {isDebugMode ? 'Switch to Icon Mode' : ''}
         </Typography>
       </StatusContainer>
+      <Typography variant="caption" color="text.secondary">
+        {nodeData.type}
+      </Typography>
+      {inputHandles}
+      {outputHandles}
+      {error && <Typography color="error">{error}</Typography>}
     </NodeContainer>
   );
 });
