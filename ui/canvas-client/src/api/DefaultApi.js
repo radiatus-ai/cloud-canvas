@@ -20,6 +20,7 @@ import CredentialUpdate from '../model/CredentialUpdate';
 import HTTPValidationError from '../model/HTTPValidationError';
 import Package from '../model/Package';
 import PackageCreate from '../model/PackageCreate';
+import PackageUpdate from '../model/PackageUpdate';
 import Project from '../model/Project';
 import ProjectCreate from '../model/ProjectCreate';
 import ProjectUpdate from '../model/ProjectUpdate';
@@ -187,6 +188,68 @@ export default class DefaultApi {
     return this.apiClient.callApi(
       '/packages',
       'POST',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
+
+  /**
+   * Callback function to receive the result of the createOrUpdatePackagePackagesPackageIdPut operation.
+   * @callback module:api/DefaultApi~createOrUpdatePackagePackagesPackageIdPutCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/Package} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
+
+  /**
+   * Create Or Update Package
+   * @param {String} packageId The ID of the package
+   * @param {module:model/PackageUpdate} packageUpdate
+   * @param {module:api/DefaultApi~createOrUpdatePackagePackagesPackageIdPutCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/Package}
+   */
+  createOrUpdatePackagePackagesPackageIdPut(
+    packageId,
+    packageUpdate,
+    callback
+  ) {
+    let postBody = packageUpdate;
+    // verify the required parameter 'packageId' is set
+    if (packageId === undefined || packageId === null) {
+      throw new Error(
+        "Missing the required parameter 'packageId' when calling createOrUpdatePackagePackagesPackageIdPut"
+      );
+    }
+    // verify the required parameter 'packageUpdate' is set
+    if (packageUpdate === undefined || packageUpdate === null) {
+      throw new Error(
+        "Missing the required parameter 'packageUpdate' when calling createOrUpdatePackagePackagesPackageIdPut"
+      );
+    }
+
+    let pathParams = {
+      package_id: packageId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
+
+    let authNames = [];
+    let contentTypes = ['application/json'];
+    let accepts = ['application/json'];
+    let returnType = Package;
+    return this.apiClient.callApi(
+      '/packages/{package_id}',
+      'PUT',
       pathParams,
       queryParams,
       headerParams,

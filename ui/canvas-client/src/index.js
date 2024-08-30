@@ -20,14 +20,15 @@ import Credential from './model/Credential';
 import CredentialCreate from './model/CredentialCreate';
 import CredentialType from './model/CredentialType';
 import CredentialUpdate from './model/CredentialUpdate';
-import DeployStatus from './model/DeployStatus';
 import HTTPValidationError from './model/HTTPValidationError';
 import Package from './model/Package';
 import PackageCreate from './model/PackageCreate';
+import PackageUpdate from './model/PackageUpdate';
 import Project from './model/Project';
 import ProjectCreate from './model/ProjectCreate';
 import ProjectPackage from './model/ProjectPackage';
 import ProjectPackageCreate from './model/ProjectPackageCreate';
+import ProjectPackageStatus from './model/ProjectPackageStatus';
 import ProjectUpdate from './model/ProjectUpdate';
 import ValidationError from './model/ValidationError';
 import ValidationErrorLocInner from './model/ValidationErrorLocInner';
@@ -123,12 +124,6 @@ export {
   CredentialUpdate,
 
   /**
-   * The DeployStatus model constructor.
-   * @property {module:model/DeployStatus}
-   */
-  DeployStatus,
-
-  /**
    * The HTTPValidationError model constructor.
    * @property {module:model/HTTPValidationError}
    */
@@ -145,6 +140,12 @@ export {
    * @property {module:model/PackageCreate}
    */
   PackageCreate,
+
+  /**
+   * The PackageUpdate model constructor.
+   * @property {module:model/PackageUpdate}
+   */
+  PackageUpdate,
 
   /**
    * The Project model constructor.
@@ -169,6 +170,12 @@ export {
    * @property {module:model/ProjectPackageCreate}
    */
   ProjectPackageCreate,
+
+  /**
+   * The ProjectPackageStatus model constructor.
+   * @property {module:model/ProjectPackageStatus}
+   */
+  ProjectPackageStatus,
 
   /**
    * The ProjectUpdate model constructor.

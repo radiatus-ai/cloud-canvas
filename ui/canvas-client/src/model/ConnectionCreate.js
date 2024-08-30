@@ -26,22 +26,14 @@ class ConnectionCreate {
    * @param targetPackageId {String}
    * @param sourceHandle {String}
    * @param targetHandle {String}
-   * @param projectId {String}
    */
-  constructor(
-    sourcePackageId,
-    targetPackageId,
-    sourceHandle,
-    targetHandle,
-    projectId
-  ) {
+  constructor(sourcePackageId, targetPackageId, sourceHandle, targetHandle) {
     ConnectionCreate.initialize(
       this,
       sourcePackageId,
       targetPackageId,
       sourceHandle,
-      targetHandle,
-      projectId
+      targetHandle
     );
   }
 
@@ -55,14 +47,12 @@ class ConnectionCreate {
     sourcePackageId,
     targetPackageId,
     sourceHandle,
-    targetHandle,
-    projectId
+    targetHandle
   ) {
     obj['source_package_id'] = sourcePackageId;
     obj['target_package_id'] = targetPackageId;
     obj['source_handle'] = sourceHandle;
     obj['target_handle'] = targetHandle;
-    obj['project_id'] = projectId;
   }
 
   /**
@@ -97,12 +87,6 @@ class ConnectionCreate {
       if (data.hasOwnProperty('target_handle')) {
         obj['target_handle'] = ApiClient.convertToType(
           data['target_handle'],
-          'String'
-        );
-      }
-      if (data.hasOwnProperty('project_id')) {
-        obj['project_id'] = ApiClient.convertToType(
-          data['project_id'],
           'String'
         );
       }
@@ -179,19 +163,6 @@ class ConnectionCreate {
           data['target_handle']
       );
     }
-    // ensure the json data is a string
-    if (
-      data['project_id'] &&
-      !(
-        typeof data['project_id'] === 'string' ||
-        data['project_id'] instanceof String
-      )
-    ) {
-      throw new Error(
-        'Expected the field `project_id` to be a primitive type in the JSON string but got ' +
-          data['project_id']
-      );
-    }
 
     return true;
   }
@@ -202,7 +173,6 @@ ConnectionCreate.RequiredProperties = [
   'target_package_id',
   'source_handle',
   'target_handle',
-  'project_id',
 ];
 
 /**
@@ -224,10 +194,5 @@ ConnectionCreate.prototype['source_handle'] = undefined;
  * @member {String} target_handle
  */
 ConnectionCreate.prototype['target_handle'] = undefined;
-
-/**
- * @member {String} project_id
- */
-ConnectionCreate.prototype['project_id'] = undefined;
 
 export default ConnectionCreate;

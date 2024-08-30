@@ -8,4 +8,3 @@
 | **targetPackageId** | **String** |             |
 | **sourceHandle**    | **String** |             |
 | **targetHandle**    | **String** |             |
-| **projectId**       | **String** |             |

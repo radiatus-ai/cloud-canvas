@@ -2,7 +2,7 @@
 
 ## Properties
 
-| Name             | Type                                | Description | Notes      |
-| ---------------- | ----------------------------------- | ----------- | ---------- |
-| **deployStatus** | [**DeployStatus**](DeployStatus.md) |             |
-| **outputData**   | **Object**                          |             | [optional] |
+| Name             | Type                                                | Description | Notes      |
+| ---------------- | --------------------------------------------------- | ----------- | ---------- |
+| **deployStatus** | [**ProjectPackageStatus**](ProjectPackageStatus.md) |             |
+| **outputData**   | **Object**                                          |             | [optional] |
