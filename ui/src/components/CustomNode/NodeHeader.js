@@ -1,11 +1,12 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import { Box, IconButton, Modal, Tooltip, Typography } from '@mui/material';
+import { blue, grey, yellow, red } from '@mui/material/colors';
+import { styled } from '@mui/system';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
-import { Box, IconButton, Modal, Tooltip, Typography } from '@mui/material';
-import { blue, grey, yellow } from '@mui/material/colors';
-import { styled } from '@mui/system';
-import React, { useCallback, useEffect, useState } from 'react';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { useAuth } from '../../contexts/Auth';
 import useApi from '../../hooks/useAPI';
 
@@ -21,10 +22,10 @@ const stateColors = {
 };
 
 const StatusDot = styled('div')(({ theme, status }) => ({
-  width: 12, // Increased from 8
-  height: 12, // Increased from 8
+  width: 12,
+  height: 12,
   borderRadius: '50%',
-  marginLeft: '6px', // Slightly increased margin
+  marginLeft: '6px',
   cursor: 'pointer',
   backgroundColor: (() => {
     switch (status) {
@@ -71,6 +72,18 @@ const ModalDescription = styled(Box)(({ theme }) => ({
   padding: theme?.spacing?.(1, 2, 2) || '8px 16px 16px',
   overflowY: 'auto',
   flexGrow: 1,
+}));
+
+const RotatingIcon = styled(AutorenewIcon)(({ theme }) => ({
+  animation: 'spin 2s linear infinite',
+  '@keyframes spin': {
+    '0%': {
+      transform: 'rotate(0deg)',
+    },
+    '100%': {
+      transform: 'rotate(360deg)',
+    },
+  },
 }));
 
 const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
@@ -121,6 +134,61 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
     }
   }, [projectId, data.id, projectsApi, token]);
 
+  const renderActionButton = () => {
+    switch (data.deploy_status) {
+      case 'NOT_DEPLOYED':
+        return (
+          <Tooltip title="Deploy">
+            <IconButton
+              size="small"
+              onClick={handleDeploy}
+              sx={{ ml: 0.5, p: 0.5, color: stateColors.deployed }}
+            >
+              <PlayArrowIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        );
+      case 'DEPLOYED':
+        return (
+          <Tooltip title="Destroy">
+            <IconButton
+              size="small"
+              onClick={handleDestroy}
+              sx={{ ml: 0.5, p: 0.5, color: stateColors.destroying }}
+            >
+              <StopIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        );
+      case 'DESTROYING':
+        return (
+          <Tooltip title="Destroying">
+            <IconButton
+              size="small"
+              sx={{ ml: 0.5, p: 0.5, color: stateColors.destroying }}
+              disabled
+            >
+              <RotatingIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        );
+      case 'DEPLOYING':
+        return (
+          <Tooltip title="Deploying">
+            <IconButton
+              size="small"
+              sx={{ ml: 0.5, p: 0.5, color: stateColors.deploying }}
+              disabled
+            >
+              <RotatingIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -146,39 +214,25 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
               size="small"
               onClick={onOpenModal}
               sx={{ ml: 0.5, p: 0.5, color: editColor }}
-              // color={'blue'}
             >
               <EditIcon fontSize="small" />
             </IconButton>
           </span>
         </Tooltip>
-        {data.deploy_status !== 'DEPLOYED' ? (
-          <Tooltip title="Deploy">
-            <IconButton
-              size="small"
-              onClick={handleDeploy}
-              sx={{ ml: 0.5, p: 0.5, color: stateColors.deployed }}
-            >
-              <PlayArrowIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Destroy">
-            <IconButton
-              size="small"
-              onClick={handleDestroy}
-              sx={{ ml: 0.5, p: 0.5, color: stateColors.destroying }}
-            >
-              <StopIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        )}
-        <Tooltip title="Delete">
+        {renderActionButton()}
+        <Tooltip
+          title={
+            data.deploy_status === 'DEPLOYED'
+              ? 'Package must be destroyed before deletion'
+              : 'Delete'
+          }
+        >
           <span>
             <IconButton
               size="small"
               onClick={onDeleteNode}
-              sx={{ ml: 0.5, p: 0.5 }}
+              sx={{ ml: 0.5, p: 0.5, color: red[500] }}
+              disabled={data.deploy_status === 'DEPLOYED'}
             >
               <DeleteIcon fontSize="small" />
             </IconButton>
