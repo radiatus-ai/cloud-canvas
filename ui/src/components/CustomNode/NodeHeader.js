@@ -74,8 +74,9 @@ const ModalDescription = styled(Box)(({ theme }) => ({
   flexGrow: 1,
 }));
 
-const RotatingIcon = styled(AutorenewIcon)(({ theme }) => ({
+const RotatingIcon = styled(AutorenewIcon)(({ theme, color }) => ({
   animation: 'spin 2s linear infinite',
+  color: color, // Add this line
   '@keyframes spin': {
     '0%': {
       transform: 'rotate(0deg)',
@@ -168,7 +169,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
               sx={{ ml: 0.5, p: 0.5, color: stateColors.destroying }}
               disabled
             >
-              <RotatingIcon fontSize="small" />
+              <RotatingIcon fontSize="small" color={stateColors.destroying} />
             </IconButton>
           </Tooltip>
         );
@@ -177,10 +178,10 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
           <Tooltip title="Deploying">
             <IconButton
               size="small"
-              sx={{ ml: 0.5, p: 0.5, color: stateColors.deploying }}
+              sx={{ ml: 0.5, p: 0.5, color: stateColors.deployed }}
               disabled
             >
-              <RotatingIcon fontSize="small" />
+              <RotatingIcon fontSize="small" color={stateColors.deployed} />
             </IconButton>
           </Tooltip>
         );

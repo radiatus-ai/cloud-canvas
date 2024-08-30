@@ -115,7 +115,7 @@ const CustomNode = memo(({ data, isConnectable }) => {
           sx={{ marginLeft: '8px', cursor: 'pointer' }}
           onClick={() => setIsDebugMode(!isDebugMode)}
         >
-          {isDebugMode ? 'Switch to Icon Mode' : 'Switch to Debug Mode'}
+          {isDebugMode ? 'Switch to Icon Mode' : ''}
         </Typography>
       </StatusContainer>
     </NodeContainer>
