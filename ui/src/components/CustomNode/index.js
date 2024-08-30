@@ -1,13 +1,17 @@
+import React, { memo, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import React, { memo, useCallback, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import 'reactflow/dist/style.css';
 import HandleComponent from './HandleComponent';
 import NodeHeader from './NodeHeader';
 import { grey } from '@mui/material/colors';
 import useRobustWebSocket from './hooks/useRobustWebSocket';
-
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import CloudIcon from '@mui/icons-material/Cloud';
+import useWebSocketEffect from './hooks/useWebSocketEffect';
+import useConnectionEffect from './hooks/useConnectionEffect';
+import useNodeData from './hooks/useNodeData';
 const NodeContainer = styled(Box)(({ theme }) => ({
   padding: theme?.spacing?.(1.5) || '12px',
   border: `1px solid ${grey[300]}`,
@@ -19,60 +23,23 @@ const NodeContainer = styled(Box)(({ theme }) => ({
   boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
 }));
 
+const StatusContainer = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  marginTop: '8px',
+});
+
 const CustomNode = memo(({ data, isConnectable }) => {
   const { projectId } = useParams();
   const [error, setError] = useState(null);
-  const [nodeData, setNodeData] = useState(data);
+  const [nodeData, updateNodeData] = useNodeData(data);
+  const [isDebugMode, setIsDebugMode] = useState(false);
   const { sendJsonMessage, messageHistory, connectionStatus } =
     useRobustWebSocket(projectId, nodeData.id);
 
-  const updateNodeData = useCallback((updater) => {
-    setNodeData((prevData) => {
-      const newData =
-        typeof updater === 'function' ? updater(prevData) : updater;
-      return { ...prevData, ...newData };
-    });
-  }, []);
-
-  useEffect(() => {
-    if (messageHistory.length > 0) {
-      const lastMessage = messageHistory[messageHistory.length - 1];
-      try {
-        const message = JSON.parse(lastMessage.data);
-        if (
-          message.type === 'package_update' ||
-          message.type === 'request_update' ||
-          message.type === 'request_initial'
-        ) {
-          setError(null);
-          updateNodeData((prevData) => ({
-            ...prevData,
-            deploy_status: message.data.deploy_status,
-          }));
-        } else if (message.type === 'error') {
-          console.error('WebSocket error:', message.message);
-          setError(message.message);
-        }
-      } catch (err) {
-        console.error('Error parsing WebSocket message:', err);
-        setError('Error parsing WebSocket message');
-      }
-    }
-  }, [messageHistory, updateNodeData]);
-
-  useEffect(() => {
-    if (connectionStatus === 'Open') {
-      sendJsonMessage({ type: 'request_initial' });
-    }
-  }, [connectionStatus, sendJsonMessage]);
-
-  useEffect(() => {
-    if (connectionStatus === 'Closed') {
-      setError('WebSocket connection closed. Please refresh the page.');
-    } else {
-      setError(null);
-    }
-  }, [connectionStatus]);
+  useWebSocketEffect(messageHistory, updateNodeData, setError);
+  useConnectionEffect(connectionStatus, sendJsonMessage, setError);
 
   if (nodeData.inputs.properties === undefined) {
     nodeData.inputs.properties = {};
@@ -109,6 +76,22 @@ const CustomNode = memo(({ data, isConnectable }) => {
     )
   );
 
+  const renderConnectionStatus = () => {
+    if (isDebugMode) {
+      return (
+        <Typography variant="caption" color="text.secondary">
+          Connection: {connectionStatus}
+        </Typography>
+      );
+    } else {
+      return connectionStatus === 'Open' ? (
+        <WbSunnyIcon color="primary" fontSize="small" />
+      ) : (
+        <CloudIcon color="disabled" fontSize="small" />
+      );
+    }
+  };
+
   return (
     <NodeContainer>
       <NodeHeader
@@ -124,9 +107,17 @@ const CustomNode = memo(({ data, isConnectable }) => {
       {inputHandles}
       {outputHandles}
       {error && <Typography color="error">{error}</Typography>}
-      <Typography variant="caption" color="text.secondary">
-        Connection: {connectionStatus}
-      </Typography>
+      <StatusContainer>
+        {renderConnectionStatus()}
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ marginLeft: '8px', cursor: 'pointer' }}
+          onClick={() => setIsDebugMode(!isDebugMode)}
+        >
+          {isDebugMode ? 'Switch to Icon Mode' : 'Switch to Debug Mode'}
+        </Typography>
+      </StatusContainer>
     </NodeContainer>
   );
 });

@@ -3,14 +3,22 @@ import EditIcon from '@mui/icons-material/Edit';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import { Box, IconButton, Modal, Tooltip, Typography } from '@mui/material';
-import { blue, yellow } from '@mui/material/colors';
+import { blue, grey, yellow } from '@mui/material/colors';
 import { styled } from '@mui/system';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/Auth';
 import useApi from '../../hooks/useAPI';
 
 const successColor = '#0cc421';
-const editColor = '#007bff';
+const editColor = grey[500];
+
+const stateColors = {
+  destroying: yellow[500],
+  deploying: blue[500],
+  not_deployed: '#9e9e9e',
+  deployed: successColor,
+  failed: '#f44336',
+};
 
 const StatusDot = styled('div')(({ theme, status }) => ({
   width: 12, // Increased from 8
@@ -21,17 +29,17 @@ const StatusDot = styled('div')(({ theme, status }) => ({
   backgroundColor: (() => {
     switch (status) {
       case 'NOT_DEPLOYED':
-        return theme?.palette?.grey?.[500] || '#9e9e9e';
+        return stateColors.not_deployed;
       case 'DEPLOYING':
-        return blue[500];
+        return stateColors.deploying;
       case 'DESTROYING':
-        return yellow[500];
+        return stateColors.destroying;
       case 'DEPLOYED':
-        return successColor;
+        return stateColors.deployed;
       case 'FAILED':
-        return theme?.palette?.error?.main || '#f44336';
+        return stateColors.failed;
       default:
-        return theme?.palette?.grey?.[500] || '#9e9e9e';
+        return stateColors.not_deployed;
     }
   })(),
 }));
@@ -137,8 +145,8 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
             <IconButton
               size="small"
               onClick={onOpenModal}
-              sx={{ ml: 0.5, p: 0.5 }}
-              color="primary"
+              sx={{ ml: 0.5, p: 0.5, color: editColor }}
+              // color={'blue'}
             >
               <EditIcon fontSize="small" />
             </IconButton>
@@ -149,7 +157,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
             <IconButton
               size="small"
               onClick={handleDeploy}
-              sx={{ ml: 0.5, p: 0.5, color: '#0cc421' }}
+              sx={{ ml: 0.5, p: 0.5, color: stateColors.deployed }}
             >
               <PlayArrowIcon fontSize="small" />
             </IconButton>
@@ -159,7 +167,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
             <IconButton
               size="small"
               onClick={handleDestroy}
-              sx={{ ml: 0.5, p: 0.5 }}
+              sx={{ ml: 0.5, p: 0.5, color: stateColors.destroying }}
             >
               <StopIcon fontSize="small" />
             </IconButton>

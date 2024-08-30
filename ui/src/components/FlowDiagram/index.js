@@ -7,6 +7,8 @@ import ModalsContainer from './components/ModalsContainer';
 import LoadingScreen from './components/LoadingScreen';
 import { useFlowDiagram } from './hooks/useFlowDiagram';
 
+const SIDEBAR_WIDTH = '250px'; // Adjust this value as needed
+
 const FlowDiagram = () => {
   const {
     nodes,
@@ -57,23 +59,26 @@ const FlowDiagram = () => {
 
   return (
     <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', width: '100%' }}>
-      <Sidebar />
+      <Box sx={{ width: SIDEBAR_WIDTH, flexShrink: 0 }}>
+        <Sidebar />
+      </Box>
       <ReactFlowProvider>
-        {/* <WebhookTest projectId="f65e6aec-7716-41ae-a659-d8a2a0de2d32" packageId="53af8da2-dfcb-45e4-98ab-d8cf244c0850" /> */}
-        <FlowCanvas
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onConnectStart={onConnectStart}
-          onConnectEnd={onConnectEnd}
-          onConnectCheck={onConnectCheck}
-          onInit={onInit}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          reactFlowWrapper={reactFlowWrapper}
-        />
+        <Box sx={{ flexGrow: 1, height: '100%' }}>
+          <FlowCanvas
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onConnectStart={onConnectStart}
+            onConnectEnd={onConnectEnd}
+            onConnectCheck={onConnectCheck}
+            onInit={onInit}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            reactFlowWrapper={reactFlowWrapper}
+          />
+        </Box>
         <ModalsContainer
           modalState={modalState}
           setModalState={setModalState}
