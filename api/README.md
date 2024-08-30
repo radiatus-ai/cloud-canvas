@@ -10,3 +10,17 @@ graph TD
     AI -->|Token Verification| AS
     CC -->|Token Verification| AS
 ```
+
+"[python]": {
+"editor.formatOnSave": true,
+"editor.codeActionsOnSave": {
+"source.fixAll": "explicit",
+}
+},
+
+"ruff.lint.args": [
+"--config=pyproject.toml"
+],
+"ruff.organizeImports": true,
+"ruff.fixAll": true,
+"editor.formatOnSave": true,

@@ -2,6 +2,7 @@ from typing import Optional
 from uuid import UUID
 
 import httpx
+from core.pubsub import PubSubMessenger
 from fastapi import Depends, HTTPException, Request
 from opentelemetry import trace
 from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
@@ -10,10 +11,19 @@ from sqlalchemy.future import select
 
 from app.core.config import settings
 from app.core.logger import get_logger
+from app.core.websocket_manager import ConnectionManager
 from app.db.session import get_db
 from app.models.organization_reference import OrganizationReference
 
 logger = get_logger(__name__)
+
+
+def get_pubsub_messenger() -> PubSubMessenger:
+    return PubSubMessenger()
+
+
+def get_websocket_manager() -> ConnectionManager:
+    return ConnectionManager()
 
 
 async def get_trace_context(request: Request) -> Optional[trace.SpanContext]:
@@ -66,14 +76,21 @@ async def get_db_and_current_user(
     }
 
 
-async def get_db(
-    request: Request,
+# async def get_db(
+#     db: AsyncSession = Depends(get_db),
+#     trace_context: Optional[trace.SpanContext] = Depends(get_trace_context),
+# ):
+#     return {
+#         "db": db,
+#         "trace_context": trace_context,
+#     }
+
+
+async def get_db_without_trace(
     db: AsyncSession = Depends(get_db),
-    trace_context: Optional[trace.SpanContext] = Depends(get_trace_context),
 ):
     return {
         "db": db,
-        "trace_context": trace_context,
     }
 
 

@@ -1,12 +1,17 @@
+import React, { memo, useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import React, { memo } from 'react';
 import { useParams } from 'react-router-dom';
 import 'reactflow/dist/style.css';
 import HandleComponent from './HandleComponent';
 import NodeHeader from './NodeHeader';
 import { grey } from '@mui/material/colors';
-
+import useRobustWebSocket from './hooks/useRobustWebSocket';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import CloudIcon from '@mui/icons-material/Cloud';
+import useWebSocketEffect from './hooks/useWebSocketEffect';
+import useConnectionEffect from './hooks/useConnectionEffect';
+import useNodeData from './hooks/useNodeData';
 const NodeContainer = styled(Box)(({ theme }) => ({
   padding: theme?.spacing?.(1.5) || '12px',
   border: `1px solid ${grey[300]}`,
@@ -18,19 +23,30 @@ const NodeContainer = styled(Box)(({ theme }) => ({
   boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
 }));
 
-const CustomNode = memo(({ data, updateNodeData }) => {
+const StatusContainer = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-start', // Changed from 'flex-end' to 'flex-start'
+  marginTop: '8px',
+});
+
+const CustomNode = memo(({ data, isConnectable }) => {
   const { projectId } = useParams();
+  const [error, setError] = useState(null);
+  const [nodeData, updateNodeData] = useNodeData(data);
+  const [isDebugMode, setIsDebugMode] = useState(false);
+  const { sendJsonMessage, messageHistory, connectionStatus } =
+    useRobustWebSocket(projectId, nodeData.id);
 
-  // useEffect(() => {
-  //   console.log('Node data updated:', data);
-  // }, [data]);
+  useWebSocketEffect(messageHistory, updateNodeData, setError);
+  useConnectionEffect(connectionStatus, sendJsonMessage, setError);
 
-  if (data.inputs.properties === undefined) {
-    data.inputs.properties = {};
-    data.outputs.properties = {};
+  if (nodeData.inputs.properties === undefined) {
+    nodeData.inputs.properties = {};
+    nodeData.outputs.properties = {};
   }
 
-  const inputHandles = Object.entries(data.inputs.properties).map(
+  const inputHandles = Object.entries(nodeData.inputs.properties).map(
     ([input, schema], index, array) => (
       <HandleComponent
         key={`input-${input}`}
@@ -40,11 +56,12 @@ const CustomNode = memo(({ data, updateNodeData }) => {
         schema={schema}
         index={index}
         total={array.length}
+        isConnectable={isConnectable}
       />
     )
   );
 
-  const outputHandles = Object.entries(data.outputs.properties).map(
+  const outputHandles = Object.entries(nodeData.outputs.properties).map(
     ([output, schema], index, array) => (
       <HandleComponent
         key={`output-${output}`}
@@ -54,24 +71,53 @@ const CustomNode = memo(({ data, updateNodeData }) => {
         schema={schema}
         index={index}
         total={array.length}
+        isConnectable={isConnectable}
       />
     )
   );
 
+  const renderConnectionStatus = () => {
+    if (isDebugMode) {
+      return (
+        <Typography variant="caption" color="text.secondary">
+          Connection: {connectionStatus}
+        </Typography>
+      );
+    } else {
+      return connectionStatus === 'Open' ? (
+        <WbSunnyIcon color="primary" fontSize="small" />
+      ) : (
+        <CloudIcon color="disabled" fontSize="small" />
+      );
+    }
+  };
+
   return (
     <NodeContainer>
       <NodeHeader
-        data={data}
+        data={nodeData}
         projectId={projectId}
-        updateNodeData={data.updateNodeData}
-        onOpenModal={data.onOpenModal}
-        onDeleteNode={data.onDelete}
+        updateNodeData={updateNodeData}
+        onOpenModal={nodeData.onOpenModal}
+        onDeleteNode={nodeData.onDelete}
       />
+      <StatusContainer>
+        {renderConnectionStatus()}
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ marginLeft: '8px', cursor: 'pointer' }}
+          onClick={() => setIsDebugMode(!isDebugMode)}
+        >
+          {isDebugMode ? 'Switch to Icon Mode' : ''}
+        </Typography>
+      </StatusContainer>
       <Typography variant="caption" color="text.secondary">
-        {data.type}
+        {nodeData.type}
       </Typography>
       {inputHandles}
       {outputHandles}
+      {error && <Typography color="error">{error}</Typography>}
     </NodeContainer>
   );
 });

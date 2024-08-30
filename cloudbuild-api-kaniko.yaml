@@ -1,10 +1,17 @@
-# todo: add generating this file to ada cli.
 steps:
-  # todo: time the diff between kaniko and docker
   - name: "gcr.io/kaniko-project/executor:latest"
     id: "build-api"
     args:
       - --destination=us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/api:$SHORT_SHA
+      - --destination=us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/api:latest
       - --cache=true
-      - --cache-ttl=10h
+      - --cache-ttl=24h
       - --context=dir://./api
+      - --compressed-caching=false
+      - --snapshotMode=redo
+      - --use-new-run
+
+options:
+  machineType: "N1_HIGHCPU_8"
+
+timeout: "1800s"

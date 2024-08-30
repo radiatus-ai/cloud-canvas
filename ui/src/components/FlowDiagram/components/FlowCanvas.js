@@ -6,8 +6,13 @@ import CustomEdge from './CustomEdge';
 import { Box } from '@mui/material';
 
 const nodeTypes = {
-  custom: CustomNode,
+  // custom: (props) => <CustomNode {...props} isConnectable={isConnectable} />,
+  custom: (props) => <CustomNode {...props} isConnectable={false} />,
 };
+
+// const nodeTypes = {
+//   custom: CustomNode,
+// };
 
 const edgeTypes = {
   custom: CustomEdge,

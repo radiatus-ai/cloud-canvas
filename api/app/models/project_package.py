@@ -25,8 +25,8 @@ class ProjectPackage(Base):
     type = Column(String)
     deploy_status = Column(SQLAlchemyEnum(ProjectPackageStatus), nullable=False)
     inputs = Column(JSON)
-    outputs = Column(JSON)
-    output_data = Column(JSON)
+    outputs = Column(JSON) # artifacts
+    output_data = Column(JSON) # data, like logs, etc
     parameters = Column(JSON)
     parameter_data = Column(JSON)
 

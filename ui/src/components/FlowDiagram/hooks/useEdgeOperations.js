@@ -15,27 +15,28 @@ const useEdgeOperations = (projectId, projectData, nodes, edges, setEdges) => {
   // const [error, setError] = useState(null);
 
   // useEffect(() => {
-  //   const fetchProjectData = async () => {
-  //     // if (!projectData || !projectData.id) return;
+  //   console.log('projectData', projectData);
+  //   if (projectData && projectData.connections) {
 
-  //     setIsLoading(true);
-  //     try {
-  //       const edgesData = await projectsApi.fetchConnections(projectId, token);
-  //       // const newNodes = transformPackagesToNodes(infraData);
-  //       // setNodes(newNodes);
-  //       setEdges(edgesData);
-  //       // Note: You might want to handle edgesData if needed
-  //       setError(null);
-  //     } catch (err) {
-  //       setError('Failed to load project data. Please try again later.');
-  //       console.error('Error fetching project data:', err);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
+  //      for (const connection of projectData.connections) {
+  //       const newEdge = {
+  //         type: 'custom',
+  //         data: {
+  //           connectionType: 'object',
+  //           sourceHandle: connection.source_handle,
+  //         targetHandle: connection.target_handle,
+  //         },
+  //         source: connection.source_package_id,
+  //         target: connection.target_package_id,
+  //         sourceHandle: connection.source_handle,
+  //         targetHandle: connection.target_handle,
+  //        };
+  //       setEdges((eds) => addEdge(newEdge, eds));
+  //      }
 
-  //   fetchProjectData();
-  // }, [nodes, projectId, setEdges]);
+  //     // setEdges(projectData.connections);
+  //   }
+  // }, [projectData, setEdges]);
 
   const validateConnection = useCallback(
     (source, target, sourceHandle, targetHandle) => {
@@ -63,26 +64,33 @@ const useEdgeOperations = (projectId, projectData, nodes, edges, setEdges) => {
           params.targetHandle
         )
       ) {
-        const sourceNode = nodes.find((node) => node.id === params.source);
-        const connectionType =
-          sourceNode?.data?.outputs?.properties?.[params.sourceHandle]?.type;
-        const newEdge = {
-          ...params,
-          type: 'custom',
-          data: {
-            connectionType,
-            sourceHandle: params.sourceHandle,
-            targetHandle: params.targetHandle,
-          },
-        };
+        // const sourceNode = nodes.find((node) => node.id === params.source);
+        // const connectionType =
+        //   sourceNode?.data?.outputs?.properties?.[params.sourceHandle]?.type;
+        // const newEdge = {
+        //   source_package_id: params.source,
+        //   target_package_id: params.target,
+        //   source_handle: params.sourceHandle,
+        //   target_handle: params.targetHandle,
+        // };
 
+        const sourceNode = nodes.find((node) => node.id === params.source);
+        // const connectionType =
+        //   sourceNode?.data?.outputs?.properties?.[params.sourceHandle]?.type;
+        const newConnection = {
+          source_package_id: params.source,
+          target_package_id: params.target,
+          source_handle: params.sourceHandle,
+          target_handle: params.targetHandle,
+        };
         try {
           const response = await projectsApi.createConnection(
             projectId,
-            newEdge,
+            newConnection,
             token
           );
           if (response && response.body) {
+            console.log('response', response);
             setEdges((eds) => addEdge(response.body, eds));
           }
         } catch (error) {

@@ -1,11 +1,21 @@
-# todo: add generating this file to ada cli.
 steps:
-  # todo: time the diff between kaniko and docker
   - name: "gcr.io/kaniko-project/executor:latest"
     id: "build-ui"
-    waitFor: ["-"]
     args:
       - --destination=us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/ui:$SHORT_SHA
+      - --destination=us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/ui:latest
       - --cache=true
-      - --cache-ttl=10h
+      - --cache-ttl=24h
       - --context=dir://./ui
+      - --compressed-caching=false
+      - --snapshotMode=redo
+      - --use-new-run
+      - --build-arg=REACT_APP_ENV=$_REACT_APP_ENV
+
+options:
+  machineType: "N1_HIGHCPU_8"
+
+timeout: "1800s"
+
+substitutions:
+  _REACT_APP_ENV: "production" # default value, can be overridden

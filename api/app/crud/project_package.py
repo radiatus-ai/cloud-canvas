@@ -1,13 +1,14 @@
 import json
 from typing import List, Optional
 
-from google.cloud import pubsub_v1
+from core.pubsub import PubSubMessenger
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from app.core.logger import get_logger
 from app.crud.base import CRUDBase
+from app.crud.connection import connection as crud_connection
 from app.crud.project import project as crud_project
 from app.models.project_package import ProjectPackage
 from app.schemas.project_package import ProjectPackageCreate, ProjectPackageUpdate
@@ -16,41 +17,6 @@ from app.schemas.provisioner_project_package import (
 )
 
 logger = get_logger(__name__)
-
-
-def send_pubsub_message(project_id: str, topic_id: str, message_data: dict):
-    """
-    Sends a message to a Google Cloud Pub/Sub topic.
-
-    Args:
-        project_id (str): The GCP project ID.
-        topic_id (str): The Pub/Sub topic ID.
-        message_data (dict): The message data to be sent.
-
-    Returns:
-        str: The published message ID.
-    """
-    # Initialize a Publisher client
-    publisher = pubsub_v1.PublisherClient()
-
-    # Create the topic path
-    topic_path = publisher.topic_path(project_id, topic_id)
-
-    # Convert the message data to JSON string
-    message_json = json.dumps(message_data)
-
-    # Encode the JSON string to bytes
-    message_bytes = message_json.encode("utf-8")
-
-    # Publish the message
-    try:
-        publish_future = publisher.publish(topic_path, data=message_bytes)
-        message_id = publish_future.result()  # Wait for the publish to complete
-        print(f"Message published with ID: {message_id}")
-        return message_id
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        raise
 
 
 class CRUDProjectPackage(
@@ -121,10 +87,6 @@ class CRUDProjectPackage(
         await db.commit()
         await db.refresh(package)
 
-        # Fetch credentials associated with the project
-        # query = select(Project).where(Project.id == project_id)
-        # result = await db.execute(query)
-        # project = result.scalars().first()
         project = await crud_project.get(db, id=project_id)
         await db.refresh(project)
 
@@ -135,7 +97,17 @@ class CRUDProjectPackage(
             for credential in project.credentials:
                 credentials[credential.name] = credential.credential_value
 
-        # Create a dictionary matching the DeploymentMessage struct
+        # Fetch connections for this package
+        connections = await crud_connection.get_connections_by_project(
+            db, project_id=project_id
+        )
+        connected_input_data = {}
+        for connection in connections:
+            if connection.target_package_id == package_id:
+                connected_input_data[str(connection.source_handle)] = {
+                    "id": "https://www.googleapis.com/compute/v1/projects/rad-dev-dogfood-n437/global/networks/nexxxttt",
+                }
+
         deployment_message = {
             "project_id": str(project_id),
             "package_id": str(package_id),
@@ -146,12 +118,19 @@ class CRUDProjectPackage(
             },
             "action": "DEPLOY",
             "secrets": credentials,
-            # "connected_input_data": package.connected_input_data or {},
+            "connected_input_data": connected_input_data,
         }
 
-        send_pubsub_message(
-            "rad-dev-canvas-kwm6", "provisioner-topic", deployment_message
-        )
+        publisher = PubSubMessenger()
+        result = publisher.publish_message(json.dumps(deployment_message))
+
+        if result.startswith("error"):
+            logger.error(f"Failed to publish deployment message: {result}")
+            package.deploy_status = "FAILED"
+            await db.commit()
+            await db.refresh(package)
+        else:
+            logger.info(f"Successfully published deployment message: {result}")
 
         return package
 
@@ -162,15 +141,6 @@ class CRUDProjectPackage(
         if not package:
             return None
 
-        # enum isn't working for some reason
-        # package.deploy_status = "DESTROYING"
-        # await db.commit()
-        # await db.refresh(package)
-
-        # Fetch credentials associated with the project
-        # query = select(Project).where(Project.id == project_id)
-        # result = await db.execute(query)
-        # project = result.scalars().first()
         project = await crud_project.get(db, id=project_id)
         await db.refresh(project)
 
@@ -179,7 +149,19 @@ class CRUDProjectPackage(
             for credential in project.credentials:
                 credentials[credential.name] = credential.credential_value
 
-        # Create a dictionary matching the DeploymentMessage struct
+        # Fetch connections for this package
+        connections = await crud_connection.get_connections_by_project(
+            db, project_id=project_id
+        )
+        connected_input_data = {}
+        for connection in connections:
+            if connection.target_package_id == package_id:
+                # todo handle
+                connected_input_data[str(connection.source_handle)] = {
+                    # "id": "id-of-network",
+                    "id": "https://www.googleapis.com/compute/v1/projects/rad-dev-dogfood-n437/global/networks/nexxxttt",
+                }
+
         deployment_message = {
             "project_id": str(project_id),
             "package_id": str(package_id),
@@ -190,11 +172,19 @@ class CRUDProjectPackage(
             },
             "action": "DESTROY",
             "secrets": credentials,
+            "connected_input_data": connected_input_data,
         }
 
-        send_pubsub_message(
-            "rad-dev-canvas-kwm6", "provisioner-topic", deployment_message
-        )
+        publisher = PubSubMessenger()
+        result = publisher.publish_message(json.dumps(deployment_message))
+
+        if result.startswith("error"):
+            logger.error(f"Failed to publish deployment message: {result}")
+            package.deploy_status = "FAILED"
+            await db.commit()
+            await db.refresh(package)
+        else:
+            logger.info(f"Successfully published deployment message: {result}")
 
         return package
 

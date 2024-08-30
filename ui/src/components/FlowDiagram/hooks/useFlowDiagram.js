@@ -23,7 +23,15 @@ export const useFlowDiagram = () => {
     onDeploy,
     updateNodeData,
     createNode,
-  } = useNodeOperations(projectId, projectData, nodes, setNodes);
+  } = useNodeOperations(
+    projectId,
+    projectData,
+    nodes,
+    setNodes,
+    edges,
+    setEdges,
+    reactFlowWrapper
+  );
 
   const {
     onConnect,

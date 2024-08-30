@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Body, Depends, Header, HTTPException, Path
 from pydantic import UUID4
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
-from app.core.dependencies import get_db
+from app.core.dependencies import get_db, get_websocket_manager
 from app.core.logger import get_logger
+from app.core.websocket_manager import ConnectionManager
 from app.crud.project_package import project_package as crud_project_package
 from app.schemas.provisioner_project_package import ProjectPackageUpdate
 
@@ -35,10 +37,10 @@ async def update_project_package(
     project_id: UUID4 = Path(..., description="The ID of the project"),
     package_id: UUID4 = Path(..., description="The ID of the package"),
     package: ProjectPackageUpdate = Body(...),
-    deps: dict = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
     _: str = Depends(verify_canvas_token),
+    websocket_manager: ConnectionManager = Depends(get_websocket_manager),
 ):
-    db = deps["db"]
     existing_package = await crud_project_package.get_package(
         db, id=package_id, project_id=project_id
     )
@@ -49,6 +51,9 @@ async def update_project_package(
 
     await crud_project_package.provisioner_update_package(
         db, db_obj=existing_package, obj_in=package
+    )
+    await websocket_manager.broadcast_package_update(
+        package_id, {"id": str(package_id), "deploy_status": package.deploy_status}
     )
     # background_tasks.add_task(
     #     publish_message,

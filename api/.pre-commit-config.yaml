@@ -15,8 +15,43 @@ repos:
         exclude: (alembic\/env.py)
       - id: ruff-format
 
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.3.1
+    hooks:
+      - id: autoflake
+        args:
+          - --in-place
+          - --remove-all-unused-imports
+          - --remove-unused-variables
+          - --expand-star-imports
+          - --ignore-init-module-imports
+
+  # - repo: local
+
   # - repo: https://github.com/pre-commit/mirrors-mypy
   #   rev: v1.8.0
   #   hooks:
   #     - id: mypy
   #       additional_dependencies: [types-all]
+# repos:
+#   - repo: local
+#     hooks:
+#       - id: api-hooks
+#         name: API Hooks
+#         stages: [commit]
+#         always_run: true
+#         pass_filenames: false
+#         entry: ./commit_again.sh
+#         language: script
+#         files: ^api/
+#         args: ["%m"]  # Pass the commit message as an argument
+
+#       - id: ui-hooks
+#         name: UI Hooks
+#         stages: [commit]
+#         always_run: true
+#         pass_filenames: false
+#         entry: ./commit_again.sh
+#         language: script
+#         files: ^ui/
+#         args: ["%m"]  # Pass the commit message as an argument
