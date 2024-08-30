@@ -48,5 +48,36 @@ class CRUDPackage(CRUDBase[Package, PackageCreate, PackageUpdate]):
             await db.commit()
         return package
 
+    async def create_or_replace_package(
+        self,
+        db: AsyncSession,
+        *,
+        obj_in: PackageCreate,
+        package_id: Optional[UUID] = None,
+    ) -> Package:
+        # Check if a package with the same type already exists
+        query = select(Package).where(Package.type == obj_in.type)
+        result = await db.execute(query)
+        existing_package = result.scalars().first()
+
+        if existing_package:
+            # Update the existing package
+            for field, value in obj_in.dict(exclude_unset=True).items():
+                setattr(existing_package, field, value)
+            if package_id:
+                existing_package.id = package_id
+            await db.commit()
+            await db.refresh(existing_package)
+            return existing_package
+        else:
+            # Create a new package
+            db_obj = Package(**obj_in.dict())
+            if package_id:
+                db_obj.id = package_id
+            db.add(db_obj)
+            await db.commit()
+            await db.refresh(db_obj)
+            return db_obj
+
 
 package = CRUDPackage(Package)

@@ -83,6 +83,7 @@ const App = () => {
       </Box>
     );
   }
+  debugger;
 
   return (
     <Router>

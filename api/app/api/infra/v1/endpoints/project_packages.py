@@ -204,8 +204,6 @@ async def destroy_project_package(
 
 
 @router.delete("/{package_id}", response_model=ProjectPackage)
-@router.delete("/{package_id}", response_model=ProjectPackage)
-@router.delete("/{package_id}", response_model=ProjectPackage)
 async def delete_project_package(
     project_id: UUID4 = Path(..., description="The ID of the project"),
     package_id: UUID4 = Path(..., description="The ID of the package"),

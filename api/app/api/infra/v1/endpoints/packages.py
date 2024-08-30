@@ -1,10 +1,30 @@
+import json
 from typing import List
 
-from fastapi import APIRouter, Depends
+from core.pubsub import PubSubMessenger
+from fastapi import (
+    APIRouter,
+    Body,
+    Depends,
+    Path,
+)
+from pydantic import UUID4
 
-from app.core.dependencies import get_db_and_current_user
+from app.core.dependencies import (
+    get_db_and_current_user,
+    get_pubsub_messenger,
+    get_websocket_manager,
+)
+from app.core.logger import get_logger
+from app.core.websocket_manager import ConnectionManager
 from app.crud.package import package as crud_package
-from app.schemas.package import Package, PackageCreate
+from app.schemas.package import (
+    Package,
+    PackageCreate,
+    PackageUpdate,
+)
+
+logger = get_logger(__name__)
 
 router = APIRouter()
 
@@ -28,74 +48,29 @@ async def create_global_package(
     return await crud_package.create_package(db, obj_in=package)
 
 
-# a project package is a copy of the mainline packages. copied when drug to the canvas
-# @router.get("/projects/{project_id}/packages/", response_model=List[Package])
-# async def list_packages(
-#     project_id: UUID4, deps: dict = Depends(get_db_and_current_user)
-# ):
-#     db = deps["db"]
-#     return await crud_package.get_packages_by_project(db, project_id=project_id)
+@router.put("/packages/{package_id}", response_model=Package)
+async def create_or_update_package(
+    package_id: UUID4 = Path(..., description="The ID of the package"),
+    package: PackageUpdate = Body(...),
+    deps: dict = Depends(get_db_and_current_user),
+    pubsub: PubSubMessenger = Depends(get_pubsub_messenger),
+    websocket_manager: ConnectionManager = Depends(get_websocket_manager),
+):
+    db = deps["db"]
 
+    updated_package = await crud_package.create_or_replace_package(
+        db, obj_in=package, package_id=package_id
+    )
 
-# @router.post("/projects/{project_id}/packages/", response_model=Package)
-# async def create_package(
-#     project_id: UUID4,
-#     package: PackageCreate,
-#     deps: dict = Depends(get_db_and_current_user),
-# ):
-#     db = deps["db"]
-#     return await crud_package.create_project_package(db, obj_in=package, project_id=project_id)
+    # Convert SQLAlchemy model to Pydantic model
+    package_pydantic = Package.from_orm(updated_package)
 
+    # Broadcast the update to all connected WebSocket clients
+    await websocket_manager.broadcast(f"Package updated: {package_pydantic.name}")
 
-# @router.patch("/projects/{project_id}/packages/{package_id}", response_model=Package)
-# async def update_package(
-#     project_id: UUID4,
-#     package_id: UUID4,
-#     package: PackageUpdate,
-#     deps: dict = Depends(get_db_and_current_user),
-# ):
-#     db = deps["db"]
-#     existing_package = await crud_package.get_package(db, id=package_id)
-#     if not existing_package:
-#         raise HTTPException(status_code=404, detail="Package not found")
-#     return await crud_package.update_package(
-#         db, db_obj=existing_package, obj_in=package
-#     )
+    # Publish message to PubSub
+    pubsub.publish_message(
+        json.dumps({"type": "package_update", "data": package_pydantic.dict()})
+    )
 
-
-# @router.post(
-#     "/projects/{project_id}/packages/{package_id}/deploy", response_model=Package
-# )
-# async def deploy_package(
-#     project_id: UUID4,
-#     package_id: UUID4,
-#     deploy_data: dict = Body(...),
-#     deps: dict = Depends(get_db_and_current_user),
-# ):
-#     db = deps["db"]
-#     return await crud_package.deploy_package(
-#         db, project_id=project_id, package_id=package_id, deploy_data=deploy_data
-#     )
-
-
-# @router.delete(
-#     "/projects/{project_id}/packages/{package_id}/destroy", response_model=Package
-# )
-# async def destroy_package(
-#     project_id: UUID4, package_id: UUID4, deps: dict = Depends(get_db_and_current_user)
-# ):
-#     db = deps["db"]
-#     return await crud_package.destroy_package(
-#         db, project_id=project_id, package_id=package_id
-#     )
-
-
-# @router.delete("/projects/{project_id}/packages/{package_id}", response_model=Package)
-# async def delete_package(
-#     project_id: UUID4, package_id: UUID4, deps: dict = Depends(get_db_and_current_user)
-# ):
-#     db = deps["db"]
-#     package = await crud_package.get_package(db, id=package_id)
-#     if not package:
-#         raise HTTPException(status_code=404, detail="Package not found")
-#     return await crud_package.delete_package(db, id=package_id)
+    return updated_package

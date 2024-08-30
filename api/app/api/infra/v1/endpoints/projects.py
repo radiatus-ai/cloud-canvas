@@ -10,11 +10,15 @@ from fastapi import (
 )
 from pydantic import UUID4
 
-from app.core.dependencies import get_db_and_current_user
+from app.core.dependencies import (
+    get_db_and_current_user,
+)
 from app.core.logger import get_logger
 from app.core.websocket_manager import ConnectionManager
 from app.crud.project import project as crud_project
 from app.schemas.project import Project, ProjectCreate, ProjectUpdate
+
+logger = get_logger(__name__)
 
 logger = get_logger(__name__)
 
@@ -91,6 +95,6 @@ async def websocket_endpoint(
     try:
         while True:
             # Wait for any message from the client (optional)
-            data = await websocket.receive_text()
+            await websocket.receive_text()
     except WebSocketDisconnect:
         connection_manager.disconnect(websocket)

@@ -167,10 +167,10 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
           <Tooltip title="Destroying">
             <IconButton
               size="small"
-              sx={{ ml: 0.5, p: 0.5, color: stateColors.destroying }}
+              sx={{ ml: 0.5, p: 0.5, color: stateColors.deployed }}
               disabled
             >
-              <RotatingIcon fontSize="small" color={stateColors.destroying} />
+              <RotatingIcon fontSize="small" color={stateColors.deployed} />
             </IconButton>
           </Tooltip>
         );
