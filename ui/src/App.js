@@ -48,6 +48,9 @@ const App = () => {
   const handleLoginError = (error) => {
     console.error('Login Failed:', error);
   };
+  // utility for using a token to upload packages, etc. todo: remove and add a hotkey to expose debug info in the UI.
+  // make the debug feature feel really cool.
+  console.log('token', token);
 
   if (!token) {
     return (
