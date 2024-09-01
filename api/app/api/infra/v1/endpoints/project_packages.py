@@ -97,12 +97,12 @@ async def update_project_package(
     updated_package = await crud_project_package.update_package(
         db, db_obj=existing_package, obj_in=package
     )
-    pubsub.publish_message(
-        json.dumps({"type": "package_update", "data": updated_package.dict()})
-    )
 
     # Convert SQLAlchemy model to Pydantic model
     package_pydantic = ProjectPackage.from_orm(updated_package)
+    pubsub.publish_message(
+        json.dumps({"type": "package_update", "data": updated_package.dict()})
+    )
 
     # Broadcast the update to all connected WebSocket clients
     await websocket_manager.broadcast_package_update(
