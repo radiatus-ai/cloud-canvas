@@ -3,8 +3,8 @@ import React from 'react';
 import { ReactFlowProvider } from 'reactflow';
 import Sidebar from '../Sidebar';
 import FlowCanvas from './components/FlowCanvas';
-import ModalsContainer from './components/ModalsContainer';
 import LoadingScreen from './components/LoadingScreen';
+import ModalsContainer from './components/ModalsContainer';
 import { useFlowDiagram } from './hooks/useFlowDiagram';
 
 const SIDEBAR_WIDTH = '195px'; // Adjust this value as needed
@@ -87,6 +87,7 @@ const FlowDiagram = () => {
           handleNameSubmit={handleNameSubmit}
           missingConnections={missingConnections}
           onDeploy={handleDeploy}
+          nodes={nodes}
         />
       </ReactFlowProvider>
     </Box>

@@ -67,6 +67,8 @@ const DynamicModalForm = ({
     }),
     []
   );
+  console.log('formData', formData);
+  console.log('title', title);
 
   return (
     <Dialog

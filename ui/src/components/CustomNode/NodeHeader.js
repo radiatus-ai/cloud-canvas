@@ -1,14 +1,14 @@
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { blue, grey, red, yellow } from '@mui/material/colors';
 import { styled } from '@mui/system';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useAuth } from '../../contexts/Auth';
-import useApi from '../../hooks/useAPI';
+import React, { useState } from 'react';
 import ConfirmationDialog from './ConfirmationDialog';
 import DeploymentLogsModal from './DeploymentLogsModal';
 import { validateConnections } from './utils/validate';
@@ -23,6 +23,13 @@ const stateColors = {
   deployed: successColor,
   failed: '#f44336',
 };
+
+const NodeContainer = styled(Box)({
+  cursor: 'grab',
+  '&:active': {
+    cursor: 'grabbing',
+  },
+});
 
 const StatusDot = styled('div')(({ theme, status }) => ({
   width: 12,
@@ -48,38 +55,13 @@ const StatusDot = styled('div')(({ theme, status }) => ({
   })(),
 }));
 
-// const StyledModal = styled(Modal)(() => ({
-//   display: 'flex',
-//   alignItems: 'center',
-//   justifyContent: 'center',
-// }));
-
-// const ModalContent = styled(Box)(({ theme }) => ({
-//   backgroundColor: theme?.palette?.background?.paper || '#ffffff',
-//   boxShadow:
-//     theme?.shadows?.[5] ||
-//     '0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12)',
-//   borderRadius: theme?.shape?.borderRadius || '4px',
-//   maxWidth: '90%',
-//   maxHeight: '90%',
-//   display: 'flex',
-//   flexDirection: 'column',
-// }));
-
-// const ModalTitle = styled(Typography)(({ theme }) => ({
-//   padding: theme?.spacing?.(2, 2, 1) || '16px 16px 8px',
-//   fontWeight: 'bold',
-// }));
-
-// const ModalDescription = styled(Box)(({ theme }) => ({
-//   padding: theme?.spacing?.(1, 2, 2) || '8px 16px 16px',
-//   overflowY: 'auto',
-//   flexGrow: 1,
-// }));
+const StyledIconButton = styled(IconButton)({
+  cursor: 'pointer',
+});
 
 const RotatingIcon = styled(AutorenewIcon)(({ theme, color }) => ({
   animation: 'spin 2s linear infinite',
-  color: color, // Add this line
+  color: color,
   '@keyframes spin': {
     '0%': {
       transform: 'rotate(0deg)',
@@ -90,77 +72,45 @@ const RotatingIcon = styled(AutorenewIcon)(({ theme, color }) => ({
   },
 }));
 
-const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode, edges }) => {
-  const { token } = useAuth();
-  const { projects: projectsApi } = useApi();
+const NodeHeader = ({
+  data,
+  projectId,
+  onOpenModal,
+  onDeleteNode,
+  edges,
+  handleDeploy,
+  handleDestroy,
+  isExpanded,
+  toggleExpand,
+}) => {
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [commandOutputs, setCommandOutputs] = useState(data.output_data || '');
   const [validationResult, setValidationResult] = useState(null);
 
-  useEffect(() => {
-    setCommandOutputs(data.output_data?.error || '');
-  }, [data.output_data]);
-
-  const handleOpenStatusModal = useCallback(() => {
+  const handleOpenStatusModal = () => {
     setIsStatusModalOpen(true);
-  }, []);
+  };
 
-  const handleCloseStatusModal = useCallback(() => {
+  const handleCloseStatusModal = () => {
     setIsStatusModalOpen(false);
-  }, []);
+  };
 
-  const handleDeploy = useCallback(async () => {
+  const handleDeployClick = async () => {
     const result = validateConnections(data, edges);
     setValidationResult(result);
 
     if (result.valid) {
-      try {
-        const deployResult = await projectsApi.deployPackage(
-          projectId,
-          data.id,
-          token
-        );
-        setCommandOutputs(deployResult.output_data.error);
-      } catch (error) {
-        console.error('Deployment failed:', error);
-        setCommandOutputs(
-          'Deployment failed. Please check the logs for more information.'
-        );
-      }
+      await handleDeploy();
     } else {
       setIsConfirmDialogOpen(true);
     }
-  }, [projectId, data, edges, projectsApi, token]);
+  };
 
-  const handleConfirmDeploy = useCallback(async () => {
+  const handleConfirmDeploy = async () => {
     setIsConfirmDialogOpen(false);
-    try {
-      const result = await projectsApi.deployPackage(projectId, data.id, token);
-      setCommandOutputs(result.output_data.error);
-    } catch (error) {
-      console.error('Deployment failed:', error);
-      setCommandOutputs(
-        'Deployment failed. Please check the logs for more information.'
-      );
-    }
-  }, [projectId, data.id, projectsApi, token]);
-
-  const handleDestroy = useCallback(async () => {
-    try {
-      const result = await projectsApi.destroyPackage(
-        projectId,
-        data.id,
-        token
-      );
-      setCommandOutputs(result.output_data || '');
-    } catch (error) {
-      console.error('Destruction failed:', error);
-      setCommandOutputs(
-        'Destruction failed. Please check the logs for more information.'
-      );
-    }
-  }, [projectId, data.id, projectsApi, token]);
+    await handleDeploy();
+  };
 
   const renderActionButton = () => {
     switch (data.deploy_status) {
@@ -168,49 +118,42 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode, edges }) => {
       case 'FAILED':
         return (
           <Tooltip title="Deploy">
-            <IconButton
+            <StyledIconButton
               size="small"
-              onClick={handleDeploy}
+              onClick={handleDeployClick}
               sx={{ ml: 0.5, p: 0.5, color: stateColors.deployed }}
             >
               <PlayArrowIcon fontSize="small" />
-            </IconButton>
+            </StyledIconButton>
           </Tooltip>
         );
       case 'DEPLOYED':
         return (
           <Tooltip title="Destroy">
-            <IconButton
+            <StyledIconButton
               size="small"
               onClick={handleDestroy}
               sx={{ ml: 0.5, p: 0.5, color: stateColors.destroying }}
             >
               <StopIcon fontSize="small" />
-            </IconButton>
+            </StyledIconButton>
           </Tooltip>
         );
       case 'DESTROYING':
-        return (
-          <Tooltip title="Destroying">
-            <IconButton
-              size="small"
-              sx={{ ml: 0.5, p: 0.5, color: stateColors.deployed }}
-              disabled
-            >
-              <RotatingIcon fontSize="small" color={stateColors.deployed} />
-            </IconButton>
-          </Tooltip>
-        );
       case 'DEPLOYING':
         return (
-          <Tooltip title="Deploying">
-            <IconButton
+          <Tooltip
+            title={
+              data.deploy_status === 'DESTROYING' ? 'Destroying' : 'Deploying'
+            }
+          >
+            <StyledIconButton
               size="small"
               sx={{ ml: 0.5, p: 0.5, color: stateColors.deployed }}
               disabled
             >
               <RotatingIcon fontSize="small" color={stateColors.deployed} />
-            </IconButton>
+            </StyledIconButton>
           </Tooltip>
         );
       default:
@@ -219,55 +162,65 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode, edges }) => {
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        mb: 1,
-      }}
-    >
-      <Typography variant="subtitle2" fontWeight="bold">
-        {data.label}
-      </Typography>
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Tooltip title="Logs">
-          <StatusDot
-            status={data.deploy_status}
-            onClick={handleOpenStatusModal}
-          />
-        </Tooltip>
-        <Tooltip title="Edit">
-          <span>
-            <IconButton
+    <NodeContainer>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 1,
+        }}
+      >
+        <Typography variant="subtitle2" fontWeight="bold" key={data.label}>
+          {data.label}
+        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Tooltip title="Logs">
+            <StatusDot
+              status={data.deploy_status}
+              onClick={handleOpenStatusModal}
+            />
+          </Tooltip>
+          <Tooltip title="Edit">
+            <StyledIconButton
               size="small"
               onClick={onOpenModal}
               sx={{ ml: 0.5, p: 0.5, color: editColor }}
             >
               <EditIcon fontSize="small" />
-            </IconButton>
-          </span>
-        </Tooltip>
-        {renderActionButton()}
-        <Tooltip
-          title={
-            data.deploy_status === 'DEPLOYED'
-              ? 'Package must be destroyed before deletion'
-              : 'Delete'
-          }
-        >
-          <span>
-            <IconButton
+            </StyledIconButton>
+          </Tooltip>
+          {renderActionButton()}
+          <Tooltip
+            title={
+              data.deploy_status === 'DEPLOYED'
+                ? 'Package must be destroyed before deletion'
+                : 'Delete'
+            }
+          >
+            <span>
+              <StyledIconButton
+                size="small"
+                onClick={onDeleteNode}
+                sx={{ ml: 0.5, p: 0.5, color: red[500] }}
+                disabled={data.deploy_status === 'DEPLOYED'}
+              >
+                <DeleteIcon fontSize="small" />
+              </StyledIconButton>
+            </span>
+          </Tooltip>
+          <Tooltip title={isExpanded ? 'Collapse' : 'Expand'}>
+            <StyledIconButton
+              onClick={toggleExpand}
               size="small"
-              onClick={onDeleteNode}
-              sx={{ ml: 0.5, p: 0.5, color: red[500] }}
-              disabled={data.deploy_status === 'DEPLOYED'}
+              sx={{ cursor: 'pointer' }}
             >
-              <DeleteIcon fontSize="small" />
-            </IconButton>
-          </span>
-        </Tooltip>
+              {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </StyledIconButton>
+          </Tooltip>
+        </Box>
       </Box>
+
       <DeploymentLogsModal
         isOpen={isStatusModalOpen}
         onClose={handleCloseStatusModal}
@@ -291,7 +244,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode, edges }) => {
         onConfirm={handleConfirmDeploy}
         onCancel={() => setIsConfirmDialogOpen(false)}
       />
-    </Box>
+    </NodeContainer>
   );
 };
 

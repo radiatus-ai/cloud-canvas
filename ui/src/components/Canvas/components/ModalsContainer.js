@@ -74,9 +74,6 @@ const ModalsContainer = ({
 
   // Find the selected node
   const selectedNode = nodes.find((n) => n.id === selectedNodeId);
-  if (selectedNode) {
-    console.log('selectedNode', selectedNode);
-  }
 
   return (
     <>
@@ -86,7 +83,7 @@ const ModalsContainer = ({
         schema={schema}
         onSubmit={handleSubmitForm}
         initialData={formData}
-        title={`Edit Parameters for ${selectedNode?.data?.label || 'Node'}`}
+        title={selectedNode ? selectedNode.data.label : ''}
       />
       <CreatePackageModal
         open={isNameModalOpen}

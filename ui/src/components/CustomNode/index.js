@@ -1,7 +1,5 @@
-import CloudIcon from '@mui/icons-material/Cloud';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import { Box, Collapse, IconButton, Typography } from '@mui/material';
 import { styled } from '@mui/system';
 import React, { memo, useState } from 'react';
@@ -93,21 +91,22 @@ const CustomNode = memo(({ data, isConnectable }) => {
     )
   );
 
-  const renderConnectionStatus = () => {
-    if (isDebugMode) {
-      return (
-        <Typography variant="caption" color="text.secondary">
-          Connection: {connectionStatus}
-        </Typography>
-      );
-    } else {
-      return connectionStatus === 'Open' ? (
-        <WbSunnyIcon color="primary" fontSize="small" />
-      ) : (
-        <CloudIcon color="disabled" fontSize="small" />
-      );
-    }
-  };
+  // todo: bring this back as part of the dev view
+  // const renderConnectionStatus = () => {
+  //   if (isDebugMode) {
+  //     return (
+  //       <Typography variant="caption" color="text.secondary">
+  //         Connection: {connectionStatus}
+  //       </Typography>
+  //     );
+  //   } else {
+  //     return connectionStatus === 'Open' ? (
+  //       <WbSunnyIcon color="primary" fontSize="small" />
+  //     ) : (
+  //       <CloudIcon color="disabled" fontSize="small" />
+  //     );
+  //   }
+  // };
 
   return (
     <NodeContainer>
@@ -117,14 +116,18 @@ const CustomNode = memo(({ data, isConnectable }) => {
         updateNodeData={updateNodeData}
         onOpenModal={nodeData.onOpenModal}
         onDeleteNode={nodeData.onDelete}
-        onDeploy={handleDeploy}
-        onDestroy={handleDestroy}
+        handleDeploy={handleDeploy}
+        handleDestroy={handleDestroy}
+        isExpanded={isExpanded}
+        toggleExpand={toggleExpand}
+        edges={data.edges}
       />
       <StatusContainer>
         <Typography variant="caption" color="text.secondary">
           {nodeData.type}
         </Typography>
-        {renderConnectionStatus()}
+        {/* todo: bring this back as part of the dev view */}
+        {/* {renderConnectionStatus()} */}
         <Typography
           variant="caption"
           color="text.secondary"
