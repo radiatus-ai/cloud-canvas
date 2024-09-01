@@ -25,7 +25,7 @@ upload:
 
 start-pubsub-emulator:
 	$(gcloud beta emulators pubsub env-init)
-	gcloud beta emulators pubsub start --project=rad-dev --host-port=0.0.0.0:8192
+	gcloud beta emulators pubsub start --project=rad-dev --host-port=0.0.0.0:8192 || { echo "Pubsub emulator failed to start. Cleaning up..."; pkill -f "pubsub"; }
 
 start-pubsub-emulator-ui:
 	docker run -p 4200:80 ghcr.io/neoscript/pubsub-emulator-ui:latest

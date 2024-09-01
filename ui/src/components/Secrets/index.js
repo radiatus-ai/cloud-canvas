@@ -11,114 +11,33 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useAuth } from '../contexts/Auth';
-import useApi from '../hooks/useAPI';
-import DynamicModalForm from './DynamicModalForm';
-import CredentialCreate from './CredentialsCreate';
+import React from 'react';
+import DynamicModalForm from '../DynamicModalForm';
+import CreateSecretModal from './components/CreateSecretModal';
+import useCredentialModals from './hooks/useCredentialModals';
+import useCredentialOperations from './hooks/useCredentialOperations';
+import useCredentialsFetch from './hooks/useCredentialsFetch';
 
-const CredentialsList = () => {
-  const [credentials, setCredentials] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [editCredential, setEditCredential] = useState(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [credentialToDelete, setCredentialToDelete] = useState(null);
-  const [createCredentialModalOpen, setCreateCredentialModalOpen] =
-    useState(false);
-  const { credentials: credentialsApi } = useApi();
-  const { token } = useAuth();
-
-  const credentialsApiRef = useRef(credentialsApi);
-  const tokenRef = useRef(token);
-
-  useEffect(() => {
-    credentialsApiRef.current = credentialsApi;
-    tokenRef.current = token;
-  }, [credentialsApi, token]);
-
-  const fetchCredentials = useCallback(async () => {
-    const currentToken = tokenRef.current;
-    if (!currentToken) return;
-    setIsLoading(true);
-    try {
-      const response = await credentialsApiRef.current.list(currentToken);
-      setCredentials(response.body);
-      setError(null);
-    } catch (err) {
-      setError('Failed to load credentials. Please try again later.');
-      console.error('Error fetching credentials:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchCredentials();
-  }, [fetchCredentials]);
-
-  const handleCreateCredential = async (credentialData) => {
-    try {
-      const response = await credentialsApi.create(credentialData, token);
-      setCredentials([...credentials, response.body]);
-    } catch (err) {
-      setError('Failed to create credential. Please try again.');
-      console.error('Error creating credential:', err);
-    }
-  };
-
-  const handleEditCredential = useCallback((credential) => {
-    setEditCredential({
-      ...credential,
-      secret: '', // Clear the secret value for security
-    });
-    setEditDialogOpen(true);
-  }, []);
-
-  const handleCloseEditDialog = () => {
-    setEditDialogOpen(false);
-    setEditCredential(null);
-  };
-
-  const handleUpdateCredential = async (updatedData) => {
-    try {
-      const response = await credentialsApi.update(
-        editCredential.id,
-        { secret: updatedData.secret },
-        token
-      );
-      setCredentials(
-        credentials.map((c) => (c.id === response.body.id ? response.body : c))
-      );
-      handleCloseEditDialog();
-    } catch (err) {
-      setError('Failed to update credential. Please try again.');
-      console.error('Error updating credential:', err);
-    }
-  };
-
-  const handleDeleteDialogOpen = (credential) => {
-    setCredentialToDelete(credential);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleDeleteDialogClose = () => {
-    setDeleteDialogOpen(false);
-    setCredentialToDelete(null);
-  };
-
-  const handleDeleteCredential = async () => {
-    if (!credentialToDelete) return;
-    try {
-      await credentialsApi.delete(credentialToDelete.id, token);
-      setCredentials(credentials.filter((c) => c.id !== credentialToDelete.id));
-      handleDeleteDialogClose();
-    } catch (err) {
-      setError('Failed to delete credential. Please try again.');
-      console.error('Error deleting credential:', err);
-    }
-  };
+const Secrets = () => {
+  const { credentials, setCredentials, isLoading, error, setError } =
+    useCredentialsFetch();
+  const {
+    handleCreateCredential,
+    handleUpdateCredential,
+    handleDeleteCredential,
+  } = useCredentialOperations(credentials, setCredentials, setError);
+  const {
+    editDialogOpen,
+    editCredential,
+    deleteDialogOpen,
+    credentialToDelete,
+    createCredentialModalOpen,
+    setCreateCredentialModalOpen,
+    handleEditCredential,
+    handleCloseEditDialog,
+    handleDeleteDialogOpen,
+    handleDeleteDialogClose,
+  } = useCredentialModals();
 
   if (isLoading) {
     return (
@@ -196,7 +115,7 @@ const CredentialsList = () => {
         </Grid>
       </Box>
 
-      <CredentialCreate
+      <CreateSecretModal
         isOpen={createCredentialModalOpen}
         onClose={() => setCreateCredentialModalOpen(false)}
         onSubmit={handleCreateCredential}
@@ -218,7 +137,9 @@ const CredentialsList = () => {
           },
           required: ['secret'],
         }}
-        onSubmit={handleUpdateCredential}
+        onSubmit={(updatedData) =>
+          handleUpdateCredential(editCredential.id, updatedData)
+        }
         initialData={editCredential || {}}
         title="Edit Credential"
       />
@@ -238,7 +159,7 @@ const CredentialsList = () => {
         }}
         onSubmit={({ confirm }) => {
           if (confirm) {
-            handleDeleteCredential();
+            handleDeleteCredential(credentialToDelete.id);
           } else {
             setError('You must confirm the deletion.');
           }
@@ -250,4 +171,4 @@ const CredentialsList = () => {
   );
 };
 
-export default CredentialsList;
+export default Secrets;

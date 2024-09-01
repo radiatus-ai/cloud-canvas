@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  TextField,
-  Select,
-  MenuItem,
   FormControl,
   InputLabel,
+  MenuItem,
+  Select,
+  TextField,
 } from '@mui/material';
+import React, { useState } from 'react';
 
-const CredentialCreate = ({ isOpen, onClose, onSubmit, organizationId }) => {
+const CreateSecretModal = ({ isOpen, onClose, onSubmit, organizationId }) => {
   const [credentialName, setCredentialName] = useState('');
   const [credentialType, setCredentialType] = useState('');
   const [credentialValue, setCredentialValue] = useState('');
@@ -60,7 +60,12 @@ const CredentialCreate = ({ isOpen, onClose, onSubmit, organizationId }) => {
         />
         <FormControl fullWidth margin="normal">
           <InputLabel>Credential Type</InputLabel>
-          <Select value={credentialType} data-cy="credential-type-input" onChange={handleTypeChange} required >
+          <Select
+            value={credentialType}
+            data-cy="credential-type-input"
+            onChange={handleTypeChange}
+            required
+          >
             <MenuItem value="SERVICE_ACCOUNT_KEY">Service Account Key</MenuItem>
             <MenuItem value="SECRET">Secret</MenuItem>
           </Select>
@@ -93,4 +98,4 @@ const CredentialCreate = ({ isOpen, onClose, onSubmit, organizationId }) => {
   );
 };
 
-export default CredentialCreate;
+export default CreateSecretModal;

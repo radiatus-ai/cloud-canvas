@@ -1,4 +1,10 @@
-import { Box, Container, Typography, CircularProgress } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import AuthenticationComponent from './components/Authentication';
@@ -6,9 +12,8 @@ import FlowDiagram from './components/FlowDiagram';
 import JsonSchemaFormTest from './components/JsonSchemaFormTest';
 import Navigation from './components/Navigation';
 import Projects from './components/Projects';
-import CredentialsList from './components/CredentialsList';
+import Secrets from './components/Secrets';
 import { useAuth } from './contexts/Auth';
-import { useTheme } from '@mui/material';
 
 const App = () => {
   const { token, login, logout } = useAuth();
@@ -102,7 +107,7 @@ const App = () => {
         <Box component="main" sx={{ flexGrow: 1, p: 0, overflow: 'hidden' }}>
           <Routes>
             <Route path="/" element={<Projects />} />
-            <Route path="/secrets" element={<CredentialsList />} />
+            <Route path="/secrets" element={<Secrets />} />
             <Route path="/form" element={<JsonSchemaFormTest />} />
             <Route path="/flow/:projectId" element={<FlowDiagram />} />
           </Routes>

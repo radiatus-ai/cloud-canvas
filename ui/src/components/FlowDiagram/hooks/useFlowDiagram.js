@@ -1,7 +1,4 @@
-// these hooks are complicated, its still in flux
-/* eslint-disable no-unused-vars */
-
-import { useCallback, useEffect, useRef, useState, useMemo } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEdgesState, useNodesState } from 'reactflow';
 import useEdgeOperations from './useEdgeOperations';
@@ -53,20 +50,6 @@ export const useFlowDiagram = () => {
     missingConnections: [],
   });
 
-  useEffect(() => {
-    if (projectData) {
-      // debugger;
-      // setNodes(nodes || [])
-      // setEdges(edges || [])
-      // if (JSON.stringify(nodes) !== JSON.stringify(projectData.packages)) {
-      //   setNodes(projectData.packages || []);
-      // }
-      // if (JSON.stringify(edges) !== JSON.stringify(projectData.connections)) {
-      //   setEdges(projectData.connections || []);
-      // }
-    }
-  }, [projectData, nodes, edges, setNodes, setEdges]);
-
   const onInit = useCallback((instance) => {
     setReactFlowInstance(instance);
   }, []);
@@ -80,35 +63,41 @@ export const useFlowDiagram = () => {
     (event) => {
       event.preventDefault();
 
-      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+      if (!reactFlowInstance) {
+        console.warn('React Flow instance is not initialized');
+        return;
+      }
 
-      // Log the entire dataTransfer object
-      console.log('DataTransfer:', event.dataTransfer);
+      const reactFlowBounds = reactFlowWrapper.current?.getBoundingClientRect();
+      if (!reactFlowBounds) {
+        console.warn('React Flow wrapper bounds not available');
+        return;
+      }
 
-      // Try getting data with different types
       const packageData =
         event.dataTransfer.getData('application/reactflow') ||
         event.dataTransfer.getData('text/plain');
-
-      console.log('packageData', packageData);
 
       if (!packageData) {
         console.error('No valid package data found in the drop event');
         return;
       }
 
-      const position = reactFlowInstance.project({
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
-      });
+      try {
+        const packageInfo = JSON.parse(packageData);
+        const position = reactFlowInstance.project({
+          x: event.clientX - reactFlowBounds.left,
+          y: event.clientY - reactFlowBounds.top,
+        });
 
-      const packageInfo = JSON.parse(packageData);
-
-      setModalState((prev) => ({
-        ...prev,
-        isNameModalOpen: true,
-        droppedPackageInfo: { ...packageInfo, position },
-      }));
+        setModalState((prev) => ({
+          ...prev,
+          isNameModalOpen: true,
+          droppedPackageInfo: { ...packageInfo, position },
+        }));
+      } catch (error) {
+        console.error('Error parsing package data:', error);
+      }
     },
     [reactFlowInstance]
   );
@@ -128,7 +117,6 @@ export const useFlowDiagram = () => {
         );
       } catch (error) {
         console.error('Error creating package:', error);
-        // You might want to show an error message to the user here
       } finally {
         setModalState((prev) => ({ ...prev, droppedPackageInfo: null }));
       }
@@ -139,12 +127,7 @@ export const useFlowDiagram = () => {
   const checkRequiredConnections = useCallback(
     (nodeId) => {
       const node = nodes.find((n) => n.id === nodeId);
-      if (
-        !node ||
-        !node.data ||
-        !node.data.inputs ||
-        !node.data.inputs.properties
-      ) {
+      if (!node?.data?.inputs?.properties) {
         return [];
       }
       const requiredInputs = Object.keys(node.data.inputs.properties);
@@ -166,7 +149,7 @@ export const useFlowDiagram = () => {
           isModalOpen: true,
           selectedNodeId: modalData.selectedNodeId,
           formData: modalData.formData,
-          schema: modalData.schema, // Add this line to include the schema
+          schema: modalData.schema,
         }));
       }
     },
@@ -228,7 +211,7 @@ export const useFlowDiagram = () => {
         onOpenModal: () => handleOpenModal(node.id),
         onDeploy: () => handleDeploy(node.id),
         onDelete: () => handleDeleteNode(node.id),
-        deploy_status: node.data.deploy_status || 'NOT_DEPLOYED',
+        deploy_status: node.data?.deploy_status || 'NOT_DEPLOYED',
       },
     }));
   }, [nodes, handleOpenModal, handleDeploy, handleDeleteNode, updateNodeData]);

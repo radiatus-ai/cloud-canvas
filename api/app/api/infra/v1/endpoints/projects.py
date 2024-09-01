@@ -55,8 +55,8 @@ async def create_project(
     # a little weird we have to do this. def unique to the async setup we have
     # we may only have to do this in create but I'm not 100% sure yet
     await db.refresh(prj)
-    # Broadcast the update to all connected clients
-    await connection_manager.broadcast(f"New project created: {prj.name}")
+    # todo: add websocket for projects
+    # await connection_manager.broadcast(f"New project created: {prj.name}")
 
     return prj
 

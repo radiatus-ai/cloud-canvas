@@ -1,5 +1,7 @@
-import React from 'react';
 import { Paper, Typography, styled } from '@mui/material';
+import PropTypes from 'prop-types';
+import React, { memo } from 'react';
+import useDragOperations from '../hooks/useDragOperations';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   marginBottom: theme.spacing(1),
@@ -11,6 +13,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   backdropFilter: 'blur(5px)',
   border: '1px solid rgba(255, 255, 255, 0.2)',
   '&:hover': {
+    cursor: 'grabbing',
     transform: 'translateY(-2px)',
     boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
     background: 'rgba(255, 255, 255, 0.2)',
@@ -22,16 +25,10 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const DraggableItem = ({ packageData }) => {
-  const handleDragStart = (event) => {
-    event.dataTransfer.setData(
-      'application/reactflow',
-      JSON.stringify(packageData)
-    );
-    event.dataTransfer.setData('text/plain', JSON.stringify(packageData));
-  };
+  const { handleDragStart } = useDragOperations();
 
   return (
-    <StyledPaper draggable onDragStart={handleDragStart}>
+    <StyledPaper draggable onDragStart={handleDragStart(packageData)}>
       <Typography
         variant="subtitle2"
         sx={{ color: 'white', fontWeight: 'bold' }}
@@ -45,4 +42,11 @@ const DraggableItem = ({ packageData }) => {
   );
 };
 
-export default DraggableItem;
+DraggableItem.propTypes = {
+  packageData: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+  }).isRequired,
+};
+
+export default memo(DraggableItem);

@@ -1,3 +1,6 @@
+auth:
+	gcloud auth login && gcloud auth application-default login
+
 gen-clients:
 	cd api && make gen-openapi-spec
 	openapi-generator-cli generate -i data/openapi-spec.yaml -g javascript -o ./ui/canvas-client

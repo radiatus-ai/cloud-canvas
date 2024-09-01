@@ -12,7 +12,7 @@ const transformPackagesToNodes = (
   canvasWidth,
   canvasHeight
 ) => {
-  if (!packages || packages.length === 0) return [];
+  if (!packages || packages.length === 0) return { nodes: [], edges: [] };
 
   // Create a graph structure
   const graph = graphStratify();
@@ -24,6 +24,8 @@ const transformPackagesToNodes = (
         .map((conn) => conn.source_package_id),
     }))
   );
+  console.log('dag', dag);
+  console.log('packages', packages);
 
   // Modify the layout to be horizontal with reduced spacing
   const layout = sugiyama()

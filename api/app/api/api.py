@@ -33,5 +33,7 @@ async def root():
 provisioner_router = APIRouter(prefix="/provisioner", tags=["provisioner"])
 provisioner_router.include_router(provisioner_project_packages.router)
 
+# todo: add to api router for auth
 socket_router = APIRouter()
 socket_router.include_router(project_packages_ws.router)
+# socket_router.include_router(connections_ws.router)
