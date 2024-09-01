@@ -1,14 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Box, IconButton, Modal, Tooltip, Typography } from '@mui/material';
-import { blue, grey, yellow, red } from '@mui/material/colors';
-import { styled } from '@mui/system';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
-import AutorenewIcon from '@mui/icons-material/Autorenew';
+import { Box, IconButton, Modal, Tooltip, Typography } from '@mui/material';
+import { blue, grey, red, yellow } from '@mui/material/colors';
+import { styled } from '@mui/system';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/Auth';
 import useApi from '../../hooks/useAPI';
+import ConfirmationDialog from './ConfirmationDialog';
+import DeploymentLogsModal from './DeploymentLogsModal';
+import { validateConnections } from './utils/validate';
 
 const successColor = '#0cc421';
 const editColor = grey[500];
@@ -87,17 +90,17 @@ const RotatingIcon = styled(AutorenewIcon)(({ theme, color }) => ({
   },
 }));
 
-const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
+const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode, edges }) => {
   const { token } = useAuth();
   const { projects: projectsApi } = useApi();
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
-  const [commandOutputs, setCommandOutputs] = useState(
-    data.command_outputs || ''
-  );
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [commandOutputs, setCommandOutputs] = useState(data.output_data || '');
+  const [validationResult, setValidationResult] = useState(null);
 
   useEffect(() => {
-    setCommandOutputs(data.command_outputs || '');
-  }, [data.command_outputs]);
+    setCommandOutputs(data.output_data?.error || '');
+  }, [data.output_data]);
 
   const handleOpenStatusModal = useCallback(() => {
     setIsStatusModalOpen(true);
@@ -108,9 +111,33 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
   }, []);
 
   const handleDeploy = useCallback(async () => {
+    const result = validateConnections(data, edges);
+    setValidationResult(result);
+
+    if (result.valid) {
+      try {
+        const deployResult = await projectsApi.deployPackage(
+          projectId,
+          data.id,
+          token
+        );
+        setCommandOutputs(deployResult.output_data.error);
+      } catch (error) {
+        console.error('Deployment failed:', error);
+        setCommandOutputs(
+          'Deployment failed. Please check the logs for more information.'
+        );
+      }
+    } else {
+      setIsConfirmDialogOpen(true);
+    }
+  }, [projectId, data, edges, projectsApi, token]);
+
+  const handleConfirmDeploy = useCallback(async () => {
+    setIsConfirmDialogOpen(false);
     try {
       const result = await projectsApi.deployPackage(projectId, data.id, token);
-      setCommandOutputs(result.command_outputs || '');
+      setCommandOutputs(result.output_data.error);
     } catch (error) {
       console.error('Deployment failed:', error);
       setCommandOutputs(
@@ -126,7 +153,7 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
         data.id,
         token
       );
-      setCommandOutputs(result.command_outputs || '');
+      setCommandOutputs(result.output_data || '');
     } catch (error) {
       console.error('Destruction failed:', error);
       setCommandOutputs(
@@ -241,23 +268,29 @@ const NodeHeader = ({ data, projectId, onOpenModal, onDeleteNode }) => {
           </span>
         </Tooltip>
       </Box>
-      <StyledModal
-        open={isStatusModalOpen}
+      <DeploymentLogsModal
+        isOpen={isStatusModalOpen}
         onClose={handleCloseStatusModal}
-        aria-labelledby="status-modal-title"
-        aria-describedby="status-modal-description"
-      >
-        <ModalContent>
-          <ModalTitle variant="h6" id="status-modal-title">
-            Deployment Logs
-          </ModalTitle>
-          <ModalDescription>
-            <Typography id="status-modal-description">
-              {commandOutputs || 'No logs available.'}
-            </Typography>
-          </ModalDescription>
-        </ModalContent>
-      </StyledModal>
+        logs={commandOutputs}
+      />
+      <ConfirmationDialog
+        open={isConfirmDialogOpen}
+        title="Warning: Missing Connections"
+        content={`This package is missing the following connections:
+          ${
+            validationResult?.missingInputs.length
+              ? `\nInputs: ${validationResult.missingInputs.join(', ')}`
+              : ''
+          }
+          ${
+            validationResult?.missingOutputs.length
+              ? `\nOutputs: ${validationResult.missingOutputs.join(', ')}`
+              : ''
+          }
+          \nDo you want to proceed with deployment anyway?`}
+        onConfirm={handleConfirmDeploy}
+        onCancel={() => setIsConfirmDialogOpen(false)}
+      />
     </Box>
   );
 };

@@ -1,9 +1,9 @@
 import {
-  graphStratify,
-  sugiyama,
-  layeringLongestPath,
-  decrossTwoLayer,
   coordCenter,
+  decrossTwoLayer,
+  graphStratify,
+  layeringLongestPath,
+  sugiyama,
 } from 'd3-dag';
 
 const transformPackagesToNodes = (
@@ -82,10 +82,12 @@ const transformPackagesToNodes = (
         label: pkg.name || '',
         type: pkg.type || '',
         inputs: pkg.inputs || {},
+        // we don't want outputs in the UI. just the names of them
         outputs: pkg.outputs || {},
         parameters: pkg.parameters || {},
         parameter_data: pkg.parameter_data || {},
         deploy_status: pkg.deploy_status || 'NOT_DEPLOYED',
+        output_data: pkg.output_data || {},
         isRoot: dag.roots().next().value === node,
         isLeaf: dag.leaves().next().value === node,
         parentCount: node.nparents(),

@@ -58,7 +58,7 @@ const DynamicModalForm = ({
 
   const customComponents = useMemo(
     () => ({
-      gcpRegions: GCPRegionsComponent,
+      region: GCPRegionsComponent,
     }),
     []
   );
@@ -91,11 +91,7 @@ const DynamicModalForm = ({
         <Button onClick={onClose} color="primary">
           Cancel
         </Button>
-        <Button
-          onClick={handleSubmit}
-          color="primary"
-          variant="contained"
-        >
+        <Button onClick={handleSubmit} color="primary" variant="contained">
           Submit
         </Button>
       </DialogActions>

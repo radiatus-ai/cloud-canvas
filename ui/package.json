@@ -36,6 +36,7 @@
     "react-konva": "^18.2.10",
     "react-router-dom": "^6.24.1",
     "react-scripts": "5.0.1",
+    "react-sparklines": "^1.7.0",
     "react-syntax-highlighter": "^15.5.0",
     "react-use-websocket": "^4.8.1",
     "reactflow": "^11.11.4",

@@ -14,11 +14,11 @@ import {
 } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/Auth';
-import useApi from '../hooks/useAPI';
-import DynamicModalForm from './DynamicModalForm';
-import CreateProjectModal from './ProjectCreate';
-import EditProjectModal from './EditProjectModal';
+import { useAuth } from '../../contexts/Auth';
+import useApi from '../../hooks/useAPI';
+import DynamicModalForm from '../DynamicModalForm';
+import CreateProjectModal from '../ProjectCreate';
+import EditProjectModal from '../EditProjectModal';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
