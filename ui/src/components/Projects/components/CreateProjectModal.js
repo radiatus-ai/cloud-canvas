@@ -7,7 +7,7 @@ import {
   TextField,
 } from '@mui/material';
 import React, { useState } from 'react';
-
+import PaperComponent from '../../PaperComponent';
 const CreateProjectModal = ({ isOpen, onClose, onSubmit }) => {
   const [projectName, setProjectName] = useState('');
 
@@ -23,7 +23,7 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmit }) => {
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose}>
+    <Dialog open={isOpen} onClose={onClose} PaperComponent={PaperComponent}>
       <DialogTitle>Create New Project</DialogTitle>
       <DialogContent>
         <TextField

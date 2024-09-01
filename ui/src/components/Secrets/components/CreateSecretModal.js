@@ -11,10 +11,10 @@ import {
   TextField,
 } from '@mui/material';
 import React, { useState } from 'react';
-
+import PaperComponent from '../../PaperComponent';
 const CreateSecretModal = ({ isOpen, onClose, onSubmit, organizationId }) => {
   const [credentialName, setCredentialName] = useState('');
-  const [credentialType, setCredentialType] = useState('');
+  const [credentialType, setCredentialType] = useState('SERVICE_ACCOUNT_KEY');
   const [credentialValue, setCredentialValue] = useState('');
 
   const handleNameChange = (event) => {
@@ -46,11 +46,11 @@ const CreateSecretModal = ({ isOpen, onClose, onSubmit, organizationId }) => {
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>Create New Credential</DialogTitle>
+    <Dialog open={isOpen} onClose={onClose} PaperComponent={PaperComponent}>
+      <DialogTitle>Create Secret</DialogTitle>
       <DialogContent>
         <TextField
-          label="Credential Name"
+          label="Name"
           value={credentialName}
           data-cy="credential-name-input"
           onChange={handleNameChange}
@@ -59,7 +59,7 @@ const CreateSecretModal = ({ isOpen, onClose, onSubmit, organizationId }) => {
           margin="normal"
         />
         <FormControl fullWidth margin="normal">
-          <InputLabel>Credential Type</InputLabel>
+          <InputLabel>Type</InputLabel>
           <Select
             value={credentialType}
             data-cy="credential-type-input"
@@ -71,7 +71,7 @@ const CreateSecretModal = ({ isOpen, onClose, onSubmit, organizationId }) => {
           </Select>
         </FormControl>
         <TextField
-          label="Credential Value"
+          label="Value"
           value={credentialValue}
           data-cy="credential-value-input"
           onChange={handleValueChange}

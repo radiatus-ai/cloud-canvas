@@ -7,26 +7,12 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Paper,
   Typography,
   useTheme,
 } from '@mui/material';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import JsonSchemaForm, { GCPRegionsComponent } from './JsonSchemaForm';
-
-const PaperComponent = ({ children, ...props }) => {
-  const theme = useTheme();
-  return (
-    <Paper
-      {...props}
-      sx={{
-        background: theme.palette.background.paper,
-      }}
-    >
-      {children}
-    </Paper>
-  );
-};
+import PaperComponent from './PaperComponent';
 
 const DynamicModalForm = ({
   isOpen,

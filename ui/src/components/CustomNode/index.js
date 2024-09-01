@@ -118,8 +118,6 @@ const CustomNode = memo(({ data, isConnectable }) => {
         onDeleteNode={nodeData.onDelete}
         handleDeploy={handleDeploy}
         handleDestroy={handleDestroy}
-        isExpanded={isExpanded}
-        toggleExpand={toggleExpand}
         edges={data.edges}
       />
       <StatusContainer>

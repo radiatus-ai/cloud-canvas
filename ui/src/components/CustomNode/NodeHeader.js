@@ -1,8 +1,6 @@
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
@@ -80,8 +78,6 @@ const NodeHeader = ({
   edges,
   handleDeploy,
   handleDestroy,
-  isExpanded,
-  toggleExpand,
 }) => {
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
@@ -208,15 +204,6 @@ const NodeHeader = ({
                 <DeleteIcon fontSize="small" />
               </StyledIconButton>
             </span>
-          </Tooltip>
-          <Tooltip title={isExpanded ? 'Collapse' : 'Expand'}>
-            <StyledIconButton
-              onClick={toggleExpand}
-              size="small"
-              sx={{ cursor: 'pointer' }}
-            >
-              {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            </StyledIconButton>
           </Tooltip>
         </Box>
       </Box>
