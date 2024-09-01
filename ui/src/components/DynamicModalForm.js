@@ -7,21 +7,26 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  Paper,
   Typography,
+  useTheme,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import JsonSchemaForm, { GCPRegionsComponent } from './JsonSchemaForm';
 
-const StyledDialog = styled(Dialog)(({ theme }) => ({
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(3),
-    overflowY: 'visible',
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(2, 3),
-  },
-}));
+const PaperComponent = ({ children, ...props }) => {
+  const theme = useTheme();
+  return (
+    <Paper
+      {...props}
+      sx={{
+        background: theme.palette.background.paper,
+      }}
+    >
+      {children}
+    </Paper>
+  );
+};
 
 const DynamicModalForm = ({
   isOpen,
@@ -33,7 +38,7 @@ const DynamicModalForm = ({
 }) => {
   const [formData, setFormData] = useState(initialData);
   const formRef = useRef();
-
+  const theme = useTheme();
   const memoizedInitialData = useMemo(() => initialData, [initialData]);
 
   useEffect(() => {
@@ -64,7 +69,13 @@ const DynamicModalForm = ({
   );
 
   return (
-    <StyledDialog open={isOpen} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      PaperComponent={PaperComponent}
+    >
       <DialogTitle>
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Typography variant="h6">{title}</Typography>
@@ -95,7 +106,7 @@ const DynamicModalForm = ({
           Submit
         </Button>
       </DialogActions>
-    </StyledDialog>
+    </Dialog>
   );
 };
 

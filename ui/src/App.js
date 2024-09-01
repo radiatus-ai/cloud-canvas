@@ -8,7 +8,7 @@ import {
 import React, { useCallback, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import AuthenticationComponent from './components/Authentication';
-import FlowDiagram from './components/FlowDiagram';
+import Canvas from './components/Canvas';
 import JsonSchemaFormTest from './components/JsonSchemaFormTest';
 import Navigation from './components/Navigation';
 import Projects from './components/Projects';
@@ -109,7 +109,7 @@ const App = () => {
             <Route path="/" element={<Projects />} />
             <Route path="/secrets" element={<Secrets />} />
             <Route path="/form" element={<JsonSchemaFormTest />} />
-            <Route path="/flow/:projectId" element={<FlowDiagram />} />
+            <Route path="/canvas/:projectId" element={<Canvas />} />
           </Routes>
         </Box>
       </Box>

@@ -2,7 +2,7 @@ import Ajv from 'ajv';
 
 const ajv = new Ajv();
 
-export const validateConnections = (nodeData, edges) => {
+export const validateConnections = (nodeData, edges = []) => {
   const { inputs, outputs } = nodeData;
   const connectedInputs = edges
     .filter((edge) => edge.target === nodeData.id)

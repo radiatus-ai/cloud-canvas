@@ -3,7 +3,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import StopIcon from '@mui/icons-material/Stop';
-import { Box, IconButton, Modal, Tooltip, Typography } from '@mui/material';
+import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { blue, grey, red, yellow } from '@mui/material/colors';
 import { styled } from '@mui/system';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -48,34 +48,34 @@ const StatusDot = styled('div')(({ theme, status }) => ({
   })(),
 }));
 
-const StyledModal = styled(Modal)(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
+// const StyledModal = styled(Modal)(() => ({
+//   display: 'flex',
+//   alignItems: 'center',
+//   justifyContent: 'center',
+// }));
 
-const ModalContent = styled(Box)(({ theme }) => ({
-  backgroundColor: theme?.palette?.background?.paper || '#ffffff',
-  boxShadow:
-    theme?.shadows?.[5] ||
-    '0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12)',
-  borderRadius: theme?.shape?.borderRadius || '4px',
-  maxWidth: '90%',
-  maxHeight: '90%',
-  display: 'flex',
-  flexDirection: 'column',
-}));
+// const ModalContent = styled(Box)(({ theme }) => ({
+//   backgroundColor: theme?.palette?.background?.paper || '#ffffff',
+//   boxShadow:
+//     theme?.shadows?.[5] ||
+//     '0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12)',
+//   borderRadius: theme?.shape?.borderRadius || '4px',
+//   maxWidth: '90%',
+//   maxHeight: '90%',
+//   display: 'flex',
+//   flexDirection: 'column',
+// }));
 
-const ModalTitle = styled(Typography)(({ theme }) => ({
-  padding: theme?.spacing?.(2, 2, 1) || '16px 16px 8px',
-  fontWeight: 'bold',
-}));
+// const ModalTitle = styled(Typography)(({ theme }) => ({
+//   padding: theme?.spacing?.(2, 2, 1) || '16px 16px 8px',
+//   fontWeight: 'bold',
+// }));
 
-const ModalDescription = styled(Box)(({ theme }) => ({
-  padding: theme?.spacing?.(1, 2, 2) || '8px 16px 16px',
-  overflowY: 'auto',
-  flexGrow: 1,
-}));
+// const ModalDescription = styled(Box)(({ theme }) => ({
+//   padding: theme?.spacing?.(1, 2, 2) || '8px 16px 16px',
+//   overflowY: 'auto',
+//   flexGrow: 1,
+// }));
 
 const RotatingIcon = styled(AutorenewIcon)(({ theme, color }) => ({
   animation: 'spin 2s linear infinite',

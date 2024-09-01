@@ -45,7 +45,7 @@ const Projects = () => {
   } = useProjectModals();
 
   const handleProjectClick = (projectId) => {
-    navigate(`/flow/${projectId}`);
+    navigate(`/canvas/${projectId}`);
   };
 
   if (isLoading) {

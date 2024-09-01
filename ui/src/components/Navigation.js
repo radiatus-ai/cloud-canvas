@@ -1,5 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
+import LogoutIcon from '@mui/icons-material/Logout';
+import MenuIcon from '@mui/icons-material/Menu';
+import VpnKeyIcon from '@mui/icons-material/VpnKey';
 import {
   AppBar,
   Avatar,
@@ -17,15 +22,10 @@ import {
   Typography,
 } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
-import MenuIcon from '@mui/icons-material/Menu';
-import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
-import VpnKeyIcon from '@mui/icons-material/VpnKey';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import LogoutIcon from '@mui/icons-material/Logout';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useThemeContext } from '../contexts/ThemeContext';
+import React, { useEffect, useState } from 'react';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/Auth';
+import { useThemeContext } from '../contexts/ThemeContext';
 
 const StyledListItem = styled(ListItem)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
@@ -55,7 +55,7 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
   const theme = useTheme();
   const { user } = useAuth();
 
-  const projectId = location.pathname.startsWith('/flow/')
+  const projectId = location.pathname.startsWith('/canvas/')
     ? location.pathname.split('/')[2]
     : null;
 
@@ -64,23 +64,29 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
       let defaultAvatar;
       switch (true) {
         case user.email.endsWith('will@radiatus.io'):
-          defaultAvatar = 'https://avatars.githubusercontent.com/u/651833?v=4&size=64';
+          defaultAvatar =
+            'https://avatars.githubusercontent.com/u/651833?v=4&size=64';
           break;
         case user.email.endsWith('mo@radiatus.io'):
-          defaultAvatar = 'https://avatars.githubusercontent.com/u/13317653?v=4&size=64';
+          defaultAvatar =
+            'https://avatars.githubusercontent.com/u/13317653?v=4&size=64';
           break;
         case user.email.endsWith('eric@radiatus.io'):
-          defaultAvatar = 'https://avatars.githubusercontent.com/u/9451328?v=4&size=64';
+          defaultAvatar =
+            'https://avatars.githubusercontent.com/u/9451328?v=4&size=64';
           break;
         case user.email.endsWith('ahmed@radiatus.io'):
         case user.email.endsWith('phil@radiatus.io'):
-          defaultAvatar = 'https://avatars.githubusercontent.com/u/43769063?v=4&size=64';
+          defaultAvatar =
+            'https://avatars.githubusercontent.com/u/43769063?v=4&size=64';
           break;
         case user.email.endsWith('pradeep@radiatus.io'):
-          defaultAvatar = 'https://avatars.githubusercontent.com/u/11217764?v=4&size=64';
+          defaultAvatar =
+            'https://avatars.githubusercontent.com/u/11217764?v=4&size=64';
           break;
         case user.email.endsWith('thomas@radiatus.io'):
-          defaultAvatar = 'https://avatars.githubusercontent.com/u/5421738?v=4&size=64';
+          defaultAvatar =
+            'https://avatars.githubusercontent.com/u/5421738?v=4&size=64';
           break;
 
         default:
@@ -276,7 +282,7 @@ const Navigation = ({ isAuthenticated, onLogout }) => {
                 key={project.id}
                 onClick={handleMenuClose}
                 component={RouterLink}
-                to={`/flow/${project.id}`}
+                to={`/canvas/${project.id}`}
               >
                 {project.name}
               </MenuItem>
