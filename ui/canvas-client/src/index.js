@@ -23,7 +23,6 @@ import CredentialUpdate from './model/CredentialUpdate';
 import HTTPValidationError from './model/HTTPValidationError';
 import Package from './model/Package';
 import PackageCreate from './model/PackageCreate';
-import PackageUpdate from './model/PackageUpdate';
 import Project from './model/Project';
 import ProjectCreate from './model/ProjectCreate';
 import ProjectPackage from './model/ProjectPackage';
@@ -140,12 +139,6 @@ export {
    * @property {module:model/PackageCreate}
    */
   PackageCreate,
-
-  /**
-   * The PackageUpdate model constructor.
-   * @property {module:model/PackageUpdate}
-   */
-  PackageUpdate,
 
   /**
    * The Project model constructor.

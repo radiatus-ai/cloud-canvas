@@ -14,7 +14,6 @@ docs/DefaultApi.md
 docs/HTTPValidationError.md
 docs/Package.md
 docs/PackageCreate.md
-docs/PackageUpdate.md
 docs/PackagesApi.md
 docs/Project.md
 docs/ProjectApi.md
@@ -46,7 +45,6 @@ src/model/CredentialUpdate.js
 src/model/HTTPValidationError.js
 src/model/Package.js
 src/model/PackageCreate.js
-src/model/PackageUpdate.js
 src/model/Project.js
 src/model/ProjectCreate.js
 src/model/ProjectPackage.js
@@ -55,4 +53,3 @@ src/model/ProjectPackageStatus.js
 src/model/ProjectUpdate.js
 src/model/ValidationError.js
 src/model/ValidationErrorLocInner.js
-test/model/ProjectPackageStatus.spec.js

@@ -25,6 +25,8 @@ const CustomEdge = ({
 
   const [isHovered, setIsHovered] = useState(false);
 
+  debugger;
+
   return (
     <>
       <path

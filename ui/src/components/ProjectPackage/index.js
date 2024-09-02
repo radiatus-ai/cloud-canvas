@@ -1,8 +1,6 @@
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Box, Collapse, IconButton, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import React, { memo, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import 'reactflow/dist/style.css';
 import HandleComponent from './HandleComponent';
@@ -55,6 +53,16 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
     setError
   );
 
+  const handleDeleteConnection = useCallback((connectionId) => {
+    nodeData.onDeleteEdge(connectionId);
+    updateNodeData((prevData) => ({
+      ...prevData,
+      edges: prevData.edges.filter((edge) => edge.id !== connectionId),
+    }));
+    // You might also want to trigger a refresh of the entire graph here
+    // or emit an event to a parent component to update the overall graph state
+  }, []);
+
   const { isDebugMode, isExpanded, toggleExpand, toggleDebugMode } =
     useNodeInteractions();
 
@@ -72,6 +80,7 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
         index={index}
         total={array.length}
         isConnectable={isConnectable}
+        packageType={nodeData.type}
       />
     )
   );
@@ -87,6 +96,7 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
         index={index}
         total={array.length}
         isConnectable={isConnectable}
+        packageType={nodeData.type}
       />
     )
   );
@@ -119,6 +129,7 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
         handleDeploy={handleDeploy}
         handleDestroy={handleDestroy}
         edges={data.edges}
+        onDeleteConnection={handleDeleteConnection}
       />
       <StatusContainer>
         <Typography variant="caption" color="text.secondary">
@@ -126,7 +137,8 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
         </Typography>
         {/* todo: bring this back as part of the dev view */}
         {/* {renderConnectionStatus()} */}
-        <Typography
+        {/* todo: bring this back as part of feature/metricscd   */}
+        {/* <Typography
           variant="caption"
           color="text.secondary"
           sx={{ marginLeft: '8px', cursor: 'pointer' }}
@@ -140,7 +152,7 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
           ) : (
             <ExpandMoreIcon color="primary" />
           )}
-        </ExpandButton>
+        </ExpandButton> */}
       </StatusContainer>
 
       {inputHandles}

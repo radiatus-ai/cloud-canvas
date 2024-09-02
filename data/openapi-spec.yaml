@@ -61,10 +61,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
-  /projects/{project_id}/connections/{connection_id}:
+  /projects/{project_id}/{source_package_id}/{target_package_id}:
     delete:
       summary: Delete Connection
-      operationId: delete_connection_projects__project_id__connections__connection_id__delete
+      operationId: delete_connection_projects__project_id___source_package_id___target_package_id__delete
       parameters:
         - name: project_id
           in: path
@@ -73,13 +73,20 @@ paths:
             type: string
             format: uuid4
             title: Project Id
-        - name: connection_id
+        - name: source_package_id
           in: path
           required: true
           schema:
             type: string
             format: uuid4
-            title: Connection Id
+            title: Source Package Id
+        - name: target_package_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Target Package Id
       responses:
         "200":
           description: Successful Response
@@ -286,26 +293,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
-  /packages/{package_id}:
-    put:
-      summary: Create Or Update Package
-      operationId: create_or_update_package_packages__package_id__put
-      parameters:
-        - name: package_id
-          in: path
-          required: true
-          schema:
-            type: string
-            format: uuid
-            description: The ID of the package
-            title: Package Id
-          description: The ID of the package
+  /packages/create-or-update:
+    post:
+      summary: Create Or Update Global Package
+      operationId: create_or_update_global_package_packages_create_or_update_post
       requestBody:
-        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PackageUpdate"
+              $ref: "#/components/schemas/PackageCreate"
+        required: true
       responses:
         "200":
           description: Successful Response
@@ -962,40 +959,6 @@ components:
         - outputs
         - parameters
       title: PackageCreate
-    PackageUpdate:
-      properties:
-        name:
-          anyOf:
-            - type: string
-            - type: "null"
-          title: Name
-        type:
-          anyOf:
-            - type: string
-            - type: "null"
-          title: Type
-        inputs:
-          anyOf:
-            - type: object
-            - type: "null"
-          title: Inputs
-        outputs:
-          anyOf:
-            - type: object
-            - type: "null"
-          title: Outputs
-        parameters:
-          anyOf:
-            - type: object
-            - type: "null"
-          title: Parameters
-        private:
-          anyOf:
-            - type: boolean
-            - type: "null"
-          title: Private
-      type: object
-      title: PackageUpdate
     Project:
       properties:
         name:

@@ -1,8 +1,8 @@
 // these hooks are complicated, its still in flux
 /* eslint-disable no-unused-vars */
 
-import { useCallback, useEffect, useState } from 'react';
-import { addEdge, useEdgesState } from 'reactflow';
+import { useCallback } from 'react';
+import { addEdge } from 'reactflow';
 import { useAuth } from '../../../contexts/Auth';
 import useApi from '../../../hooks/useAPI';
 
@@ -101,13 +101,29 @@ const useEdgeOperations = (projectId, projectData, nodes, edges, setEdges) => {
     [projectId, nodes, token, projectsApi, setEdges, validateConnection]
   );
 
+  //  this might be the place
   const onEdgesDelete = useCallback(
     async (edgesToDelete) => {
       try {
+        console.log('edgesToDelete', edgesToDelete);
+        console.log('projectId', projectId);
+        // console.log('token', edge.id);
         await Promise.all(
-          edgesToDelete.map((edge) =>
-            projectsApi.deleteConnection(projectId, edge.id, token)
-          )
+          edgesToDelete.map((edge) => {
+            console.log('Deleting edge:', edge);
+            const idParts = edge.id.split('-');
+            const sourcePackageId = idParts.slice(0, 5).join('-');
+            const targetPackageId = idParts.slice(-5).join('-');
+            console.log('First ID:', sourcePackageId);
+            console.log('Second ID:', targetPackageId);
+
+            return projectsApi.deleteConnection(
+              projectId,
+              sourcePackageId,
+              targetPackageId,
+              token
+            );
+          })
         );
         setEdges((edges) =>
           edges.filter((edge) => !edgesToDelete.some((e) => e.id === edge.id))

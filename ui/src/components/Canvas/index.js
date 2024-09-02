@@ -31,23 +31,9 @@ const FlowDiagram = () => {
     setModalState,
     formData,
     handleSubmitForm,
+    handleDeleteEdge,
     missingConnections,
   } = useFlowDiagram();
-
-  // Update nodes to include onOpenModal and onDeploy functions
-  // const nodesWithFunctions = useMemo(() => {
-  //   return nodes.map((node) => ({
-  //     ...node,
-  //     data: {
-  //       ...node.data,
-  //       updateNodeData: (newData) => updateNodeData(node.id, newData),
-  //       onOpenModal: () => onOpenModal(node.id),
-  //       onDeploy: () => onDeploy(node.id),
-  //       onDelete: () => onDeleteNode(node.id),
-  //       deploy_status: node.data.deploy_status || 'UNDEPLOYED',
-  //     },
-  //   }));
-  // }, [nodes, onOpenModal, onDeploy, onDeleteNode]);
 
   if (isLoading) {
     return <LoadingScreen />;
@@ -68,7 +54,7 @@ const FlowDiagram = () => {
             nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
+            onEdgesChange={handleDeleteEdge}
             onConnect={onConnect}
             onConnectStart={onConnectStart}
             onConnectEnd={onConnectEnd}

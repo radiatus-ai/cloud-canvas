@@ -7,18 +7,8 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
-
-const StyledDialog = styled(Dialog)(({ theme }) => ({
-  background: theme.palette.paper,
-  '& .MuiDialogContent-root': {
-    padding: theme.spacing(3),
-  },
-  '& .MuiDialogActions-root': {
-    padding: theme.spacing(2, 3),
-  },
-}));
+import PaperComponent from './PaperComponent';
 
 const CreatePackageModal = ({ open, onClose, onSubmit }) => {
   const [packageName, setPackageName] = useState('');
@@ -47,7 +37,13 @@ const CreatePackageModal = ({ open, onClose, onSubmit }) => {
   };
 
   return (
-    <StyledDialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="sm"
+      PaperComponent={PaperComponent}
+    >
       <DialogTitle>
         <Typography variant="h6" component="div">
           Create New Package
@@ -88,7 +84,7 @@ const CreatePackageModal = ({ open, onClose, onSubmit }) => {
           Create Package
         </Button>
       </DialogActions>
-    </StyledDialog>
+    </Dialog>
   );
 };
 

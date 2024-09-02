@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from sqlalchemy import or_
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -40,6 +41,38 @@ class CRUDConnection(CRUDBase[Connection, ConnectionCreate, ConnectionUpdate]):
 
     async def delete_connection(self, db: AsyncSession, *, id: UUID) -> Connection:
         connection = await self.get(db, id=id)
+        if connection:
+            await db.delete(connection)
+            await db.commit()
+        return connection
+
+    async def delete_connections_for_package(
+        self, db: AsyncSession, *, package_id: UUID
+    ) -> List[Connection]:
+        query = select(Connection).where(
+            or_(
+                Connection.source_package_id == package_id,
+                Connection.target_package_id == package_id,
+            )
+        )
+        result = await db.execute(query)
+        connections = result.scalars().all()
+        for connection in connections:
+            await db.delete(connection)
+        await db.commit()
+        return connections
+
+    async def delete_connection_by_source_and_target(
+        self, db: AsyncSession, *, source_package_id: UUID, target_package_id: UUID
+    ) -> Connection:
+        query = select(Connection).where(
+            or_(
+                Connection.source_package_id == source_package_id,
+                Connection.target_package_id == target_package_id,
+            )
+        )
+        result = await db.execute(query)
+        connection = result.scalars().first()
         if connection:
             await db.delete(connection)
             await db.commit()

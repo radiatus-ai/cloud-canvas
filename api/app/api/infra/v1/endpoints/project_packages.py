@@ -1,7 +1,6 @@
 import json
 from typing import List
 
-from core.pubsub import PubSubMessenger
 from fastapi import (
     APIRouter,
     Body,
@@ -14,7 +13,6 @@ from pydantic import UUID4
 
 from app.core.dependencies import (
     get_db_and_current_user,
-    get_pubsub_messenger,
     get_websocket_manager,
 )
 from app.core.logger import get_logger
@@ -82,7 +80,6 @@ async def update_project_package(
     package_id: UUID4 = Path(..., description="The ID of the package"),
     package: ProjectPackageUpdate = Body(...),
     deps: dict = Depends(get_db_and_current_user),
-    pubsub: PubSubMessenger = Depends(get_pubsub_messenger),
     websocket_manager: ConnectionManager = Depends(get_websocket_manager),
 ):
     db = deps["db"]
@@ -100,8 +97,15 @@ async def update_project_package(
 
     # Convert SQLAlchemy model to Pydantic model
     package_pydantic = ProjectPackage.from_orm(updated_package)
-    pubsub.publish_message(
-        json.dumps({"type": "package_update", "data": updated_package.dict()})
+    # await websocket_manager.publish_message(
+    #     json.dumps({"type": "package_update", "data": package_pydantic.dict()})
+    # )
+    await websocket_manager.broadcast_package_update(
+        package_id,
+        {
+            "id": str(package_id),
+            "deploy_status": package.deploy_status.value,
+        },
     )
 
     # Broadcast the update to all connected WebSocket clients

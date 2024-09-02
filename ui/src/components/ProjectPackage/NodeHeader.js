@@ -6,7 +6,9 @@ import StopIcon from '@mui/icons-material/Stop';
 import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { blue, grey, red, yellow } from '@mui/material/colors';
 import { styled } from '@mui/system';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useAuth } from '../../contexts/Auth';
+import useApi from '../../hooks/useAPI';
 import ConfirmationDialog from './ConfirmationDialog';
 import DeploymentLogsModal from './DeploymentLogsModal';
 import { validateConnections } from './utils/validate';
@@ -75,14 +77,18 @@ const NodeHeader = ({
   projectId,
   onOpenModal,
   onDeleteNode,
-  edges,
+  edges = [],
   handleDeploy,
   handleDestroy,
+  onDeleteConnection,
 }) => {
+  const { token } = useAuth();
+  const { projects: projectsApi } = useApi();
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [commandOutputs, setCommandOutputs] = useState(data.output_data || '');
   const [validationResult, setValidationResult] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleOpenStatusModal = () => {
     setIsStatusModalOpen(true);
@@ -157,6 +163,47 @@ const NodeHeader = ({
     }
   };
 
+  // todo: dedupe this with use edge operations
+  const handleDeleteConnection = useCallback(
+    async (connectionId) => {
+      try {
+        const idParts = connectionId.split('-');
+        const sourcePackageId = idParts.slice(0, 5).join('-');
+        const targetPackageId = idParts.slice(-5).join('-');
+        console.log('First ID:', sourcePackageId);
+        console.log('Second ID:', targetPackageId);
+        await projectsApi.deleteConnection(
+          projectId,
+          sourcePackageId,
+          targetPackageId,
+          token
+        );
+        onDeleteConnection(connectionId); // Callback to update parent component state
+      } catch (error) {
+        console.error('Failed to delete connection:', error);
+        setError('Failed to delete connection. Please try again.');
+      }
+    },
+    [projectId, token, projectsApi, onDeleteConnection]
+  );
+
+  const renderConnectionDeleteButtons = () => {
+    return edges.map((edge) => (
+      <Tooltip
+        key={edge.id}
+        title={`Delete connection: ${edge.sourceHandle} to ${edge.targetHandle}`}
+      >
+        <IconButton
+          size="small"
+          onClick={() => handleDeleteConnection(edge.id)}
+          sx={{ ml: 0.5, p: 0.5, color: red[500] }}
+        >
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+    ));
+  };
+
   return (
     <NodeContainer>
       <Box
@@ -205,6 +252,7 @@ const NodeHeader = ({
               </StyledIconButton>
             </span>
           </Tooltip>
+          {renderConnectionDeleteButtons()}
         </Box>
       </Box>
 
@@ -231,6 +279,11 @@ const NodeHeader = ({
         onConfirm={handleConfirmDeploy}
         onCancel={() => setIsConfirmDialogOpen(false)}
       />
+      {error && (
+        <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+          {error}
+        </Typography>
+      )}
     </NodeContainer>
   );
 };

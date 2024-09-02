@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Handle, Position } from 'reactflow';
 import { Box, useTheme } from '@mui/material';
 import { styled } from '@mui/system';
+import React, { useState } from 'react';
+import { Handle, Position } from 'reactflow';
 
 const HandleWrapper = styled('div')(({ position, index, total }) => ({
   position: 'absolute',
@@ -18,7 +18,15 @@ const HandleTooltip = styled(Box)({
   whiteSpace: 'nowrap',
 });
 
-const HandleComponent = ({ type, position, id, schema, index, total }) => {
+const HandleComponent = ({
+  type,
+  position,
+  id,
+  schema,
+  index,
+  total,
+  packageType,
+}) => {
   const [isHovered, setIsHovered] = useState(false);
   const theme = useTheme();
 
@@ -36,7 +44,7 @@ const HandleComponent = ({ type, position, id, schema, index, total }) => {
         id={id}
         style={{ background: '#555', width: 6, height: 6 }}
       />
-      {isHovered && schema && schema.type && (
+      {isHovered && (
         <HandleTooltip
           right={position === Position.Left ? 'auto' : 0}
           left={position === Position.Left ? 0 : 'auto'}
@@ -45,7 +53,7 @@ const HandleComponent = ({ type, position, id, schema, index, total }) => {
             color: theme.palette.common.white || '#fff',
           }}
         >
-          {schema.type}
+          {packageType || schema.type}
         </HandleTooltip>
       )}
     </HandleWrapper>

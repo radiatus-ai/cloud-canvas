@@ -20,7 +20,6 @@ import CredentialUpdate from '../model/CredentialUpdate';
 import HTTPValidationError from '../model/HTTPValidationError';
 import Package from '../model/Package';
 import PackageCreate from '../model/PackageCreate';
-import PackageUpdate from '../model/PackageUpdate';
 import Project from '../model/Project';
 import ProjectCreate from '../model/ProjectCreate';
 import ProjectUpdate from '../model/ProjectUpdate';
@@ -203,42 +202,32 @@ export default class DefaultApi {
   }
 
   /**
-   * Callback function to receive the result of the createOrUpdatePackagePackagesPackageIdPut operation.
-   * @callback module:api/DefaultApi~createOrUpdatePackagePackagesPackageIdPutCallback
+   * Callback function to receive the result of the createOrUpdateGlobalPackagePackagesCreateOrUpdatePost operation.
+   * @callback module:api/DefaultApi~createOrUpdateGlobalPackagePackagesCreateOrUpdatePostCallback
    * @param {String} error Error message, if any.
    * @param {module:model/Package} data The data returned by the service call.
    * @param {String} response The complete HTTP response.
    */
 
   /**
-   * Create Or Update Package
-   * @param {String} packageId The ID of the package
-   * @param {module:model/PackageUpdate} packageUpdate
-   * @param {module:api/DefaultApi~createOrUpdatePackagePackagesPackageIdPutCallback} callback The callback function, accepting three arguments: error, data, response
+   * Create Or Update Global Package
+   * @param {module:model/PackageCreate} packageCreate
+   * @param {module:api/DefaultApi~createOrUpdateGlobalPackagePackagesCreateOrUpdatePostCallback} callback The callback function, accepting three arguments: error, data, response
    * data is of type: {@link module:model/Package}
    */
-  createOrUpdatePackagePackagesPackageIdPut(
-    packageId,
-    packageUpdate,
+  createOrUpdateGlobalPackagePackagesCreateOrUpdatePost(
+    packageCreate,
     callback
   ) {
-    let postBody = packageUpdate;
-    // verify the required parameter 'packageId' is set
-    if (packageId === undefined || packageId === null) {
+    let postBody = packageCreate;
+    // verify the required parameter 'packageCreate' is set
+    if (packageCreate === undefined || packageCreate === null) {
       throw new Error(
-        "Missing the required parameter 'packageId' when calling createOrUpdatePackagePackagesPackageIdPut"
-      );
-    }
-    // verify the required parameter 'packageUpdate' is set
-    if (packageUpdate === undefined || packageUpdate === null) {
-      throw new Error(
-        "Missing the required parameter 'packageUpdate' when calling createOrUpdatePackagePackagesPackageIdPut"
+        "Missing the required parameter 'packageCreate' when calling createOrUpdateGlobalPackagePackagesCreateOrUpdatePost"
       );
     }
 
-    let pathParams = {
-      package_id: packageId,
-    };
+    let pathParams = {};
     let queryParams = {};
     let headerParams = {};
     let formParams = {};
@@ -248,8 +237,8 @@ export default class DefaultApi {
     let accepts = ['application/json'];
     let returnType = Package;
     return this.apiClient.callApi(
-      '/packages/{package_id}',
-      'PUT',
+      '/packages/create-or-update',
+      'POST',
       pathParams,
       queryParams,
       headerParams,
@@ -314,8 +303,8 @@ export default class DefaultApi {
   }
 
   /**
-   * Callback function to receive the result of the deleteConnectionProjectsProjectIdConnectionsConnectionIdDelete operation.
-   * @callback module:api/DefaultApi~deleteConnectionProjectsProjectIdConnectionsConnectionIdDeleteCallback
+   * Callback function to receive the result of the deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete operation.
+   * @callback module:api/DefaultApi~deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDeleteCallback
    * @param {String} error Error message, if any.
    * @param {module:model/Connection} data The data returned by the service call.
    * @param {String} response The complete HTTP response.
@@ -324,32 +313,41 @@ export default class DefaultApi {
   /**
    * Delete Connection
    * @param {String} projectId
-   * @param {String} connectionId
-   * @param {module:api/DefaultApi~deleteConnectionProjectsProjectIdConnectionsConnectionIdDeleteCallback} callback The callback function, accepting three arguments: error, data, response
+   * @param {String} sourcePackageId
+   * @param {String} targetPackageId
+   * @param {module:api/DefaultApi~deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDeleteCallback} callback The callback function, accepting three arguments: error, data, response
    * data is of type: {@link module:model/Connection}
    */
-  deleteConnectionProjectsProjectIdConnectionsConnectionIdDelete(
+  deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete(
     projectId,
-    connectionId,
+    sourcePackageId,
+    targetPackageId,
     callback
   ) {
     let postBody = null;
     // verify the required parameter 'projectId' is set
     if (projectId === undefined || projectId === null) {
       throw new Error(
-        "Missing the required parameter 'projectId' when calling deleteConnectionProjectsProjectIdConnectionsConnectionIdDelete"
+        "Missing the required parameter 'projectId' when calling deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete"
       );
     }
-    // verify the required parameter 'connectionId' is set
-    if (connectionId === undefined || connectionId === null) {
+    // verify the required parameter 'sourcePackageId' is set
+    if (sourcePackageId === undefined || sourcePackageId === null) {
       throw new Error(
-        "Missing the required parameter 'connectionId' when calling deleteConnectionProjectsProjectIdConnectionsConnectionIdDelete"
+        "Missing the required parameter 'sourcePackageId' when calling deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete"
+      );
+    }
+    // verify the required parameter 'targetPackageId' is set
+    if (targetPackageId === undefined || targetPackageId === null) {
+      throw new Error(
+        "Missing the required parameter 'targetPackageId' when calling deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete"
       );
     }
 
     let pathParams = {
       project_id: projectId,
-      connection_id: connectionId,
+      source_package_id: sourcePackageId,
+      target_package_id: targetPackageId,
     };
     let queryParams = {};
     let headerParams = {};
@@ -360,7 +358,7 @@ export default class DefaultApi {
     let accepts = ['application/json'];
     let returnType = Connection;
     return this.apiClient.callApi(
-      '/projects/{project_id}/connections/{connection_id}',
+      '/projects/{project_id}/{source_package_id}/{target_package_id}',
       'DELETE',
       pathParams,
       queryParams,

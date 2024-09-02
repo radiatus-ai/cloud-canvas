@@ -185,6 +185,14 @@ export const useFlowDiagram = () => {
     [onDeleteNode, onEdgesDelete, edges]
   );
 
+  const handleDeleteEdge = useCallback(
+    async (edgeId) => {
+      console.log('handleDeleteEdge', edgeId);
+      await onEdgesDelete(edgeId);
+    },
+    [onEdgesDelete]
+  );
+
   const handleDeploy = useCallback(
     async (nodeId) => {
       const missingInputs = checkRequiredConnections(nodeId);
@@ -211,6 +219,8 @@ export const useFlowDiagram = () => {
         onOpenModal: () => handleOpenModal(node.id),
         onDeploy: () => handleDeploy(node.id),
         onDelete: () => handleDeleteNode(node.id),
+        // probably doesn't need to be passed to every node, but it's a small price to pay for now
+        // onDeleteEdge: (edgeId) => handleDeleteEdge(edgeId),
         deploy_status: node.data?.deploy_status || 'NOT_DEPLOYED',
       },
     }));
@@ -235,6 +245,7 @@ export const useFlowDiagram = () => {
     modalState,
     setModalState,
     handleOpenModal,
+    handleDeleteEdge,
     onSubmitForm,
     handleSubmitForm,
     handleDeleteNode,

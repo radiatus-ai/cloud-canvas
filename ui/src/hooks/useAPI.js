@@ -3,8 +3,8 @@ import { useCallback, useMemo, useState } from 'react';
 import {
   createApi,
   DefaultApi,
-  ProjectApi,
   handleApiError,
+  ProjectApi,
 } from '../clients/canvas-client';
 import { useAuth } from '../contexts/Auth';
 
@@ -33,9 +33,10 @@ const useApi = () => {
         const response = await apiMethod.apply(api, params);
         return response;
       } catch (err) {
-        if (parentSpan) {
-          parentSpan.recordException(err);
-        }
+        // todo: bring back
+        // if (parentSpan) {
+        //   parentSpan.recordException(err);
+        // }
         setError(err.message);
         handleApiError(err);
         if (err.response && err.response.status === 401) {
@@ -163,11 +164,17 @@ const useApi = () => {
           token,
           parentSpan
         ),
-      deleteConnection: (projectId, connectionId, token, parentSpan) =>
+      deleteConnection: (
+        projectId,
+        sourcePackageId,
+        targetPackageId,
+        token,
+        parentSpan
+      ) =>
         apiCall(
           DefaultApi,
-          'deleteConnectionProjectsProjectIdConnectionsConnectionIdDelete',
-          [projectId, connectionId],
+          'deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete',
+          [projectId, sourcePackageId, targetPackageId],
           token,
           parentSpan
         ),

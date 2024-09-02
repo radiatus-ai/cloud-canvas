@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../../../contexts/Auth';
 import useApi from '../../../hooks/useAPI';
@@ -45,65 +45,6 @@ const useProjectData = () => {
       setIsLoading(false);
     }
   }, [projectId, token, projectsApi]);
-
-  // const setupWebSocket = useCallback(() => {
-  //   if (wsRef.current) {
-  //     wsRef.current.close();
-  //   }
-
-  //   const ws = new WebSocket(`ws://${getApiUrl()}/projects/${projectId}/packages/53af8da2-dfcb-45e4-98ab-d8cf244c0850/ws`);
-
-  //   ws.onopen = () => {
-  //     console.log('WebSocket connected');
-  //     // Request initial update
-  //     ws.send(JSON.stringify({ type: 'request_update' }));
-  //   };
-
-  //   ws.onmessage = (event) => {
-  //     try {
-  //       console.log('WebSocket message:', event);
-  //       const message = JSON.parse(event.data);
-  //       // this only has id in it
-  //       if (message.type === 'package_update') {
-  //         setProjectData((prevData) => ({
-  //           ...prevData,
-  //           packages: prevData?.packages?.map((pkg) =>
-  //             pkg.id === message.data.id ? { ...pkg, ...message.data } : pkg
-  //           ),
-  //         }));
-  //       } else if (message.type === 'error') {
-  //         console.error('WebSocket error:', message.message);
-  //         setError(message.message);
-  //       }
-  //     } catch (err) {
-  //       console.error('Error parsing WebSocket message:', err);
-  //       setError('Error parsing WebSocket message');
-  //     }
-  //   };
-
-  //   ws.onclose = (event) => {
-  //     if (event.wasClean) {
-  //       console.log(`WebSocket closed cleanly, code=${event.code}, reason=${event.reason}`);
-  //     } else {
-  //       console.error('WebSocket connection died');
-  //       // Attempt to reconnect after a delay
-  //       setTimeout(setupWebSocket, 5000);
-  //     }
-  //   };
-
-  //   ws.onerror = (error) => {
-  //     console.error('WebSocket error:', error);
-  //     setError('WebSocket error occurred');
-  //   };
-
-  //   wsRef.current = ws;
-
-  //   return () => {
-  //     if (wsRef.current) {
-  //       wsRef.current.close();
-  //     }
-  //   };
-  // }, [projectId]);
 
   useEffect(() => {
     fetchRef.current = fetchData;
