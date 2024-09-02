@@ -219,18 +219,22 @@ async def delete_project_package(
     #         }
     #     )
     # )
-    package = await crud_project_package.get_package(db, id=package_id)
+
+    package = await crud_project_package.get_package(
+        db, id=package_id, project_id=project_id
+    )
     if not package or package.project_id != project_id:
         raise HTTPException(
             status_code=404, detail="ProjectPackage not found in this project"
         )
-    package = await crud_project_package.delete_package(db, id=package_id)
-    # pubsub.publish_message(
-    #     json.dumps(
-    #         {
-    #             "type": "package_update",
-    #             "data": {"id": str(package_id), "deploy_status": "DELETED"},
-    #         }
-    #     )
-    # )
+    package = await crud_project_package.delete_package(
+        db, id=package_id, project_id=project_id
+    )
+    await websocket_manager.broadcast_package_update(
+        package_id,
+        {
+            "id": str(package_id),
+            "deploy_status": "DELETED",
+        },
+    )
     return package

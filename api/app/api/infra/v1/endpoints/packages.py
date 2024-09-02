@@ -1,28 +1,19 @@
 # Ada helps manage this file
-import json
 from typing import List
 
-from core.pubsub import PubSubMessenger
 from fastapi import (
     APIRouter,
-    Body,
     Depends,
-    Path,
 )
-from pydantic import UUID4
 
 from app.core.dependencies import (
     get_db_and_current_user,
-    get_pubsub_messenger,
-    get_websocket_manager,
 )
 from app.core.logger import get_logger
-from app.core.websocket_manager import ConnectionManager
 from app.crud.package import package as crud_package
 from app.schemas.package import (
     Package,
     PackageCreate,
-    PackageUpdate,
 )
 
 logger = get_logger(__name__)
@@ -49,30 +40,13 @@ async def create_global_package(
     return await crud_package.create_package(db, obj_in=package)
 
 
-@router.put("/packages/{package_id}", response_model=Package)
-async def create_or_update_package(
-    package_id: UUID4 = Path(..., description="The ID of the package"),
-    package: PackageUpdate = Body(...),
+@router.post("/packages/create-or-update", response_model=Package)
+async def create_or_update_global_package(
+    package: PackageCreate,
     deps: dict = Depends(get_db_and_current_user),
-    pubsub: PubSubMessenger = Depends(get_pubsub_messenger),
-    websocket_manager: ConnectionManager = Depends(get_websocket_manager),
 ):
     db = deps["db"]
-
-    updated_package = await crud_package.create_or_replace_package(
-        db, obj_in=package, package_id=package_id
-    )
-
-    # Convert SQLAlchemy model to Pydantic model
-    package_pydantic = Package.from_orm(updated_package)
-
-    # Broadcast the update to all connected WebSocket clients
-    await websocket_manager.broadcast(f"Package updated: {package_pydantic.name}")
-
-    # Publish message to PubSub
-    pubsub.publish_message(
-        json.dumps({"type": "package_update", "data": package_pydantic.dict()})
-    )
+    updated_package = await crud_package.create_or_replace_package(db, obj_in=package)
 
     return updated_package
 

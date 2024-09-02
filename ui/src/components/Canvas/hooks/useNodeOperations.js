@@ -2,7 +2,6 @@
 /* eslint-disable no-unused-vars */
 
 import { useCallback, useEffect, useState } from 'react';
-import { useNodesState } from 'reactflow';
 import { useAuth } from '../../../contexts/Auth';
 import useApi from '../../../hooks/useAPI';
 import transformPackagesToNodes from './transform';

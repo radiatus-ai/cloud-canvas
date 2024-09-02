@@ -11,6 +11,7 @@ import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 
 const StyledDialog = styled(Dialog)(({ theme }) => ({
+  background: theme.palette.paper,
   '& .MuiDialogContent-root': {
     padding: theme.spacing(3),
   },

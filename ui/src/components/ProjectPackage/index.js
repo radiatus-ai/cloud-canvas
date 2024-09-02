@@ -39,7 +39,7 @@ const ExpandButton = styled(IconButton)(({ theme }) => ({
   marginLeft: 'auto',
 }));
 
-const CustomNode = memo(({ data, isConnectable }) => {
+const ProjectPackage = memo(({ data, isConnectable }) => {
   const { projectId } = useParams();
   const [error, setError] = useState(null);
   const [nodeData, updateNodeData] = useNodeData(data);
@@ -153,4 +153,4 @@ const CustomNode = memo(({ data, isConnectable }) => {
   );
 });
 
-export default CustomNode;
+export default ProjectPackage;

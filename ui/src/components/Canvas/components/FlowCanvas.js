@@ -1,13 +1,13 @@
+import { Box } from '@mui/material';
 import React from 'react';
 import ReactFlow, { Background, Controls } from 'reactflow';
-import CustomNode from '../../CustomNode';
+import ProjectPackage from '../../ProjectPackage';
 import CustomConnectionLine from './CustomConnectionLine';
 import CustomEdge from './CustomEdge';
-import { Box } from '@mui/material';
 
 const nodeTypes = {
   // custom: (props) => <CustomNode {...props} isConnectable={isConnectable} />,
-  custom: (props) => <CustomNode {...props} isConnectable={false} />,
+  custom: (props) => <ProjectPackage {...props} isConnectable={false} />,
 };
 
 // const nodeTypes = {
