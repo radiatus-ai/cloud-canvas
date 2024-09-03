@@ -19,6 +19,7 @@ const useProjectsFetch = () => {
     try {
       const response = await projectsApiRef.current.list(token);
       setProjects(response.body);
+      console.log('Projects:', response.body);
       setError(null);
     } catch (err) {
       setError('Failed to load projects. Please try again later.');
@@ -28,11 +29,33 @@ const useProjectsFetch = () => {
     }
   }, [token]);
 
+  const fetchProject = useCallback(
+    async (projectId) => {
+      try {
+        const response = await projectsApiRef.current.get(projectId, token);
+        return response.body;
+      } catch (err) {
+        setError('Failed to load project details. Please try again later.');
+        console.error('Error fetching project details:', err);
+        return null;
+      }
+    },
+    [token]
+  );
+
   useEffect(() => {
     fetchProjects();
   }, [fetchProjects]);
 
-  return { projects, setProjects, isLoading, error, setError, fetchProjects };
+  return {
+    projects,
+    setProjects,
+    isLoading,
+    error,
+    setError,
+    fetchProjects,
+    fetchProject,
+  };
 };
 
 export default useProjectsFetch;

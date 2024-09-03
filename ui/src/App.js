@@ -97,11 +97,23 @@ const App = () => {
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
-          // backgroundColor: theme.palette.primary.main,
         }}
       >
         <Navigation onLogout={logout} />
-        <Box component="main" sx={{ flexGrow: 1, p: 0, overflow: 'hidden' }}>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 0,
+            overflow: 'hidden',
+            ...(theme.palette.mode === 'light' && {
+              backgroundImage: 'url("/noise-220.png")',
+              backgroundSize: '220px 220px',
+              backgroundRepeat: 'repeat',
+              backgroundPosition: '0 0',
+            }),
+          }}
+        >
           <Routes>
             <Route path="/" element={<Projects />} />
             <Route path="/secrets" element={<Secrets />} />

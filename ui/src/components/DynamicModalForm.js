@@ -1,30 +1,19 @@
-import CloseIcon from '@mui/icons-material/Close';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { Button } from '@mui/material';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import JsonSchemaForm, { GCPRegionsComponent } from './JsonSchemaForm';
-import PaperComponent from './PaperComponent';
+import RadDialog from './RadDialog';
 
 const DynamicModalForm = ({
   isOpen,
   onClose,
   schema,
+  uiSchema,
   onSubmit,
   initialData = {},
   title,
 }) => {
   const [formData, setFormData] = useState(initialData);
   const formRef = useRef();
-  const theme = useTheme();
   const memoizedInitialData = useMemo(() => initialData, [initialData]);
 
   useEffect(() => {
@@ -39,12 +28,14 @@ const DynamicModalForm = ({
       if (isValid) {
         const data = formRef.current.getData();
         onSubmit(data);
-        onClose();
       } else {
         console.log('Form validation failed:', errors);
-        // Optionally, you can display these errors to the user
       }
     }
+  };
+
+  const handleChange = (newData) => {
+    setFormData(newData);
   };
 
   const customComponents = useMemo(
@@ -53,48 +44,34 @@ const DynamicModalForm = ({
     }),
     []
   );
-  console.log('formData', formData);
-  console.log('title', title);
+
+  const actions = (
+    <>
+      <Button onClick={onClose} color="primary">
+        Cancel
+      </Button>
+      <Button onClick={handleSubmit} color="primary" variant="contained">
+        Submit
+      </Button>
+    </>
+  );
 
   return (
-    <Dialog
-      open={isOpen}
+    <RadDialog
+      isOpen={isOpen}
       onClose={onClose}
-      maxWidth="sm"
-      fullWidth
-      PaperComponent={PaperComponent}
+      title={title}
+      actions={actions}
     >
-      <DialogTitle>
-        <Box display="flex" alignItems="center" justifyContent="space-between">
-          <Typography variant="h6">{title}</Typography>
-          <IconButton
-            edge="end"
-            color="inherit"
-            onClick={onClose}
-            aria-label="close"
-          >
-            <CloseIcon />
-          </IconButton>
-        </Box>
-      </DialogTitle>
-      <DialogContent>
-        <JsonSchemaForm
-          ref={formRef}
-          schema={schema}
-          initialData={formData}
-          onSubmit={handleSubmit}
-          customComponents={customComponents}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="primary">
-          Cancel
-        </Button>
-        <Button onClick={handleSubmit} color="primary" variant="contained">
-          Submit
-        </Button>
-      </DialogActions>
-    </Dialog>
+      <JsonSchemaForm
+        ref={formRef}
+        schema={schema}
+        uiSchema={uiSchema}
+        initialData={formData}
+        onChange={handleChange}
+        customComponents={customComponents}
+      />
+    </RadDialog>
   );
 };
 

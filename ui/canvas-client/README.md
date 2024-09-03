@@ -101,9 +101,8 @@ Please follow the [installation](#installation) instruction and execute the foll
 ```javascript
 var CanvasApi = require('canvas_api');
 
-var api = new CanvasApi.DefaultApi();
-var projectId = 'projectId_example'; // {String}
-var connectionCreate = new CanvasApi.ConnectionCreate(); // {ConnectionCreate}
+var api = new CanvasApi.AuthApi();
+var body = { key: null }; // {Object}
 var callback = function (error, data, response) {
   if (error) {
     console.error(error);
@@ -111,11 +110,7 @@ var callback = function (error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.createConnectionProjectsProjectIdConnectionsPost(
-  projectId,
-  connectionCreate,
-  callback
-);
+api.loginGoogleAuthLoginPost(body, callback);
 ```
 
 ## Documentation for API Endpoints
@@ -124,6 +119,7 @@ All URIs are relative to _http://localhost_
 
 | Class                      | Method                                                                                                                                                                      | HTTP request                                                              | Description                     |
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------- |
+| _CanvasApi.AuthApi_        | [**loginGoogleAuthLoginPost**](docs/AuthApi.md#loginGoogleAuthLoginPost)                                                                                                    | **POST** /auth/login                                                      | Login Google                    |
 | _CanvasApi.DefaultApi_     | [**createConnectionProjectsProjectIdConnectionsPost**](docs/DefaultApi.md#createConnectionProjectsProjectIdConnectionsPost)                                                 | **POST** /projects/{project_id}/connections/                              | Create Connection               |
 | _CanvasApi.DefaultApi_     | [**createCredentialCredentialsPost**](docs/DefaultApi.md#createCredentialCredentialsPost)                                                                                   | **POST** /credentials/                                                    | Create Credential               |
 | _CanvasApi.DefaultApi_     | [**createGlobalPackagePackagesPost**](docs/DefaultApi.md#createGlobalPackagePackagesPost)                                                                                   | **POST** /packages                                                        | Create Global Package           |
@@ -133,6 +129,7 @@ All URIs are relative to _http://localhost_
 | _CanvasApi.DefaultApi_     | [**deleteCredentialCredentialsCredentialIdDelete**](docs/DefaultApi.md#deleteCredentialCredentialsCredentialIdDelete)                                                       | **DELETE** /credentials/{credential_id}                                   | Delete Credential               |
 | _CanvasApi.DefaultApi_     | [**deleteProjectProjectsProjectIdDelete**](docs/DefaultApi.md#deleteProjectProjectsProjectIdDelete)                                                                         | **DELETE** /projects/{project_id}                                         | Delete Project                  |
 | _CanvasApi.DefaultApi_     | [**getCredentialCredentialsCredentialIdGet**](docs/DefaultApi.md#getCredentialCredentialsCredentialIdGet)                                                                   | **GET** /credentials/{credential_id}                                      | Get Credential                  |
+| _CanvasApi.DefaultApi_     | [**getProjectProjectsProjectIdGet**](docs/DefaultApi.md#getProjectProjectsProjectIdGet)                                                                                     | **GET** /projects/{project_id}                                            | Get Project                     |
 | _CanvasApi.DefaultApi_     | [**listAllPackagesPackagesGet**](docs/DefaultApi.md#listAllPackagesPackagesGet)                                                                                             | **GET** /packages                                                         | List All Packages               |
 | _CanvasApi.DefaultApi_     | [**listConnectionsProjectsProjectIdConnectionsGet**](docs/DefaultApi.md#listConnectionsProjectsProjectIdConnectionsGet)                                                     | **GET** /projects/{project_id}/connections/                               | List Connections                |
 | _CanvasApi.DefaultApi_     | [**listCredentialsCredentialsGet**](docs/DefaultApi.md#listCredentialsCredentialsGet)                                                                                       | **GET** /credentials/                                                     | List Credentials                |
@@ -140,6 +137,7 @@ All URIs are relative to _http://localhost_
 | _CanvasApi.DefaultApi_     | [**rootGet**](docs/DefaultApi.md#rootGet)                                                                                                                                   | **GET** /                                                                 | Root                            |
 | _CanvasApi.DefaultApi_     | [**updateCredentialCredentialsCredentialIdPatch**](docs/DefaultApi.md#updateCredentialCredentialsCredentialIdPatch)                                                         | **PATCH** /credentials/{credential_id}                                    | Update Credential               |
 | _CanvasApi.DefaultApi_     | [**updateProjectProjectsProjectIdPatch**](docs/DefaultApi.md#updateProjectProjectsProjectIdPatch)                                                                           | **PATCH** /projects/{project_id}                                          | Update Project                  |
+| _CanvasApi.MeApi_          | [**readUsersMeMeGet**](docs/MeApi.md#readUsersMeMeGet)                                                                                                                      | **GET** /me                                                               | Read Users Me                   |
 | _CanvasApi.PackagesApi_    | [**createProjectPackageProjectsProjectIdPackagesPost**](docs/PackagesApi.md#createProjectPackageProjectsProjectIdPackagesPost)                                              | **POST** /projects/{project_id}/packages/                                 | Create Project Package          |
 | _CanvasApi.PackagesApi_    | [**deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete**](docs/PackagesApi.md#deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete)                        | **DELETE** /projects/{project_id}/packages/{package_id}                   | Delete Project Package          |
 | _CanvasApi.PackagesApi_    | [**deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost**](docs/PackagesApi.md#deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost)                | **POST** /projects/{project_id}/packages/{package_id}/deploy              | Deploy Project Package          |
@@ -177,6 +175,7 @@ All URIs are relative to _http://localhost_
 - [CanvasApi.ProjectPackageCreate](docs/ProjectPackageCreate.md)
 - [CanvasApi.ProjectPackageStatus](docs/ProjectPackageStatus.md)
 - [CanvasApi.ProjectUpdate](docs/ProjectUpdate.md)
+- [CanvasApi.User](docs/User.md)
 - [CanvasApi.ValidationError](docs/ValidationError.md)
 - [CanvasApi.ValidationErrorLocInner](docs/ValidationErrorLocInner.md)
 

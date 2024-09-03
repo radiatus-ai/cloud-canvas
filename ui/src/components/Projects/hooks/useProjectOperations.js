@@ -30,7 +30,10 @@ const useProjectOperations = (projects, setProjects, setError) => {
       try {
         const response = await projectsApi.update(
           projectId,
-          updatedData,
+          {
+            name: updatedData.name,
+            credential_ids: updatedData.credentials,
+          },
           token
         );
         setProjects((prev) =>

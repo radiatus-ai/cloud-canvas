@@ -1,16 +1,16 @@
-import React, { useState, useCallback } from 'react';
 import {
   Box,
-  TextField,
   Button,
-  Typography,
-  Paper,
-  Dialog,
-  DialogTitle,
-  DialogContent,
   DialogActions,
+  DialogContent,
+  DialogTitle,
+  Paper,
+  TextField,
+  Typography,
 } from '@mui/material';
-import { Stage, Layer, Rect, Text, Arrow } from 'react-konva';
+import React, { useCallback, useState } from 'react';
+import { Arrow, Layer, Rect, Stage, Text } from 'react-konva';
+import RadDialog from '../../RadDialog';
 
 const StoryNode = ({ node, position, onSelect, isSelected }) => (
   <React.Fragment>
@@ -198,7 +198,7 @@ const DynamicStoryGenerator = ({
       >
         Generate Random Story
       </Button>
-      <Dialog open={nodeDialogOpen} onClose={() => setNodeDialogOpen(false)}>
+      <RadDialog open={nodeDialogOpen} onClose={() => setNodeDialogOpen(false)}>
         <DialogTitle>Add New Story Node</DialogTitle>
         <DialogContent>
           <TextField
@@ -217,7 +217,7 @@ const DynamicStoryGenerator = ({
           <Button onClick={() => setNodeDialogOpen(false)}>Cancel</Button>
           <Button onClick={addNode}>Add</Button>
         </DialogActions>
-      </Dialog>
+      </RadDialog>
     </Box>
   );
 };

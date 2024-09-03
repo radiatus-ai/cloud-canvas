@@ -1,20 +1,22 @@
 import { useCallback, useState } from 'react';
 
-const useProjectModals = () => {
+const useProjectModals = (fetchProject) => {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [editProject, setEditProject] = useState(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
   const [createProjectModalOpen, setCreateProjectModalOpen] = useState(false);
 
-  const handleEditProject = useCallback((project) => {
-    if (project && project.name) {
-      setEditProject(project);
-      setEditDialogOpen(true);
-    } else {
-      console.error('Invalid project data:', project);
-    }
-  }, []);
+  const handleEditProject = useCallback(
+    async (project) => {
+      if (project && project.name) {
+        const fullProject = await fetchProject(project.id);
+        setEditProject(fullProject);
+        setEditDialogOpen(true);
+      }
+    },
+    [fetchProject]
+  );
 
   const handleCloseEditDialog = useCallback(() => {
     setEditDialogOpen(false);

@@ -1,6 +1,5 @@
 import {
   Button,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -11,7 +10,7 @@ import {
   TextField,
 } from '@mui/material';
 import React, { useState } from 'react';
-import PaperComponent from '../../PaperComponent';
+import RadDialog from '../../RadDialog';
 const CreateSecretModal = ({ isOpen, onClose, onSubmit, organizationId }) => {
   const [credentialName, setCredentialName] = useState('');
   const [credentialType, setCredentialType] = useState('SERVICE_ACCOUNT_KEY');
@@ -46,7 +45,7 @@ const CreateSecretModal = ({ isOpen, onClose, onSubmit, organizationId }) => {
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} PaperComponent={PaperComponent}>
+    <RadDialog open={isOpen} onClose={onClose}>
       <DialogTitle>Create Secret</DialogTitle>
       <DialogContent>
         <TextField
@@ -94,7 +93,7 @@ const CreateSecretModal = ({ isOpen, onClose, onSubmit, organizationId }) => {
           Create
         </Button>
       </DialogActions>
-    </Dialog>
+    </RadDialog>
   );
 };
 

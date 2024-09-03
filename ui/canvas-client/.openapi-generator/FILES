@@ -4,6 +4,7 @@
 README.md
 docs/AppSchemasProjectPackageProjectPackageUpdate.md
 docs/AppSchemasProvisionerProjectPackageProjectPackageUpdate.md
+docs/AuthApi.md
 docs/Connection.md
 docs/ConnectionCreate.md
 docs/Credential.md
@@ -12,6 +13,7 @@ docs/CredentialType.md
 docs/CredentialUpdate.md
 docs/DefaultApi.md
 docs/HTTPValidationError.md
+docs/MeApi.md
 docs/Package.md
 docs/PackageCreate.md
 docs/PackagesApi.md
@@ -23,13 +25,16 @@ docs/ProjectPackageCreate.md
 docs/ProjectPackageStatus.md
 docs/ProjectUpdate.md
 docs/ProvisionerApi.md
+docs/User.md
 docs/ValidationError.md
 docs/ValidationErrorLocInner.md
 git_push.sh
 mocha.opts
 package.json
 src/ApiClient.js
+src/api/AuthApi.js
 src/api/DefaultApi.js
+src/api/MeApi.js
 src/api/PackagesApi.js
 src/api/ProjectApi.js
 src/api/ProvisionerApi.js
@@ -51,5 +56,9 @@ src/model/ProjectPackage.js
 src/model/ProjectPackageCreate.js
 src/model/ProjectPackageStatus.js
 src/model/ProjectUpdate.js
+src/model/User.js
 src/model/ValidationError.js
 src/model/ValidationErrorLocInner.js
+test/api/AuthApi.spec.js
+test/api/MeApi.spec.js
+test/model/User.spec.js

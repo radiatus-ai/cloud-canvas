@@ -1,6 +1,5 @@
 import {
   Button,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -10,8 +9,9 @@ import {
   Typography,
 } from '@mui/material';
 import React from 'react';
-import CreatePackageModal from '../../CreatePackageModal';
 import DynamicModalForm from '../../DynamicModalForm';
+import RadDialog from '../../RadDialog';
+import CreatePackageModal from './CreatePackageModal';
 
 const ModalsContainer = ({
   modalState,
@@ -96,7 +96,7 @@ const ModalsContainer = ({
         }}
         onSubmit={handleNameSubmit}
       />
-      <Dialog
+      <RadDialog
         open={missingConnectionsModalOpen}
         onClose={() =>
           setModalState((prev) => ({
@@ -136,7 +136,7 @@ const ModalsContainer = ({
             Deploy Anyway
           </Button>
         </DialogActions>
-      </Dialog>
+      </RadDialog>
     </>
   );
 };

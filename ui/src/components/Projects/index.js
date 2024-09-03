@@ -14,15 +14,15 @@ import {
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import DynamicModalForm from '../DynamicModalForm';
-import EditProjectModal from '../EditProjectModal';
 import CreateProjectModal from './components/CreateProjectModal';
+import EditProjectModal from './components/EditProjectModal';
 import useProjectModals from './hooks/useProjectModals';
 import useProjectOperations from './hooks/useProjectOperations';
 import useProjectsFetch from './hooks/useProjectsFetch';
 
 const Projects = () => {
   const navigate = useNavigate();
-  const { projects, setProjects, isLoading, error, setError } =
+  const { projects, setProjects, isLoading, error, setError, fetchProject } =
     useProjectsFetch();
   const {
     creatingProjects,
@@ -42,7 +42,7 @@ const Projects = () => {
     handleCloseEditDialog,
     handleDeleteDialogOpen,
     handleDeleteDialogClose,
-  } = useProjectModals();
+  } = useProjectModals(fetchProject);
 
   const handleProjectClick = (projectId) => {
     navigate(`/canvas/${projectId}`);
@@ -156,9 +156,9 @@ const Projects = () => {
       <EditProjectModal
         isOpen={editDialogOpen}
         onClose={handleCloseEditDialog}
-        onSubmit={(updatedData) =>
-          handleUpdateProject(editProject.id, updatedData)
-        }
+        onSubmit={(updatedData) => {
+          return handleUpdateProject(editProject.id, updatedData);
+        }}
         project={editProject}
       />
 

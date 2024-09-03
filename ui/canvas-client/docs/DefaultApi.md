@@ -13,6 +13,7 @@ All URIs are relative to _http://localhost_
 | [**deleteCredentialCredentialsCredentialIdDelete**](DefaultApi.md#deleteCredentialCredentialsCredentialIdDelete)                                                 | **DELETE** /credentials/{credential_id}                                   | Delete Credential               |
 | [**deleteProjectProjectsProjectIdDelete**](DefaultApi.md#deleteProjectProjectsProjectIdDelete)                                                                   | **DELETE** /projects/{project_id}                                         | Delete Project                  |
 | [**getCredentialCredentialsCredentialIdGet**](DefaultApi.md#getCredentialCredentialsCredentialIdGet)                                                             | **GET** /credentials/{credential_id}                                      | Get Credential                  |
+| [**getProjectProjectsProjectIdGet**](DefaultApi.md#getProjectProjectsProjectIdGet)                                                                               | **GET** /projects/{project_id}                                            | Get Project                     |
 | [**listAllPackagesPackagesGet**](DefaultApi.md#listAllPackagesPackagesGet)                                                                                       | **GET** /packages                                                         | List All Packages               |
 | [**listConnectionsProjectsProjectIdConnectionsGet**](DefaultApi.md#listConnectionsProjectsProjectIdConnectionsGet)                                               | **GET** /projects/{project_id}/connections/                               | List Connections                |
 | [**listCredentialsCredentialsGet**](DefaultApi.md#listCredentialsCredentialsGet)                                                                                 | **GET** /credentials/                                                     | List Credentials                |
@@ -416,6 +417,50 @@ apiInstance.getCredentialCredentialsCredentialIdGet(
 ### Return type
 
 [**Credential**](Credential.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+## getProjectProjectsProjectIdGet
+
+> Project getProjectProjectsProjectIdGet(projectId)
+
+Get Project
+
+### Example
+
+```javascript
+import CanvasApi from 'canvas_api';
+
+let apiInstance = new CanvasApi.DefaultApi();
+let projectId = 'projectId_example'; // String |
+apiInstance.getProjectProjectsProjectIdGet(
+  projectId,
+  (error, data, response) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log('API called successfully. Returned data: ' + data);
+    }
+  }
+);
+```
+
+### Parameters
+
+| Name          | Type       | Description | Notes |
+| ------------- | ---------- | ----------- | ----- |
+| **projectId** | **String** |             |
+
+### Return type
+
+[**Project**](Project.md)
 
 ### Authorization
 

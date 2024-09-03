@@ -87,6 +87,15 @@ async def delete_project(
     return await crud_project.delete_project(db, id=project_id)
 
 
+@router.get("/projects/{project_id}", response_model=Project)
+async def get_project(project_id: UUID4, deps: dict = Depends(get_db_and_current_user)):
+    db = deps["db"]
+    project = await crud_project.get(db, project_id)
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project
+
+
 @router.websocket("/ws/projects")
 async def websocket_endpoint(
     websocket: WebSocket, org_id: UUID4 = Query(...), project_id: UUID4 = Query(None)

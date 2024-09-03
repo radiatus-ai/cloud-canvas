@@ -1,26 +1,22 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-} from '@mui/material';
+import { Button, DialogContentText } from '@mui/material';
 import React from 'react';
+import RadDialog from './RadDialog';
 
-const ConfirmationDialog = ({ open, title, content, onConfirm, onCancel }) => (
-  <Dialog open={open} onClose={onCancel}>
-    <DialogTitle>{title}</DialogTitle>
-    <DialogContent>
-      <DialogContentText>{content}</DialogContentText>
-    </DialogContent>
-    <DialogActions>
+const ConfirmationDialog = ({ open, title, content, onConfirm, onCancel }) => {
+  const actions = (
+    <>
       <Button onClick={onCancel}>Cancel</Button>
       <Button onClick={onConfirm} color="primary" autoFocus>
         Confirm
       </Button>
-    </DialogActions>
-  </Dialog>
-);
+    </>
+  );
+
+  return (
+    <RadDialog isOpen={open} onClose={onCancel} title={title} actions={actions}>
+      <DialogContentText>{content}</DialogContentText>
+    </RadDialog>
+  );
+};
 
 export default ConfirmationDialog;

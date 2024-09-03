@@ -93,6 +93,16 @@ export const lightTheme = createTheme(baseTheme, {
           // },
         },
       },
+      // MuiCssBaseline: {
+      //   styleOverrides: {
+      //     body: {
+      //       backgroundImage: 'url("/noise-220.png")',
+      //       backgroundSize: '220px 220px', // Adjust this value to match the size of your small square image
+      //       backgroundRepeat: 'repeat',
+      //       backgroundPosition: '0 0',
+      //     },
+      //   },
+      // },
     },
   },
 });
@@ -113,6 +123,10 @@ export const darkTheme = createTheme(baseTheme, {
     background: {
       default: '#121212',
       paper: '#1e1e1e', // Slightly lighter than the default background
+      // backgroundImage: 'url("/noise-220.png")',
+      // backgroundSize: '220px 220px', // Adjust this value to match the size of your small square image
+      // backgroundRepeat: 'repeat',
+      // backgroundPosition: '0 0',
     },
     nodeBorder: grey[500],
   },

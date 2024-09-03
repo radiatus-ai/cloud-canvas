@@ -1,50 +1,41 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from '@mui/material';
-import React, { useState } from 'react';
-import PaperComponent from '../../PaperComponent';
-const CreateProjectModal = ({ isOpen, onClose, onSubmit }) => {
-  const [projectName, setProjectName] = useState('');
+import React from 'react';
+import DynamicModalForm from '../../DynamicModalForm';
 
-  const handleInputChange = (event) => {
-    setProjectName(event.target.value);
+const CreateProjectModal = ({ isOpen, onClose, onSubmit }) => {
+  const schema = {
+    type: 'object',
+    properties: {
+      name: {
+        type: 'string',
+        title: 'Name',
+        minLength: 1,
+      },
+    },
+    required: ['name'],
   };
 
-  const handleSubmit = () => {
-    if (projectName.trim()) {
-      onSubmit({ name: projectName });
-      onClose();
-    }
+  const uiSchema = {
+    name: {
+      'ui:autofocus': true,
+      'ui:placeholder': 'Name',
+    },
+  };
+
+  const handleSubmit = (formData) => {
+    onSubmit({ name: formData.name });
+    onClose();
   };
 
   return (
-    <Dialog open={isOpen} onClose={onClose} PaperComponent={PaperComponent}>
-      <DialogTitle>Create New Project</DialogTitle>
-      <DialogContent>
-        <TextField
-          label="Project Name"
-          value={projectName}
-          onChange={handleInputChange}
-          fullWidth
-          required
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button
-          id="create-project-button"
-          onClick={handleSubmit}
-          disabled={!projectName.trim()}
-        >
-          Create
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <DynamicModalForm
+      isOpen={isOpen}
+      onClose={onClose}
+      schema={schema}
+      uiSchema={uiSchema}
+      onSubmit={handleSubmit}
+      initialData={{ name: '' }}
+      title="New Project"
+    />
   );
 };
 

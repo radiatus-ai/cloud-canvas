@@ -528,6 +528,57 @@ export default class DefaultApi {
   }
 
   /**
+   * Callback function to receive the result of the getProjectProjectsProjectIdGet operation.
+   * @callback module:api/DefaultApi~getProjectProjectsProjectIdGetCallback
+   * @param {String} error Error message, if any.
+   * @param {module:model/Project} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
+
+  /**
+   * Get Project
+   * @param {String} projectId
+   * @param {module:api/DefaultApi~getProjectProjectsProjectIdGetCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link module:model/Project}
+   */
+  getProjectProjectsProjectIdGet(projectId, callback) {
+    let postBody = null;
+    // verify the required parameter 'projectId' is set
+    if (projectId === undefined || projectId === null) {
+      throw new Error(
+        "Missing the required parameter 'projectId' when calling getProjectProjectsProjectIdGet"
+      );
+    }
+
+    let pathParams = {
+      project_id: projectId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
+
+    let authNames = [];
+    let contentTypes = [];
+    let accepts = ['application/json'];
+    let returnType = Project;
+    return this.apiClient.callApi(
+      '/projects/{project_id}',
+      'GET',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
+
+  /**
    * Callback function to receive the result of the listAllPackagesPackagesGet operation.
    * @callback module:api/DefaultApi~listAllPackagesPackagesGetCallback
    * @param {String} error Error message, if any.
