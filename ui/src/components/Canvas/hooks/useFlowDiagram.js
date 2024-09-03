@@ -12,6 +12,7 @@ export const useFlowDiagram = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const reactFlowWrapper = useRef(null);
+  const [tempNodes, setTempNodes] = useState([]);
 
   const {
     onOpenModal,
@@ -36,7 +37,7 @@ export const useFlowDiagram = () => {
     onConnectEnd,
     onConnectCheck,
     validateConnection,
-    onEdgesDelete,
+    handleEdgeDelete,
   } = useEdgeOperations(projectId, projectData, nodes, edges, setEdges);
 
   const [modalState, setModalState] = useState({
@@ -90,16 +91,31 @@ export const useFlowDiagram = () => {
           y: event.clientY - reactFlowBounds.top,
         });
 
+        const tempId = `temp-${Date.now()}`;
+        const tempNode = {
+          id: tempId,
+          type: 'custom',
+          position,
+          data: {
+            ...packageInfo,
+            label: packageInfo.name || 'New Package',
+            isTemp: true,
+          },
+        };
+
+        setTempNodes((prev) => [...prev, tempNode]);
+        setNodes((nds) => nds.concat(tempNode));
+
         setModalState((prev) => ({
           ...prev,
           isNameModalOpen: true,
-          droppedPackageInfo: { ...packageInfo, position },
+          droppedPackageInfo: { ...packageInfo, position, tempId },
         }));
       } catch (error) {
         console.error('Error parsing package data:', error);
       }
     },
-    [reactFlowInstance]
+    [reactFlowInstance, setNodes]
   );
 
   const handleNameSubmit = useCallback(
@@ -108,20 +124,37 @@ export const useFlowDiagram = () => {
       if (!modalState.droppedPackageInfo) return;
 
       try {
-        await createNode(
+        const { tempId, ...packageInfo } = modalState.droppedPackageInfo;
+        const newNode = await createNode(
           {
-            ...modalState.droppedPackageInfo,
+            ...packageInfo,
             name: packageName,
           },
-          modalState.droppedPackageInfo.position
+          packageInfo.position
         );
+
+        setNodes((nds) =>
+          nds.map((node) =>
+            node.id === tempId ? { ...newNode, position: node.position } : node
+          )
+        );
+        setTempNodes((temp) => temp.filter((node) => node.id !== tempId));
       } catch (error) {
         console.error('Error creating package:', error);
+        // Remove the temporary node if creation fails
+        setNodes((nds) =>
+          nds.filter((node) => node.id !== modalState.droppedPackageInfo.tempId)
+        );
+        setTempNodes((temp) =>
+          temp.filter(
+            (node) => node.id !== modalState.droppedPackageInfo.tempId
+          )
+        );
       } finally {
         setModalState((prev) => ({ ...prev, droppedPackageInfo: null }));
       }
     },
-    [modalState.droppedPackageInfo, createNode]
+    [modalState.droppedPackageInfo, createNode, setNodes]
   );
 
   const checkRequiredConnections = useCallback(
@@ -175,22 +208,22 @@ export const useFlowDiagram = () => {
     async (nodeId) => {
       const success = await onDeleteNode(nodeId);
       if (success) {
-        onEdgesDelete(
+        handleEdgeDelete(
           edges.filter(
             (edge) => edge.source === nodeId || edge.target === nodeId
           )
         );
       }
     },
-    [onDeleteNode, onEdgesDelete, edges]
+    [onDeleteNode, handleEdgeDelete, edges]
   );
 
   const handleDeleteEdge = useCallback(
     async (edgeId) => {
       console.log('handleDeleteEdge', edgeId);
-      await onEdgesDelete(edgeId);
+      await handleEdgeDelete(edgeId);
     },
-    [onEdgesDelete]
+    [handleEdgeDelete]
   );
 
   const handleDeploy = useCallback(
@@ -220,14 +253,14 @@ export const useFlowDiagram = () => {
         onDeploy: () => handleDeploy(node.id),
         onDelete: () => handleDeleteNode(node.id),
         // probably doesn't need to be passed to every node, but it's a small price to pay for now
-        // onDeleteEdge: (edgeId) => handleDeleteEdge(edgeId),
+        onDeleteEdge: (edgeId) => handleDeleteEdge(edgeId),
         deploy_status: node.data?.deploy_status || 'NOT_DEPLOYED',
       },
     }));
   }, [nodes, handleOpenModal, handleDeploy, handleDeleteNode, updateNodeData]);
 
   return {
-    nodes: nodesWithFunctions,
+    nodes: [...nodesWithFunctions, ...tempNodes],
     edges,
     onNodesChange,
     onEdgesChange,
@@ -245,7 +278,8 @@ export const useFlowDiagram = () => {
     modalState,
     setModalState,
     handleOpenModal,
-    handleDeleteEdge,
+    // handleDeleteEdge,
+    handleEdgeDelete,
     onSubmitForm,
     handleSubmitForm,
     handleDeleteNode,

@@ -1,3 +1,4 @@
+import { jwtDecode } from 'jwt-decode';
 import React, {
   createContext,
   useCallback,
@@ -6,7 +7,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext();
 
@@ -42,13 +42,10 @@ export const AuthProvider = ({ children }) => {
   const refreshToken = useCallback(async () => {
     try {
       // Implement your token refresh logic here
-      const response = await fetch(
-        'https://auth-service-razsp32k5q-uc.a.run.app/refresh',
-        {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await fetch('https://auth.dev.r7ai.net/refresh', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!response.ok) throw new Error('Token refresh failed');
       const data = await response.json();
       login(data.user, data.token);

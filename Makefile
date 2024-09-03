@@ -3,7 +3,7 @@ auth:
 
 gen-clients:
 	cd api && make gen-openapi-spec
-	openapi-generator-cli generate -i data/openapi-spec.yaml -g javascript -o ./ui/canvas-client
+	openapi-generator-cli generate -i api/data/openapi-spec.yaml -g javascript -o ./ui/canvas-client
 	./cleanup-gen-ui-client.sh
 	rm -rf ./ui/canvas-client/dist
 	cd ui/canvas-client && npm run build
@@ -66,5 +66,6 @@ build-api-cloudbuild-kaniko:
 	gcloud builds submit --project=rad-containers-hmed --config=cloudbuild-api-kaniko.yaml --substitutions=SHORT_SHA=$(SHORT_SHA) .
 
 deploy-api-cloudbuild-kaniko: build-api-cloudbuild-kaniko
+	gcloud container clusters get-credentials cluster-0 --region us-central1 --project rad-dev-canvas-kwm6
 	kubectl set image deployment/api api=us-central1-docker.pkg.dev/rad-containers-hmed/cloud-canvas/api:$(SHORT_SHA)
 	kubectl rollout status deployment/api

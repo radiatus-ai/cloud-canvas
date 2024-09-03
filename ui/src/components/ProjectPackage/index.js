@@ -38,6 +38,7 @@ const ExpandButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const ProjectPackage = memo(({ data, isConnectable }) => {
+  const { isTemp, inputs, outputs } = data;
   const { projectId } = useParams();
   const [error, setError] = useState(null);
   const [nodeData, updateNodeData] = useNodeData(data);
@@ -79,7 +80,7 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
         schema={schema}
         index={index}
         total={array.length}
-        isConnectable={isConnectable}
+        isConnectable={isConnectable && !isTemp}
         packageType={nodeData.type}
       />
     )
@@ -95,7 +96,7 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
         schema={schema}
         index={index}
         total={array.length}
-        isConnectable={isConnectable}
+        isConnectable={isConnectable && !isTemp}
         packageType={nodeData.type}
       />
     )
@@ -119,18 +120,24 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
   // };
 
   return (
-    <NodeContainer>
-      <NodeHeader
-        data={{ ...nodeData, deploy_status: localDeployStatus }}
-        projectId={projectId}
-        updateNodeData={updateNodeData}
-        onOpenModal={nodeData.onOpenModal}
-        onDeleteNode={nodeData.onDelete}
-        handleDeploy={handleDeploy}
-        handleDestroy={handleDestroy}
-        edges={data.edges}
-        onDeleteConnection={handleDeleteConnection}
-      />
+    <NodeContainer isTemp={isTemp}>
+      {isTemp ? (
+        <Typography variant="body2" color="textSecondary">
+          Creating {nodeData.label}...
+        </Typography>
+      ) : (
+        <NodeHeader
+          data={{ ...nodeData, deploy_status: localDeployStatus }}
+          projectId={projectId}
+          updateNodeData={updateNodeData}
+          onOpenModal={nodeData.onOpenModal}
+          onDeleteNode={nodeData.onDelete}
+          handleDeploy={handleDeploy}
+          handleDestroy={handleDestroy}
+          edges={data.edges}
+          onDeleteConnection={handleDeleteConnection}
+        />
+      )}
       <StatusContainer>
         <Typography variant="caption" color="text.secondary">
           {nodeData.type}

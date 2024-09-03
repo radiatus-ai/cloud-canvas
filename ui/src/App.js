@@ -25,14 +25,11 @@ const App = () => {
       setIsLoading(true);
       try {
         // todo: add env var / config to set this
-        const response = await fetch(
-          'https://auth-service-razsp32k5q-uc.a.run.app/login/google',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: authToken }),
-          }
-        );
+        const response = await fetch('https://auth.dev.r7ai.net/login/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: authToken }),
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

@@ -66,8 +66,6 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://platform-ui-toyurvn2oq-wl.a.run.app",
-        "https://6db5-76-102-100-3.ngrok-free.app",
         "https://dev.r7ai.net",
         "https://canvas.dev.r7ai.net",
         "https://provisioner.dev.r7ai.net",

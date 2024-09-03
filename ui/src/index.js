@@ -7,10 +7,10 @@ import { RecoilRoot } from 'recoil';
 import App from './App';
 import ErrorFallback from './components/ErrorFallback';
 import { AuthProvider } from './contexts/Auth';
+import ThemeContextProvider from './contexts/ThemeContext';
 import { TitleProvider } from './contexts/TitleContext';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
-import ThemeContextProvider from './contexts/ThemeContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -18,7 +18,14 @@ root.render(
     <ErrorBoundary
       FallbackComponent={ErrorFallback}
       onReset={() => {
-        // reset the state of your app so the error doesn't happen again
+        // For example, you could clear local storage, reset global state, etc.
+        localStorage.clear();
+        window.location.href = '/'; // Redirect to home page
+      }}
+      onError={(error, errorInfo) => {
+        // Log the error to an error reporting service
+        console.error('Caught an error:', error, errorInfo);
+        // You could also send this to a service like Sentry or LogRocket
       }}
     >
       <RecoilRoot>

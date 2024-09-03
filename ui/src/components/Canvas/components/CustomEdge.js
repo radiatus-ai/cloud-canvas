@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Button, Popover, Typography } from '@mui/material';
+import React, { useCallback, useState } from 'react';
 import { getBezierPath } from 'reactflow';
-import 'reactflow/dist/style.css';
 
 const CustomEdge = ({
   id,
-  source,
-  target,
   sourceX,
   sourceY,
   targetX,
@@ -13,6 +12,7 @@ const CustomEdge = ({
   sourcePosition,
   targetPosition,
   data,
+  markerEnd,
 }) => {
   const [edgePath] = getBezierPath({
     sourceX,
@@ -23,9 +23,25 @@ const CustomEdge = ({
     targetPosition,
   });
 
-  const [isHovered, setIsHovered] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-  debugger;
+  const handleEdgeClick = useCallback((event) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+  }, []);
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDelete = useCallback(() => {
+    if (data.onDelete && data.targetDeployStatus === 'NOT_DEPLOYED') {
+      data.onDelete(id);
+    }
+    handleClose();
+  }, [data, id]);
+
+  const open = Boolean(anchorEl);
 
   return (
     <>
@@ -33,23 +49,38 @@ const CustomEdge = ({
         id={id}
         className="react-flow__edge-path"
         d={edgePath}
-        strokeWidth={2}
-        stroke={isHovered ? '#555' : '#b1b1b7'}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        markerEnd={markerEnd}
+        style={{ stroke: '#b1b1b7', strokeWidth: 2 }}
+        onClick={handleEdgeClick}
       />
-      {isHovered && (
-        <text>
-          <textPath
-            href={`#${id}`}
-            style={{ fontSize: 12 }}
-            startOffset="50%"
-            textAnchor="middle"
-          >
-            {data.connectionType}
-          </textPath>
-        </text>
-      )}
+      <Popover
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <Typography sx={{ p: 2 }}>Connection: {data.connectionType}</Typography>
+        <Button
+          startIcon={<DeleteIcon />}
+          onClick={handleDelete}
+          disabled={data.targetDeployStatus !== 'NOT_DEPLOYED'}
+          sx={{ m: 1 }}
+        >
+          Delete Connection
+        </Button>
+        {data.targetDeployStatus !== 'NOT_DEPLOYED' && (
+          <Typography variant="caption" color="error" sx={{ p: 1 }}>
+            Target package must be destroyed before deleting this connection.
+          </Typography>
+        )}
+      </Popover>
     </>
   );
 };

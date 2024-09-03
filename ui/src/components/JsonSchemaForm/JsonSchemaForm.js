@@ -21,6 +21,12 @@ const StyledForm = styled('form')(({ theme }) => ({
   '& .MuiFormControl-root': {
     marginBottom: theme.spacing(2),
   },
+  '& .MuiInputLabel-root': {
+    transition: 'all 0.2s',
+    '&.MuiInputLabel-shrink': {
+      transform: 'translate(14px, -6px) scale(0.75)',
+    },
+  },
 }));
 
 const JsonSchemaForm = forwardRef(
@@ -45,6 +51,7 @@ const JsonSchemaForm = forwardRef(
       message: '',
       severity: 'success',
     });
+    const [hasAttemptedSubmit, setHasAttemptedSubmit] = useState(false);
 
     const memoizedSchema = useMemo(() => schema, [schema]);
     const memoizedInitialData = useMemo(() => initialData, [initialData]);
@@ -73,6 +80,7 @@ const JsonSchemaForm = forwardRef(
       setFormData(defaultValues);
       setErrors({});
       setTouched({});
+      setHasAttemptedSubmit(false);
     }, [defaultValues]);
 
     const handleChange = useCallback(
@@ -84,29 +92,31 @@ const JsonSchemaForm = forwardRef(
           }
           return newData;
         });
+
+        // Only validate if the user has attempted to submit once
+        if (hasAttemptedSubmit) {
+          const error = validateField(memoizedSchema, name, value);
+          setErrors((prevErrors) => ({
+            ...prevErrors,
+            [name]: error,
+          }));
+        }
       },
-      [onChange]
+      [onChange, memoizedSchema, hasAttemptedSubmit]
     );
 
-    const handleBlur = useCallback(
-      (name) => {
-        setTouched((prevTouched) => ({
-          ...prevTouched,
-          [name]: true,
-        }));
-        const error = validateField(memoizedSchema, name, formData[name]);
-        setErrors((prevErrors) => ({
-          ...prevErrors,
-          [name]: error,
-        }));
-      },
-      [memoizedSchema, formData]
-    );
+    const handleBlur = useCallback((name) => {
+      setTouched((prevTouched) => ({
+        ...prevTouched,
+        [name]: true,
+      }));
+    }, []);
 
     const handleSubmit = async (e) => {
       if (e && e.preventDefault) {
         e.preventDefault();
       }
+      setHasAttemptedSubmit(true);
       const touchedAll = Object.keys(memoizedSchema.properties).reduce(
         (acc, key) => {
           acc[key] = true;
@@ -167,7 +177,7 @@ const JsonSchemaForm = forwardRef(
                   schema={memoizedSchema}
                   fieldSchema={fieldSchema}
                   value={formData[key]}
-                  error={errors[key]}
+                  error={hasAttemptedSubmit ? errors[key] : undefined}
                   touched={touched[key]}
                   onChange={handleChange}
                   onBlur={handleBlur}

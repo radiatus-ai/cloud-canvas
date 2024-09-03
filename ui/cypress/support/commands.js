@@ -33,7 +33,7 @@ Cypress.Commands.add('loginByGoogleApi', () => {
       // Send the Google token to your backend
       cy.request({
         method: 'POST',
-        url: 'https://auth-service-razsp32k5q-uc.a.run.app/login/google',
+        url: 'https://auth.dev.r7ai.net/login/google',
         body: { token: id_token },
       }).then((response) => {
         expect(response.status).to.eq(200);

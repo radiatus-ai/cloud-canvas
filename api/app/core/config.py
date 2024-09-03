@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
     ALGORITHM: str = "HS256"
     CREDENTIAL_ENCRYPTION_KEY: str
-    AUTH_SERVICE_URL: str = "https://auth-service-razsp32k5q-uc.a.run.app"
+    AUTH_SERVICE_URL: str = "https://auth.dev.r7ai.net"
     API_TOKEN: str
     # only used by the provisioner to update deployments and save outputs artifacts
     PROVISIONER_API_TOKEN: str = "foobar"

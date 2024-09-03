@@ -31,7 +31,7 @@ const FlowDiagram = () => {
     setModalState,
     formData,
     handleSubmitForm,
-    handleDeleteEdge,
+    handleEdgeDelete,
     missingConnections,
   } = useFlowDiagram();
 
@@ -54,7 +54,7 @@ const FlowDiagram = () => {
             nodes={nodes}
             edges={edges}
             onNodesChange={onNodesChange}
-            onEdgesChange={handleDeleteEdge}
+            onEdgesChange={handleEdgeDelete}
             onConnect={onConnect}
             onConnectStart={onConnectStart}
             onConnectEnd={onConnectEnd}

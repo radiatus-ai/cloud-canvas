@@ -74,26 +74,33 @@ const FlowCanvas = ({
   //   [projectId, token, projectsApi, setNodes, setEdges, sendJsonMessage]
   // );
 
+  const styledNodes = nodes.map((node) => ({
+    ...node,
+    style: node.data.isTemp
+      ? {
+          opacity: 0.5,
+          pointerEvents: 'none',
+        }
+      : {},
+  }));
+
   return (
     <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', width: '100%' }}>
       <div style={{ flexGrow: 1 }} ref={reactFlowWrapper}>
         <ReactFlow
           defaultViewport={defaultViewport}
-          nodes={nodes}
+          nodes={styledNodes}
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onConnectStart={onConnectStart}
           onConnectEnd={onConnectEnd}
-          // not a part of the API
-          // onConnectCheck={onConnectCheck}
           onInit={onInit}
           onDrop={onDrop}
           onDragOver={onDragOver}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
-          // connectionLineComponent={CustomConnectionLine}
           connectionLineStyle={{ stroke: '#ddd', strokeWidth: 2 }}
           connectionMode="loose"
           fitView

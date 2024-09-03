@@ -38,7 +38,7 @@ describe('Login Flow', () => {
     // cy.get('@googlePrompt').should('be.called');
 
     // // Wait for the login process to complete
-    // cy.intercept('POST', 'https://auth-service-razsp32k5q-uc.a.run.app/login/google').as('loginRequest');
+    // cy.intercept('POST', 'https://auth.dev.r7ai.net/login/google').as('loginRequest');
     // cy.wait('@loginRequest');
 
     // Assert that we're redirected to the main page
@@ -50,7 +50,7 @@ describe('Login Flow', () => {
 
   // it('should show an error with invalid Google credentials', () => {
   //   // Mock an error response from the server
-  //   cy.intercept('POST', 'https://auth-service-razsp32k5q-uc.a.run.app/login/google', {
+  //   cy.intercept('POST', 'https://auth.dev.r7ai.net/login/google', {
   //     statusCode: 401,
   //     body: { error: 'Invalid credentials' },
   //   }).as('loginRequest');

@@ -9,34 +9,6 @@ import useApi from '../../../hooks/useAPI';
 const useEdgeOperations = (projectId, projectData, nodes, edges, setEdges) => {
   const { token } = useAuth();
   const { projects: projectsApi } = useApi();
-  // const { projects: projectsApi } = useApi();
-  // const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [error, setError] = useState(null);
-
-  // useEffect(() => {
-  //   console.log('projectData', projectData);
-  //   if (projectData && projectData.connections) {
-
-  //      for (const connection of projectData.connections) {
-  //       const newEdge = {
-  //         type: 'custom',
-  //         data: {
-  //           connectionType: 'object',
-  //           sourceHandle: connection.source_handle,
-  //         targetHandle: connection.target_handle,
-  //         },
-  //         source: connection.source_package_id,
-  //         target: connection.target_package_id,
-  //         sourceHandle: connection.source_handle,
-  //         targetHandle: connection.target_handle,
-  //        };
-  //       setEdges((eds) => addEdge(newEdge, eds));
-  //      }
-
-  //     // setEdges(projectData.connections);
-  //   }
-  // }, [projectData, setEdges]);
 
   const validateConnection = useCallback(
     (source, target, sourceHandle, targetHandle) => {
@@ -64,19 +36,8 @@ const useEdgeOperations = (projectId, projectData, nodes, edges, setEdges) => {
           params.targetHandle
         )
       ) {
-        // const sourceNode = nodes.find((node) => node.id === params.source);
-        // const connectionType =
-        //   sourceNode?.data?.outputs?.properties?.[params.sourceHandle]?.type;
-        // const newEdge = {
-        //   source_package_id: params.source,
-        //   target_package_id: params.target,
-        //   source_handle: params.sourceHandle,
-        //   target_handle: params.targetHandle,
-        // };
-
         const sourceNode = nodes.find((node) => node.id === params.source);
-        // const connectionType =
-        //   sourceNode?.data?.outputs?.properties?.[params.sourceHandle]?.type;
+        const targetNode = nodes.find((node) => node.id === params.target);
         const newConnection = {
           source_package_id: params.source,
           target_package_id: params.target,
@@ -90,8 +51,17 @@ const useEdgeOperations = (projectId, projectData, nodes, edges, setEdges) => {
             token
           );
           if (response && response.body) {
-            console.log('response', response);
-            setEdges((eds) => addEdge(response.body, eds));
+            const newEdge = {
+              ...response.body,
+              data: {
+                connectionType:
+                  sourceNode?.data?.outputs?.properties?.[params.sourceHandle]
+                    ?.type,
+                targetDeployStatus: targetNode?.data?.deploy_status,
+                onDelete: handleEdgeDelete,
+              },
+            };
+            setEdges((eds) => addEdge(newEdge, eds));
           }
         } catch (error) {
           console.error('Error saving connection:', error);
@@ -101,38 +71,24 @@ const useEdgeOperations = (projectId, projectData, nodes, edges, setEdges) => {
     [projectId, nodes, token, projectsApi, setEdges, validateConnection]
   );
 
-  //  this might be the place
-  const onEdgesDelete = useCallback(
-    async (edgesToDelete) => {
+  const handleEdgeDelete = useCallback(
+    async (edgeId) => {
       try {
-        console.log('edgesToDelete', edgesToDelete);
-        console.log('projectId', projectId);
-        // console.log('token', edge.id);
-        await Promise.all(
-          edgesToDelete.map((edge) => {
-            console.log('Deleting edge:', edge);
-            const idParts = edge.id.split('-');
-            const sourcePackageId = idParts.slice(0, 5).join('-');
-            const targetPackageId = idParts.slice(-5).join('-');
-            console.log('First ID:', sourcePackageId);
-            console.log('Second ID:', targetPackageId);
-
-            return projectsApi.deleteConnection(
-              projectId,
-              sourcePackageId,
-              targetPackageId,
-              token
-            );
-          })
-        );
-        setEdges((edges) =>
-          edges.filter((edge) => !edgesToDelete.some((e) => e.id === edge.id))
-        );
+        const edge = edges.find((e) => e.id === edgeId);
+        if (edge) {
+          await projectsApi.deleteConnection(
+            projectId,
+            edge.source,
+            edge.target,
+            token
+          );
+          setEdges((eds) => eds.filter((e) => e.id !== edgeId));
+        }
       } catch (error) {
-        console.error('Error deleting connections:', error);
+        console.error('Error deleting connection:', error);
       }
     },
-    [projectId, token, projectsApi, setEdges]
+    [projectId, edges, token, projectsApi, setEdges]
   );
 
   const onConnectStart = useCallback(() => {
@@ -163,7 +119,7 @@ const useEdgeOperations = (projectId, projectData, nodes, edges, setEdges) => {
     onConnectStart,
     onConnectEnd,
     onConnectCheck,
-    onEdgesDelete,
+    handleEdgeDelete,
     validateConnection,
   };
 };
