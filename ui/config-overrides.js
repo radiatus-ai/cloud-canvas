@@ -7,7 +7,7 @@ module.exports = function override(config) {
     process: require.resolve('process/browser'),
     buffer: require.resolve('buffer/'),
   });
-  config.devtool = 'eval-source-map';
+  config.devtool = 'source-map';
   config.resolve.fallback = fallback;
   config.plugins = (config.plugins || []).concat([
     new webpack.ProvidePlugin({

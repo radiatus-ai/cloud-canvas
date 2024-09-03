@@ -1,7 +1,16 @@
 import { Button } from '@mui/material';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import JsonSchemaForm, { GCPRegionsComponent } from './JsonSchemaForm';
+
+import JsonSchemaForm, { GCPRegionsComponent } from 'react-json-schema-form';
 import RadDialog from './RadDialog';
+
+// import React from 'react';
+// import ReactJsonSchemaForm from 'react-json-schema-form';
+
+// import { JsonSchemaForm, GCPRegionsComponent, React as FormReact } from 'react-json-schema-form';
+
+console.log('Main app React:', React);
+console.log('react-json-schema-form React:', JsonSchemaForm.React);
 
 const DynamicModalForm = ({
   isOpen,
@@ -65,6 +74,8 @@ const DynamicModalForm = ({
     >
       <JsonSchemaForm
         ref={formRef}
+        // todo: needs to be unique
+        formId="dynamic-modal-form"
         schema={schema}
         uiSchema={uiSchema}
         initialData={formData}

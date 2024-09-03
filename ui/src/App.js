@@ -9,7 +9,6 @@ import React, { useCallback, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import AuthenticationComponent from './components/Authentication';
 import Canvas from './components/Canvas';
-import JsonSchemaFormTest from './components/JsonSchemaFormTest';
 import Navigation from './components/Navigation';
 import Projects from './components/Projects';
 import Secrets from './components/Secrets';
@@ -117,7 +116,6 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Projects />} />
             <Route path="/secrets" element={<Secrets />} />
-            <Route path="/form" element={<JsonSchemaFormTest />} />
             <Route path="/canvas/:projectId" element={<Canvas />} />
           </Routes>
         </Box>
