@@ -8,8 +8,8 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import React from 'react';
-import DynamicModalForm from '../../DynamicModalForm';
+import React, { useCallback, useRef } from 'react';
+import JsonSchemaForm from 'react-json-schema-form';
 import RadDialog from '../../RadDialog';
 import CreatePackageModal from './CreatePackageModal';
 
@@ -19,7 +19,6 @@ const ModalsContainer = ({
   nodes = [],
   onSubmitForm,
   handleNameSubmit,
-  checkRequiredConnections,
   onDeploy,
 }) => {
   const {
@@ -28,41 +27,36 @@ const ModalsContainer = ({
     missingConnectionsModalOpen,
     selectedNodeId,
     formData,
-    // droppedPackageInfo,
     missingConnections,
-    schema, // Added schema from modalState
+    schema,
   } = modalState;
-  // debugger;
 
-  const handleCloseModal = () => {
+  const formRef = useRef(null);
+
+  const handleCloseModal = useCallback(() => {
     setModalState((prev) => ({
       ...prev,
       isModalOpen: false,
       selectedNodeId: null,
       formData: {},
     }));
-  };
+  }, [setModalState]);
 
-  const handleSubmitForm = async (newFormData) => {
-    if (selectedNodeId && onSubmitForm) {
-      console.log('ModalsContainer - Submitting form data:', newFormData);
-      console.log('ModalsContainer - Selected Node ID:', selectedNodeId);
-      try {
-        const result = await onSubmitForm(selectedNodeId, newFormData);
-        console.log('ModalsContainer - Form submission result:', result);
-        handleCloseModal();
-      } catch (error) {
-        console.error('ModalsContainer - Error submitting form:', error);
-        // Optionally, you can display an error message to the user here
+  const handleSubmitForm = useCallback(
+    async (formData) => {
+      if (selectedNodeId && onSubmitForm) {
+        try {
+          await onSubmitForm(selectedNodeId, formData);
+          handleCloseModal();
+        } catch (error) {
+          console.error('Error submitting form:', error);
+        }
       }
-    } else {
-      console.warn(
-        'ModalsContainer - Unable to submit form: missing selectedNodeId or onSubmitForm'
-      );
-    }
-  };
+    },
+    [selectedNodeId, onSubmitForm, handleCloseModal]
+  );
 
-  const handleDeployWithMissingConnections = async () => {
+  const handleDeployWithMissingConnections = useCallback(async () => {
     if (selectedNodeId && onDeploy) {
       await onDeploy(selectedNodeId);
       setModalState((prev) => ({
@@ -70,21 +64,39 @@ const ModalsContainer = ({
         missingConnectionsModalOpen: false,
       }));
     }
-  };
+  }, [selectedNodeId, onDeploy, setModalState]);
 
-  // Find the selected node
   const selectedNode = nodes.find((n) => n.id === selectedNodeId);
 
   return (
     <>
-      <DynamicModalForm
+      <RadDialog
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        schema={schema}
-        onSubmit={handleSubmitForm}
-        initialData={formData}
         title={selectedNode ? selectedNode.data.label : ''}
-      />
+        actions={
+          <>
+            <Button onClick={handleCloseModal} color="primary">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => formRef.current && formRef.current.submit()}
+              color="primary"
+              variant="contained"
+            >
+              Submit
+            </Button>
+          </>
+        }
+      >
+        <JsonSchemaForm
+          ref={formRef}
+          schema={schema}
+          initialData={formData}
+          onSubmit={handleSubmitForm}
+          hideSubmitButton={true}
+        />
+      </RadDialog>
       <CreatePackageModal
         open={isNameModalOpen}
         onClose={() => {
@@ -141,4 +153,4 @@ const ModalsContainer = ({
   );
 };
 
-export default ModalsContainer;
+export default React.memo(ModalsContainer);

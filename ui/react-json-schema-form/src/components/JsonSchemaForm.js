@@ -14,6 +14,7 @@ import React, {
   useImperativeHandle,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 import { useI18n } from '../context/I18nContext';
 import { useFormState } from '../hooks/useFormState';
@@ -25,6 +26,10 @@ import FormField from './FormField';
 const StyledForm = styled('form')(({ theme }) => ({
   '& .MuiFormControl-root': {
     marginBottom: theme.spacing(2),
+  },
+  '& .MuiInputBase-root': {
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.background.paper,
   },
 }));
 
@@ -41,6 +46,7 @@ const JsonSchemaForm = forwardRef(
       isLoading = false,
       theme = {},
       locale = 'en',
+      hideSubmitButton = false,
     },
     ref
   ) => {
@@ -49,6 +55,7 @@ const JsonSchemaForm = forwardRef(
     const memoizedSchema = useMemo(() => schema, [schema]);
     const memoizedInitialData = useMemo(() => initialData, [initialData]);
     const initialDataRef = useRef(memoizedInitialData);
+    const [isInitialized, setIsInitialized] = useState(false);
 
     const {
       formData,
@@ -65,18 +72,29 @@ const JsonSchemaForm = forwardRef(
     const { isSubmitting, snackbar, handleSubmit, closeSnackbar } =
       useFormSubmission(onSubmit, validateAllFields);
 
-    const memoizedHandleSubmit = useCallback(
-      () => handleSubmit(formData),
-      [handleSubmit, formData]
-    );
-
     useEffect(() => {
-      if (JSON.stringify(formData) !== JSON.stringify(initialDataRef.current)) {
-        setFormData(initialDataRef.current);
+      if (!isInitialized) {
+        setFormData(memoizedInitialData);
+        setIsInitialized(true);
+      } else if (
+        JSON.stringify(initialDataRef.current) !==
+        JSON.stringify(memoizedInitialData)
+      ) {
+        setFormData(memoizedInitialData);
         resetForm();
+        initialDataRef.current = memoizedInitialData;
       }
-      initialDataRef.current = memoizedInitialData;
-    }, [memoizedInitialData, formData, setFormData, resetForm]);
+    }, [memoizedInitialData, setFormData, resetForm, isInitialized]);
+
+    const memoizedHandleSubmit = useCallback(async () => {
+      const validationResult = validateAllFields();
+      if (validationResult.isValid) {
+        return handleSubmit(formData);
+      } else {
+        console.log('Form validation failed:', validationResult.errors);
+        return false;
+      }
+    }, [handleSubmit, formData, validateAllFields]);
 
     const memoizedHandleChange = useCallback(
       (name, value) => {
@@ -91,17 +109,13 @@ const JsonSchemaForm = forwardRef(
 
     useImperativeHandle(
       ref,
-      () =>
-        useMemo(
-          () => ({
-            submit: () => handleSubmit(formData),
-            validate: validateAllFields,
-            getData: () => formData,
-            reset: resetForm,
-          }),
-          [handleSubmit, formData, validateAllFields, resetForm]
-        ),
-      [handleSubmit, formData, validateAllFields, resetForm]
+      () => ({
+        submit: memoizedHandleSubmit,
+        validate: validateAllFields,
+        getData: () => formData,
+        reset: resetForm,
+      }),
+      [memoizedHandleSubmit, validateAllFields, formData, resetForm]
     );
 
     const renderFields = useCallback(
@@ -133,17 +147,28 @@ const JsonSchemaForm = forwardRef(
       ]
     );
 
+    const handleFormSubmit = useCallback(
+      async (event) => {
+        event.preventDefault();
+        return memoizedHandleSubmit();
+      },
+      [memoizedHandleSubmit]
+    );
+
+    if (!isInitialized) {
+      return null; // Or a loading indicator
+    }
+
     return (
       <ErrorBoundary>
         <ThemeProvider theme={formTheme}>
-          <StyledForm onSubmit={(e) => e.preventDefault()}>
+          <StyledForm onSubmit={handleFormSubmit}>
             <Stack spacing={2}>{renderFields()}</Stack>
-            {!ref && (
+            {!hideSubmitButton && (
               <Button
                 type="submit"
                 variant="contained"
                 color="primary"
-                onClick={memoizedHandleSubmit}
                 disabled={isSubmitting || isLoading || !isValid}
                 startIcon={
                   isSubmitting || isLoading ? (

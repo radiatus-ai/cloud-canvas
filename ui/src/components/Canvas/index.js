@@ -29,7 +29,6 @@ const FlowDiagram = () => {
     handleNameSubmit,
     modalState,
     setModalState,
-    formData,
     handleSubmitForm,
     handleEdgeDelete,
     missingConnections,
@@ -68,7 +67,6 @@ const FlowDiagram = () => {
         <ModalsContainer
           modalState={modalState}
           setModalState={setModalState}
-          formData={formData}
           onSubmitForm={handleSubmitForm}
           handleNameSubmit={handleNameSubmit}
           missingConnections={missingConnections}

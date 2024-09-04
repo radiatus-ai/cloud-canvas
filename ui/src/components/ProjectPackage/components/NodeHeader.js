@@ -7,11 +7,11 @@ import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { blue, grey, red, yellow } from '@mui/material/colors';
 import { styled } from '@mui/system';
 import React, { useCallback, useState } from 'react';
-import { useAuth } from '../../contexts/Auth';
-import useApi from '../../hooks/useAPI';
+import { useAuth } from '../../../contexts/Auth';
+import useApi from '../../../hooks/useAPI';
+import { validateConnections } from '../utils/validate';
 import ConfirmationDialog from './ConfirmationDialog';
 import DeploymentLogsModal from './DeploymentLogsModal';
-import { validateConnections } from './utils/validate';
 
 const successColor = '#0cc421';
 const editColor = grey[500];

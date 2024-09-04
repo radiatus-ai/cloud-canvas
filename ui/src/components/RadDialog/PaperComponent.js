@@ -1,7 +1,7 @@
 import { Paper, useTheme } from '@mui/material';
-import React from 'react';
+import React, { memo } from 'react';
 
-const PaperComponent = ({ children, ...props }) => {
+const PaperComponent = memo(({ children, ...props }) => {
   const theme = useTheme();
   return (
     <Paper
@@ -13,6 +13,6 @@ const PaperComponent = ({ children, ...props }) => {
       {children}
     </Paper>
   );
-};
+});
 
 export default PaperComponent;

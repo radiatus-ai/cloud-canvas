@@ -11,8 +11,9 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import React from 'react';
-import DynamicModalForm from '../DynamicModalForm';
+import React, { useCallback, useEffect, useRef } from 'react';
+import JsonSchemaForm from 'react-json-schema-form';
+import RadDialog from '../RadDialog';
 import CreateSecretModal from './components/CreateSecretModal';
 import useCredentialModals from './hooks/useCredentialModals';
 import useCredentialOperations from './hooks/useCredentialOperations';
@@ -38,6 +39,31 @@ const Secrets = () => {
     handleDeleteDialogOpen,
     handleDeleteDialogClose,
   } = useCredentialModals();
+
+  const createSecretFormRef = useRef(null);
+  const editFormRef = useRef(null);
+  const deleteFormRef = useRef(null);
+
+  // Handle Create Credential Submission
+  const handleCreateCredentialSubmit = useCallback(
+    async (formData) => {
+      try {
+        await handleCreateCredential(formData);
+        setCreateCredentialModalOpen(false);
+      } catch (error) {
+        console.error('Error creating credential:', error);
+        setError('Failed to create credential. Please try again.');
+      }
+    },
+    [handleCreateCredential, setCreateCredentialModalOpen, setError]
+  );
+
+  // Ensure the form resets when modal is closed
+  useEffect(() => {
+    if (!createCredentialModalOpen && createSecretFormRef.current) {
+      createSecretFormRef.current.reset();
+    }
+  }, [createCredentialModalOpen]);
 
   if (isLoading) {
     return (
@@ -115,58 +141,114 @@ const Secrets = () => {
         </Grid>
       </Box>
 
+      {/* Create Secret Modal */}
       <CreateSecretModal
+        ref={createSecretFormRef}
         isOpen={createCredentialModalOpen}
         onClose={() => setCreateCredentialModalOpen(false)}
-        onSubmit={handleCreateCredential}
+        onSubmit={handleCreateCredentialSubmit}
       />
 
-      <DynamicModalForm
+      {/* Edit Credential Dialog */}
+      <RadDialog
         isOpen={editDialogOpen && editCredential !== null}
         onClose={handleCloseEditDialog}
-        schema={{
-          type: 'object',
-          properties: {
-            name: { type: 'string', title: 'Credential Name', readOnly: true },
-            credential_type: {
-              type: 'string',
-              title: 'Credential Type',
-              readOnly: true,
-            },
-            secret: { type: 'string', title: 'New Secret Value' },
-          },
-          required: ['secret'],
-        }}
-        onSubmit={(updatedData) =>
-          handleUpdateCredential(editCredential.id, updatedData)
-        }
-        initialData={editCredential || {}}
         title="Edit Credential"
-      />
+        actions={
+          <>
+            <Button onClick={handleCloseEditDialog} color="primary">
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                if (editFormRef.current) {
+                  const isValid = await editFormRef.current.submit();
+                  if (isValid) {
+                    const updatedData = editFormRef.current.getData();
+                    handleUpdateCredential(editCredential.id, updatedData);
+                  }
+                }
+              }}
+              color="primary"
+              variant="contained"
+            >
+              Save
+            </Button>
+          </>
+        }
+      >
+        <JsonSchemaForm
+          ref={editFormRef}
+          schema={{
+            type: 'object',
+            properties: {
+              name: {
+                type: 'string',
+                title: 'Credential Name',
+                readOnly: true,
+              },
+              credential_type: {
+                type: 'string',
+                title: 'Credential Type',
+                readOnly: true,
+              },
+              secret: { type: 'string', title: 'New Secret Value' },
+            },
+            required: ['secret'],
+          }}
+          initialData={editCredential || {}}
+          hideSubmitButton={true}
+        />
+      </RadDialog>
 
-      <DynamicModalForm
+      {/* Delete Credential Dialog */}
+      <RadDialog
         isOpen={deleteDialogOpen}
         onClose={handleDeleteDialogClose}
-        schema={{
-          type: 'object',
-          properties: {
-            confirm: {
-              type: 'boolean',
-              title: 'Are you sure you want to delete this credential?',
-              default: false,
-            },
-          },
-        }}
-        onSubmit={({ confirm }) => {
-          if (confirm) {
-            handleDeleteCredential(credentialToDelete.id);
-          } else {
-            setError('You must confirm the deletion.');
-          }
-        }}
-        initialData={{ confirm: false }}
         title="Delete Credential"
-      />
+        actions={
+          <>
+            <Button onClick={handleDeleteDialogClose} color="primary">
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                if (deleteFormRef.current) {
+                  const isValid = await deleteFormRef.current.submit();
+                  if (isValid) {
+                    const { confirm } = deleteFormRef.current.getData();
+                    if (confirm) {
+                      handleDeleteCredential(credentialToDelete.id);
+                    } else {
+                      setError('You must confirm the deletion.');
+                    }
+                  }
+                }
+              }}
+              color="primary"
+              variant="contained"
+            >
+              Delete
+            </Button>
+          </>
+        }
+      >
+        <JsonSchemaForm
+          ref={deleteFormRef}
+          schema={{
+            type: 'object',
+            properties: {
+              confirm: {
+                type: 'boolean',
+                title: 'Are you sure you want to delete this credential?',
+                default: false,
+              },
+            },
+          }}
+          initialData={{ confirm: false }}
+          hideSubmitButton={true}
+        />
+      </RadDialog>
     </Container>
   );
 };

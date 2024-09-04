@@ -1,6 +1,6 @@
 import { Paper, Typography, styled } from '@mui/material';
 import PropTypes from 'prop-types';
-import React, { memo } from 'react';
+import React, { forwardRef, memo } from 'react';
 import useDragOperations from '../hooks/useDragOperations';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -24,11 +24,11 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }));
 
-const DraggableItem = ({ packageData }) => {
+const DraggableItem = forwardRef(({ packageData }, ref) => {
   const { handleDragStart } = useDragOperations();
 
   return (
-    <StyledPaper draggable onDragStart={handleDragStart(packageData)}>
+    <StyledPaper ref={ref} draggable onDragStart={handleDragStart(packageData)}>
       <Typography
         variant="subtitle2"
         sx={{ color: 'white', fontWeight: 'bold' }}
@@ -40,7 +40,9 @@ const DraggableItem = ({ packageData }) => {
       </Typography>
     </StyledPaper>
   );
-};
+});
+
+DraggableItem.displayName = 'DraggableItem';
 
 DraggableItem.propTypes = {
   packageData: PropTypes.shape({

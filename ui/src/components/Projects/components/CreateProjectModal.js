@@ -1,7 +1,11 @@
-import React from 'react';
-import DynamicModalForm from '../../DynamicModalForm';
+import { Button } from '@mui/material';
+import React, { forwardRef, useCallback, useRef } from 'react';
+import JsonSchemaForm from 'react-json-schema-form';
+import RadDialog from '../../RadDialog';
 
-const CreateProjectModal = ({ isOpen, onClose, onSubmit }) => {
+const CreateProjectModal = forwardRef(({ isOpen, onClose, onSubmit }, ref) => {
+  const formRef = useRef(null);
+
   const schema = {
     type: 'object',
     properties: {
@@ -21,22 +25,43 @@ const CreateProjectModal = ({ isOpen, onClose, onSubmit }) => {
     },
   };
 
-  const handleSubmit = (formData) => {
-    onSubmit({ name: formData.name });
-    onClose();
-  };
+  const handleSubmit = useCallback(
+    async (formData) => {
+      await onSubmit(formData);
+      onClose();
+    },
+    [onSubmit, onClose]
+  );
 
   return (
-    <DynamicModalForm
+    <RadDialog
       isOpen={isOpen}
       onClose={onClose}
-      schema={schema}
-      uiSchema={uiSchema}
-      onSubmit={handleSubmit}
-      initialData={{ name: '' }}
       title="New Project"
-    />
+      actions={
+        <>
+          <Button onClick={onClose} color="primary">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => formRef.current && formRef.current.submit()}
+            color="primary"
+            variant="contained"
+          >
+            Create
+          </Button>
+        </>
+      }
+    >
+      <JsonSchemaForm
+        ref={formRef}
+        schema={schema}
+        uiSchema={uiSchema}
+        onSubmit={handleSubmit}
+        hideSubmitButton={true}
+      />
+    </RadDialog>
   );
-};
+});
 
 export default CreateProjectModal;

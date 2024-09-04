@@ -1,13 +1,26 @@
-import React from 'react';
-import DynamicModalForm from '../../DynamicModalForm';
+import { Button } from '@mui/material';
+import React, { useCallback, useRef } from 'react';
+import JsonSchemaForm from 'react-json-schema-form';
+import RadDialog from '../../RadDialog';
 
-const EditProjectModal = ({
-  isOpen,
-  onClose,
-  onSubmit,
-  projectId,
-  project,
-}) => {
+const EditProjectModal = ({ isOpen, onClose, onSubmit, project }) => {
+  const formRef = useRef(null);
+
+  const handleSubmit = useCallback(async () => {
+    if (formRef.current && project) {
+      const isValid = await formRef.current.submit();
+      if (isValid) {
+        const formData = formRef.current.getData();
+        onSubmit({
+          id: project.id,
+          name: formData.name,
+          credentials: formData.credentials || [],
+        });
+        onClose();
+      }
+    }
+  }, [onSubmit, onClose, project]);
+
   if (!project) {
     return null; // Return null if project is not loaded yet
   }
@@ -37,28 +50,34 @@ const EditProjectModal = ({
     },
   };
 
-  const handleSubmit = (formData) => {
-    onSubmit({
-      id: project.id,
-      name: formData.name,
-      credentials: formData.credentials || [],
-    });
-    onClose();
-  };
-
   return (
-    <DynamicModalForm
+    <RadDialog
       isOpen={isOpen}
       onClose={onClose}
-      schema={schema}
-      uiSchema={uiSchema}
-      onSubmit={handleSubmit}
-      initialData={{
-        name: project.name,
-        credentials: project.credentials || [],
-      }}
       title="Edit Project"
-    />
+      actions={
+        <>
+          <Button onClick={onClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSubmit} color="primary" variant="contained">
+            Save
+          </Button>
+        </>
+      }
+    >
+      <JsonSchemaForm
+        ref={formRef}
+        schema={schema}
+        uiSchema={uiSchema}
+        initialData={{
+          name: project.name,
+          credentials: project.credentials || [],
+        }}
+        onSubmit={handleSubmit}
+        hideSubmitButton={true}
+      />
+    </RadDialog>
   );
 };
 

@@ -62,7 +62,9 @@ const Sidebar = () => {
         {packages.map((pkg) => (
           <ListItem key={pkg.id} sx={{ padding: '8px 0' }}>
             <Tooltip title={`Drag to add ${pkg.name}`}>
-              <DraggableItem packageData={pkg} />
+              <Box width="100%">
+                <DraggableItem packageData={pkg} />
+              </Box>
             </Tooltip>
           </ListItem>
         ))}

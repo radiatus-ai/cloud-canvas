@@ -11,9 +11,10 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useRef } from 'react';
+import JsonSchemaForm from 'react-json-schema-form';
 import { useNavigate } from 'react-router-dom';
-import DynamicModalForm from '../DynamicModalForm';
+import RadDialog from '../RadDialog';
 import CreateProjectModal from './components/CreateProjectModal';
 import EditProjectModal from './components/EditProjectModal';
 import useProjectModals from './hooks/useProjectModals';
@@ -43,6 +44,10 @@ const Projects = () => {
     handleDeleteDialogOpen,
     handleDeleteDialogClose,
   } = useProjectModals(fetchProject);
+
+  const createProjectFormRef = useRef(null);
+  const editFormRef = useRef(null);
+  const deleteFormRef = useRef(null);
 
   const handleProjectClick = (projectId) => {
     navigate(`/canvas/${projectId}`);
@@ -148,43 +153,69 @@ const Projects = () => {
       </Box>
 
       <CreateProjectModal
+        ref={createProjectFormRef}
         isOpen={createProjectModalOpen}
         onClose={() => setCreateProjectModalOpen(false)}
         onSubmit={handleCreateProject}
       />
 
       <EditProjectModal
+        ref={editFormRef}
         isOpen={editDialogOpen}
         onClose={handleCloseEditDialog}
-        onSubmit={(updatedData) => {
-          return handleUpdateProject(editProject.id, updatedData);
-        }}
+        onSubmit={(updatedData) =>
+          handleUpdateProject(editProject.id, updatedData)
+        }
         project={editProject}
       />
 
-      <DynamicModalForm
+      <RadDialog
         isOpen={deleteDialogOpen}
         onClose={handleDeleteDialogClose}
-        schema={{
-          type: 'object',
-          properties: {
-            confirm: {
-              type: 'boolean',
-              title: 'Are you sure you want to delete this project?',
-              default: false,
-            },
-          },
-        }}
-        onSubmit={({ confirm }) => {
-          if (confirm) {
-            handleDeleteProject(projectToDelete.id);
-          } else {
-            setError('You must confirm the deletion.');
-          }
-        }}
-        initialData={{ confirm: false }}
         title="Delete Project"
-      />
+        actions={
+          <>
+            <Button onClick={handleDeleteDialogClose} color="primary">
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                if (deleteFormRef.current) {
+                  const isValid = await deleteFormRef.current.submit();
+                  if (isValid) {
+                    const { confirm } = deleteFormRef.current.getData();
+                    if (confirm) {
+                      handleDeleteProject(projectToDelete.id);
+                    } else {
+                      setError('You must confirm the deletion.');
+                    }
+                  }
+                }
+              }}
+              color="primary"
+              variant="contained"
+            >
+              Delete
+            </Button>
+          </>
+        }
+      >
+        <JsonSchemaForm
+          ref={deleteFormRef}
+          schema={{
+            type: 'object',
+            properties: {
+              confirm: {
+                type: 'boolean',
+                title: 'Are you sure you want to delete this project?',
+                default: false,
+              },
+            },
+          }}
+          initialData={{ confirm: false }}
+          hideSubmitButton={true}
+        />
+      </RadDialog>
     </Container>
   );
 };

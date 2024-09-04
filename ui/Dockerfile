@@ -16,7 +16,9 @@ RUN npm ci
 ENV REACT_APP_ENV=production
 ENV HTTPS=true
 
-# Build the app
+# Build the react-json-schema-form
+RUN cd react-json-schema-form && npm run build
+# build the api
 RUN npm run build
 
 # Serve stage
