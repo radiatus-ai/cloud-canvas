@@ -12,7 +12,7 @@
  */
 
 import ApiClient from '../ApiClient';
-import DeployStatus from './DeployStatus';
+import ProjectPackageStatus from './ProjectPackageStatus';
 
 /**
  * The ProjectPackageCreate model module.
@@ -80,7 +80,7 @@ class ProjectPackageCreate {
         obj['parameters'] = ApiClient.convertToType(data['parameters'], Object);
       }
       if (data.hasOwnProperty('deploy_status')) {
-        obj['deploy_status'] = DeployStatus.constructFromObject(
+        obj['deploy_status'] = ProjectPackageStatus.constructFromObject(
           data['deploy_status']
         );
       }
@@ -164,7 +164,7 @@ ProjectPackageCreate.prototype['outputs'] = undefined;
 ProjectPackageCreate.prototype['parameters'] = undefined;
 
 /**
- * @member {module:model/DeployStatus} deploy_status
+ * @member {module:model/ProjectPackageStatus} deploy_status
  */
 ProjectPackageCreate.prototype['deploy_status'] = undefined;
 

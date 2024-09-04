@@ -20,7 +20,6 @@ import Credential from './model/Credential';
 import CredentialCreate from './model/CredentialCreate';
 import CredentialType from './model/CredentialType';
 import CredentialUpdate from './model/CredentialUpdate';
-import DeployStatus from './model/DeployStatus';
 import HTTPValidationError from './model/HTTPValidationError';
 import Package from './model/Package';
 import PackageCreate from './model/PackageCreate';
@@ -28,10 +27,14 @@ import Project from './model/Project';
 import ProjectCreate from './model/ProjectCreate';
 import ProjectPackage from './model/ProjectPackage';
 import ProjectPackageCreate from './model/ProjectPackageCreate';
+import ProjectPackageStatus from './model/ProjectPackageStatus';
 import ProjectUpdate from './model/ProjectUpdate';
+import User from './model/User';
 import ValidationError from './model/ValidationError';
 import ValidationErrorLocInner from './model/ValidationErrorLocInner';
+import AuthApi from './api/AuthApi';
 import DefaultApi from './api/DefaultApi';
+import MeApi from './api/MeApi';
 import PackagesApi from './api/PackagesApi';
 import ProjectApi from './api/ProjectApi';
 import ProvisionerApi from './api/ProvisionerApi';
@@ -123,12 +126,6 @@ export {
   CredentialUpdate,
 
   /**
-   * The DeployStatus model constructor.
-   * @property {module:model/DeployStatus}
-   */
-  DeployStatus,
-
-  /**
    * The HTTPValidationError model constructor.
    * @property {module:model/HTTPValidationError}
    */
@@ -171,10 +168,22 @@ export {
   ProjectPackageCreate,
 
   /**
+   * The ProjectPackageStatus model constructor.
+   * @property {module:model/ProjectPackageStatus}
+   */
+  ProjectPackageStatus,
+
+  /**
    * The ProjectUpdate model constructor.
    * @property {module:model/ProjectUpdate}
    */
   ProjectUpdate,
+
+  /**
+   * The User model constructor.
+   * @property {module:model/User}
+   */
+  User,
 
   /**
    * The ValidationError model constructor.
@@ -189,10 +198,22 @@ export {
   ValidationErrorLocInner,
 
   /**
+   * The AuthApi service constructor.
+   * @property {module:api/AuthApi}
+   */
+  AuthApi,
+
+  /**
    * The DefaultApi service constructor.
    * @property {module:api/DefaultApi}
    */
   DefaultApi,
+
+  /**
+   * The MeApi service constructor.
+   * @property {module:api/MeApi}
+   */
+  MeApi,
 
   /**
    * The PackagesApi service constructor.

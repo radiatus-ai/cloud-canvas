@@ -12,7 +12,7 @@
  */
 
 import ApiClient from '../ApiClient';
-import DeployStatus from './DeployStatus';
+import ProjectPackageStatus from './ProjectPackageStatus';
 
 /**
  * The ProjectPackage model module.
@@ -30,7 +30,7 @@ class ProjectPackage {
    * @param parameters {Object}
    * @param id {String}
    * @param projectId {String}
-   * @param deployStatus {module:model/DeployStatus}
+   * @param deployStatus {module:model/ProjectPackageStatus}
    */
   constructor(
     name,
@@ -117,7 +117,7 @@ class ProjectPackage {
         );
       }
       if (data.hasOwnProperty('deploy_status')) {
-        obj['deploy_status'] = DeployStatus.constructFromObject(
+        obj['deploy_status'] = ProjectPackageStatus.constructFromObject(
           data['deploy_status']
         );
       }
@@ -249,7 +249,7 @@ ProjectPackage.prototype['id'] = undefined;
 ProjectPackage.prototype['project_id'] = undefined;
 
 /**
- * @member {module:model/DeployStatus} deploy_status
+ * @member {module:model/ProjectPackageStatus} deploy_status
  */
 ProjectPackage.prototype['deploy_status'] = undefined;
 

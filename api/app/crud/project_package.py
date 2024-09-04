@@ -193,6 +193,9 @@ class CRUDProjectPackage(
     ) -> Optional[ProjectPackage]:
         package = await self.get_package(db, id=id, project_id=project_id)
         if package:
+            # Delete associated connections
+            await crud_connection.delete_connections_for_package(db, package_id=id)
+            # Delete the package
             await db.delete(package)
             await db.commit()
         return package

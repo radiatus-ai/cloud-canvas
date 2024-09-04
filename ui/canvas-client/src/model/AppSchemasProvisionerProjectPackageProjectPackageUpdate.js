@@ -12,7 +12,7 @@
  */
 
 import ApiClient from '../ApiClient';
-import DeployStatus from './DeployStatus';
+import ProjectPackageStatus from './ProjectPackageStatus';
 
 /**
  * The AppSchemasProvisionerProjectPackageProjectPackageUpdate model module.
@@ -23,7 +23,7 @@ class AppSchemasProvisionerProjectPackageProjectPackageUpdate {
   /**
    * Constructs a new <code>AppSchemasProvisionerProjectPackageProjectPackageUpdate</code>.
    * @alias module:model/AppSchemasProvisionerProjectPackageProjectPackageUpdate
-   * @param deployStatus {module:model/DeployStatus}
+   * @param deployStatus {module:model/ProjectPackageStatus}
    */
   constructor(deployStatus) {
     AppSchemasProvisionerProjectPackageProjectPackageUpdate.initialize(
@@ -54,7 +54,7 @@ class AppSchemasProvisionerProjectPackageProjectPackageUpdate {
         obj || new AppSchemasProvisionerProjectPackageProjectPackageUpdate();
 
       if (data.hasOwnProperty('deploy_status')) {
-        obj['deploy_status'] = DeployStatus.constructFromObject(
+        obj['deploy_status'] = ProjectPackageStatus.constructFromObject(
           data['deploy_status']
         );
       }
@@ -95,7 +95,7 @@ AppSchemasProvisionerProjectPackageProjectPackageUpdate.RequiredProperties = [
 ];
 
 /**
- * @member {module:model/DeployStatus} deploy_status
+ * @member {module:model/ProjectPackageStatus} deploy_status
  */
 AppSchemasProvisionerProjectPackageProjectPackageUpdate.prototype[
   'deploy_status'

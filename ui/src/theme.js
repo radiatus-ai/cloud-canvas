@@ -1,3 +1,4 @@
+import { grey } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 
 // const lightPrimaryColor = '#1976d2';
@@ -18,7 +19,7 @@ const baseTheme = createTheme({
     // Add more typography variants as needed
   },
   shape: {
-    borderRadius: 8,
+    borderRadius: 6,
   },
   components: {
     MuiButton: {
@@ -73,10 +74,11 @@ export const lightTheme = createTheme(baseTheme, {
     },
     background: {
       default: '#F5F5F5',
-      paper: '#ffffff',
+      // paper: '#1a37f0', // Light blue
+      // paper: 'rgb(42, 43, 53)',
+      // paper: '#3542d4',
     },
-    // divider: 'rgba(100, 0, 0, 0.12)',
-    divider: lightPrimaryColor,
+    nodeBorder: grey[800],
     components: {
       MuiTypography: {
         styleOverrides: {
@@ -91,6 +93,16 @@ export const lightTheme = createTheme(baseTheme, {
           // },
         },
       },
+      // MuiCssBaseline: {
+      //   styleOverrides: {
+      //     body: {
+      //       backgroundImage: 'url("/noise-220.png")',
+      //       backgroundSize: '220px 220px', // Adjust this value to match the size of your small square image
+      //       backgroundRepeat: 'repeat',
+      //       backgroundPosition: '0 0',
+      //     },
+      //   },
+      // },
     },
   },
 });
@@ -111,8 +123,12 @@ export const darkTheme = createTheme(baseTheme, {
     background: {
       default: '#121212',
       paper: '#1e1e1e', // Slightly lighter than the default background
+      // backgroundImage: 'url("/noise-220.png")',
+      // backgroundSize: '220px 220px', // Adjust this value to match the size of your small square image
+      // backgroundRepeat: 'repeat',
+      // backgroundPosition: '0 0',
     },
-    // divider: lightPrimaryColor,
+    nodeBorder: grey[500],
   },
   components: {
     // these work as "overrides"

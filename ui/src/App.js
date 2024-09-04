@@ -1,14 +1,18 @@
-import { Box, Container, Typography, CircularProgress } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import AuthenticationComponent from './components/Authentication';
-import FlowDiagram from './components/FlowDiagram';
-import JsonSchemaFormTest from './components/JsonSchemaFormTest';
+import Canvas from './components/Canvas';
 import Navigation from './components/Navigation';
 import Projects from './components/Projects';
-import CredentialsList from './components/CredentialsList';
+import Secrets from './components/Secrets';
 import { useAuth } from './contexts/Auth';
-import { useTheme } from '@mui/material';
 
 const App = () => {
   const { token, login, logout } = useAuth();
@@ -20,14 +24,11 @@ const App = () => {
       setIsLoading(true);
       try {
         // todo: add env var / config to set this
-        const response = await fetch(
-          'https://auth-service-razsp32k5q-uc.a.run.app/login/google',
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: authToken }),
-          }
-        );
+        const response = await fetch('https://auth.dev.r7ai.net/login/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: authToken }),
+        });
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -48,6 +49,9 @@ const App = () => {
   const handleLoginError = (error) => {
     console.error('Login Failed:', error);
   };
+  // utility for using a token to upload packages, etc. todo: remove and add a hotkey to expose debug info in the UI.
+  // make the debug feature feel really cool.
+  console.log('token', token);
 
   if (!token) {
     return (
@@ -83,6 +87,7 @@ const App = () => {
       </Box>
     );
   }
+  // debugger;
 
   return (
     <Router>
@@ -91,16 +96,27 @@ const App = () => {
           display: 'flex',
           flexDirection: 'column',
           minHeight: '100vh',
-          // backgroundColor: theme.palette.primary.main,
         }}
       >
         <Navigation onLogout={logout} />
-        <Box component="main" sx={{ flexGrow: 1, p: 0, overflow: 'hidden' }}>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 0,
+            overflow: 'hidden',
+            ...(theme.palette.mode === 'light' && {
+              backgroundImage: 'url("/noise-220.png")',
+              backgroundSize: '220px 220px',
+              backgroundRepeat: 'repeat',
+              backgroundPosition: '0 0',
+            }),
+          }}
+        >
           <Routes>
             <Route path="/" element={<Projects />} />
-            <Route path="/secrets" element={<CredentialsList />} />
-            <Route path="/form" element={<JsonSchemaFormTest />} />
-            <Route path="/flow/:projectId" element={<FlowDiagram />} />
+            <Route path="/secrets" element={<Secrets />} />
+            <Route path="/canvas/:projectId" element={<Canvas />} />
           </Routes>
         </Box>
       </Box>

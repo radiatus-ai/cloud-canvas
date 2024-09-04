@@ -10,11 +10,15 @@ from fastapi import (
 )
 from pydantic import UUID4
 
-from app.core.dependencies import get_db_and_current_user
+from app.core.dependencies import (
+    get_db_and_current_user,
+)
 from app.core.logger import get_logger
 from app.core.websocket_manager import ConnectionManager
 from app.crud.project import project as crud_project
 from app.schemas.project import Project, ProjectCreate, ProjectUpdate
+
+logger = get_logger(__name__)
 
 logger = get_logger(__name__)
 
@@ -51,8 +55,8 @@ async def create_project(
     # a little weird we have to do this. def unique to the async setup we have
     # we may only have to do this in create but I'm not 100% sure yet
     await db.refresh(prj)
-    # Broadcast the update to all connected clients
-    await connection_manager.broadcast(f"New project created: {prj.name}")
+    # todo: add websocket for projects
+    # await connection_manager.broadcast(f"New project created: {prj.name}")
 
     return prj
 
@@ -83,6 +87,15 @@ async def delete_project(
     return await crud_project.delete_project(db, id=project_id)
 
 
+@router.get("/projects/{project_id}", response_model=Project)
+async def get_project(project_id: UUID4, deps: dict = Depends(get_db_and_current_user)):
+    db = deps["db"]
+    project = await crud_project.get(db, project_id)
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return project
+
+
 @router.websocket("/ws/projects")
 async def websocket_endpoint(
     websocket: WebSocket, org_id: UUID4 = Query(...), project_id: UUID4 = Query(None)
@@ -91,6 +104,6 @@ async def websocket_endpoint(
     try:
         while True:
             # Wait for any message from the client (optional)
-            data = await websocket.receive_text()
+            await websocket.receive_text()
     except WebSocketDisconnect:
         connection_manager.disconnect(websocket)

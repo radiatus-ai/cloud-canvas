@@ -1,18 +1,18 @@
-import React from 'react';
 import {
   Alert,
+  Box,
   CircularProgress,
   Divider,
   List,
   ListItem,
   Tooltip,
   Typography,
-  Box,
 } from '@mui/material';
+import React, { memo } from 'react';
 import DraggableItem from './components/DraggableItem';
 import useSidebarData from './hooks/useSidebarData';
 
-const SidebarContainer = ({ children }) => (
+const SidebarContainer = memo(({ children }) => (
   <Box
     sx={{
       height: '100%',
@@ -20,26 +20,20 @@ const SidebarContainer = ({ children }) => (
       backgroundSize: '400% 400%',
       animation: 'gradient 15s ease infinite',
       '@keyframes gradient': {
-        '0%': {
-          backgroundPosition: '0% 50%',
-        },
-        '50%': {
-          backgroundPosition: '100% 50%',
-        },
-        '100%': {
-          backgroundPosition: '0% 50%',
-        },
+        '0%': { backgroundPosition: '0% 50%' },
+        '50%': { backgroundPosition: '100% 50%' },
+        '100%': { backgroundPosition: '0% 50%' },
       },
     }}
   >
     {children}
   </Box>
-);
+));
 
 const Sidebar = () => {
   const { packages, isLoading, error } = useSidebarData();
 
-  const content = () => {
+  const renderContent = () => {
     if (isLoading) {
       return (
         <Box
@@ -62,23 +56,17 @@ const Sidebar = () => {
     }
 
     return (
-      <>
-        <List
-          sx={{
-            padding: '16px',
-            overflow: 'auto',
-            height: 'calc(100% - 80px)',
-          }}
-        >
-          {packages.map((pkg) => (
-            <ListItem key={pkg.id} sx={{ padding: '8px 0' }}>
-              <Tooltip title={`Drag to add ${pkg.name}`}>
-                <DraggableItem packageData={pkg} />
-              </Tooltip>
-            </ListItem>
-          ))}
-        </List>
-      </>
+      <List
+        sx={{ padding: '16px', overflow: 'auto', height: 'calc(100% - 80px)' }}
+      >
+        {packages.map((pkg) => (
+          <ListItem key={pkg.id} sx={{ padding: '8px 0' }}>
+            <Tooltip title={`Drag to add ${pkg.name}`}>
+              <DraggableItem packageData={pkg} />
+            </Tooltip>
+          </ListItem>
+        ))}
+      </List>
     );
   };
 
@@ -105,7 +93,7 @@ const Sidebar = () => {
         </Typography>
       </Box>
       <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
-      {content()}
+      {renderContent()}
     </SidebarContainer>
   );
 };

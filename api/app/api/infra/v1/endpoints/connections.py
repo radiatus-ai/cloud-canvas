@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from pydantic import UUID4
 
 from app.core.dependencies import get_db_and_current_user
@@ -31,15 +31,20 @@ async def create_connection(
 
 
 @router.delete(
-    "/projects/{project_id}/connections/{connection_id}", response_model=Connection
+    "/projects/{project_id}/{source_package_id}/{target_package_id}",
+    response_model=Connection,
 )
 async def delete_connection(
     project_id: UUID4,
-    connection_id: UUID4,
+    source_package_id: UUID4,
+    target_package_id: UUID4,
     deps: dict = Depends(get_db_and_current_user),
 ):
     db = deps["db"]
-    connection = await crud_connection.get_connection(db, id=connection_id)
-    if not connection:
-        raise HTTPException(status_code=404, detail="Connection not found")
-    return await crud_connection.delete_connection(db, id=connection_id)
+    # todo: do tests like this when we come back for rbac
+    # connection = await crud_connection.get_connection(db, id=connection_id)
+    # if not connection:
+    #     raise HTTPException(status_code=404, detail="Connection not found")
+    return await crud_connection.delete_connection_by_source_and_target(
+        db, source_package_id=source_package_id, target_package_id=target_package_id
+    )

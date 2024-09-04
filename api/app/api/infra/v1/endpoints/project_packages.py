@@ -1,7 +1,6 @@
 import json
 from typing import List
 
-from core.pubsub import PubSubMessenger
 from fastapi import (
     APIRouter,
     Body,
@@ -14,7 +13,6 @@ from pydantic import UUID4
 
 from app.core.dependencies import (
     get_db_and_current_user,
-    get_pubsub_messenger,
     get_websocket_manager,
 )
 from app.core.logger import get_logger
@@ -82,7 +80,6 @@ async def update_project_package(
     package_id: UUID4 = Path(..., description="The ID of the package"),
     package: ProjectPackageUpdate = Body(...),
     deps: dict = Depends(get_db_and_current_user),
-    pubsub: PubSubMessenger = Depends(get_pubsub_messenger),
     websocket_manager: ConnectionManager = Depends(get_websocket_manager),
 ):
     db = deps["db"]
@@ -97,12 +94,19 @@ async def update_project_package(
     updated_package = await crud_project_package.update_package(
         db, db_obj=existing_package, obj_in=package
     )
-    pubsub.publish_message(
-        json.dumps({"type": "package_update", "data": updated_package.dict()})
-    )
 
     # Convert SQLAlchemy model to Pydantic model
     package_pydantic = ProjectPackage.from_orm(updated_package)
+    # await websocket_manager.publish_message(
+    #     json.dumps({"type": "package_update", "data": package_pydantic.dict()})
+    # )
+    await websocket_manager.broadcast_package_update(
+        package_id,
+        {
+            "id": str(package_id),
+            "deploy_status": package.deploy_status.value,
+        },
+    )
 
     # Broadcast the update to all connected WebSocket clients
     await websocket_manager.broadcast_package_update(
@@ -204,8 +208,6 @@ async def destroy_project_package(
 
 
 @router.delete("/{package_id}", response_model=ProjectPackage)
-@router.delete("/{package_id}", response_model=ProjectPackage)
-@router.delete("/{package_id}", response_model=ProjectPackage)
 async def delete_project_package(
     project_id: UUID4 = Path(..., description="The ID of the project"),
     package_id: UUID4 = Path(..., description="The ID of the package"),
@@ -221,18 +223,22 @@ async def delete_project_package(
     #         }
     #     )
     # )
-    package = await crud_project_package.get_package(db, id=package_id)
+
+    package = await crud_project_package.get_package(
+        db, id=package_id, project_id=project_id
+    )
     if not package or package.project_id != project_id:
         raise HTTPException(
             status_code=404, detail="ProjectPackage not found in this project"
         )
-    package = await crud_project_package.delete_package(db, id=package_id)
-    # pubsub.publish_message(
-    #     json.dumps(
-    #         {
-    #             "type": "package_update",
-    #             "data": {"id": str(package_id), "deploy_status": "DELETED"},
-    #         }
-    #     )
-    # )
+    package = await crud_project_package.delete_package(
+        db, id=package_id, project_id=project_id
+    )
+    await websocket_manager.broadcast_package_update(
+        package_id,
+        {
+            "id": str(package_id),
+            "deploy_status": "DELETED",
+        },
+    )
     return package
