@@ -1,18 +1,40 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEdgesState, useNodesState } from 'reactflow';
+import { useAuth } from '../../../contexts/Auth';
+import useApi from '../../../hooks/useAPI';
 import useEdgeOperations from './useEdgeOperations';
 import useNodeOperations from './useNodeOperations';
 import useProjectData from './useProjectData';
+import useCanvasWebSocket from './useRobustWebSocket';
 
 export const useFlowDiagram = () => {
   const { projectId } = useParams();
+  const { token } = useAuth();
+  const { projects: projectsApi } = useApi();
   const { projectData, isLoading, error } = useProjectData(projectId);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const reactFlowWrapper = useRef(null);
   const [tempNodes, setTempNodes] = useState([]);
+
+  const updateEdges = useCallback(
+    (updatedEdge) => {
+      setEdges((eds) =>
+        eds.map((edge) =>
+          edge.id === updatedEdge.id ? { ...edge, ...updatedEdge } : edge
+        )
+      );
+    },
+    [setEdges]
+  );
+
+  const {
+    sendJsonMessage,
+    connectionStatus,
+    error: wsError,
+  } = useCanvasWebSocket(projectId, updateEdges);
 
   const {
     onOpenModal,
@@ -32,7 +54,6 @@ export const useFlowDiagram = () => {
   );
 
   const {
-    onConnect,
     onConnectStart,
     onConnectEnd,
     onConnectCheck,
@@ -243,6 +264,58 @@ export const useFlowDiagram = () => {
     [checkRequiredConnections, onDeploy]
   );
 
+  const onConnect = useCallback(
+    async (params) => {
+      // Optimistically add the edge
+      const newEdge = {
+        ...params,
+        id: `${params.source}-${params.target}`,
+        animated: true, // Add animation to show it's pending
+      };
+      setEdges((eds) => [...eds, newEdge]);
+
+      // Then call the API to create the connection
+      if (
+        validateConnection(
+          params.source,
+          params.target,
+          params.sourceHandle,
+          params.targetHandle
+        )
+      ) {
+        try {
+          const response = await projectsApi.createConnection(
+            projectId,
+            {
+              source_package_id: params.source,
+              target_package_id: params.target,
+              source_handle: params.sourceHandle,
+              target_handle: params.targetHandle,
+            },
+            token
+          );
+
+          if (response && response.body) {
+            // Update the edge with the response data
+            const updatedEdge = {
+              ...newEdge,
+              ...response.body,
+              animated: false, // Remove animation as it's no longer pending
+            };
+            setEdges((eds) =>
+              eds.map((e) => (e.id === newEdge.id ? updatedEdge : e))
+            );
+          }
+        } catch (error) {
+          console.error('Error saving connection:', error);
+          // Remove the optimistically added edge if the API call fails
+          setEdges((eds) => eds.filter((e) => e.id !== newEdge.id));
+        }
+      }
+    },
+    [projectId, token, projectsApi, setEdges, validateConnection]
+  );
+
   const nodesWithFunctions = useMemo(() => {
     return nodes.map((node) => ({
       ...node,
@@ -252,12 +325,18 @@ export const useFlowDiagram = () => {
         onOpenModal: () => handleOpenModal(node.id),
         onDeploy: () => handleDeploy(node.id),
         onDelete: () => handleDeleteNode(node.id),
-        // probably doesn't need to be passed to every node, but it's a small price to pay for now
         onDeleteEdge: (edgeId) => handleDeleteEdge(edgeId),
         deploy_status: node.data?.deploy_status || 'NOT_DEPLOYED',
       },
     }));
-  }, [nodes, handleOpenModal, handleDeploy, handleDeleteNode, updateNodeData]);
+  }, [
+    nodes,
+    handleOpenModal,
+    handleDeploy,
+    handleDeleteNode,
+    updateNodeData,
+    handleDeleteEdge,
+  ]);
 
   return {
     nodes: [...nodesWithFunctions, ...tempNodes],
@@ -278,7 +357,6 @@ export const useFlowDiagram = () => {
     modalState,
     setModalState,
     handleOpenModal,
-    // handleDeleteEdge,
     handleEdgeDelete,
     onSubmitForm,
     handleSubmitForm,
@@ -287,6 +365,8 @@ export const useFlowDiagram = () => {
     updateNodeData,
     checkRequiredConnections,
     validateConnection,
+    wsConnectionStatus: connectionStatus,
+    wsError,
   };
 };
 

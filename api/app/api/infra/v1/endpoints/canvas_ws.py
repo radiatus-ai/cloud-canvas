@@ -19,9 +19,10 @@ from app.crud.connection import connection as crud_connection
 
 logger = get_logger(__name__)
 
-router = APIRouter(
-    prefix="/projects/{project_id}/connections", tags=["project", "connections"]
-)
+router = APIRouter(prefix="/projects/{project_id}/canvas", tags=["project", "canvas"])
+
+# a web socket for all other canvas state
+# for now it's just connections, but could  be anything
 
 
 @router.websocket("/ws")

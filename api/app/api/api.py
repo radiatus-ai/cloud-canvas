@@ -1,4 +1,9 @@
+from api.common.endpoints import (
+    auth,
+    me,
+)
 from api.infra.v1.endpoints import (
+    canvas_ws,
     connections,
     credentials,
     packages,
@@ -9,13 +14,9 @@ from api.infra.v1.endpoints import (
 from api.provisioner.v1.endpoints import (
     project_packages as provisioner_project_packages,
 )
-from api.common.endpoints import (
-    auth, 
-    me, 
-    # tokens,
-)
+
+# tokens,
 from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse
 
 from app.core.dependencies import get_db_and_current_user
 
@@ -32,9 +33,11 @@ api_router.include_router(me.router)
 
 base_router = APIRouter()
 
+
 @base_router.get("/", dependencies=[])
 async def root():
     return "healthy"
+
 
 # todo: add token auth that's just for the provisioner
 provisioner_router = APIRouter(prefix="/provisioner", tags=["provisioner"])
@@ -43,4 +46,4 @@ provisioner_router.include_router(provisioner_project_packages.router)
 # todo: add to api router for auth
 socket_router = APIRouter()
 socket_router.include_router(project_packages_ws.router)
-# socket_router.include_router(connections_ws.router)
+socket_router.include_router(canvas_ws.router)

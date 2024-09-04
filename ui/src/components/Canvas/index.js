@@ -32,6 +32,8 @@ const Canvas = () => {
     handleSubmitForm,
     handleEdgeDelete,
     missingConnections,
+    wsConnectionStatus,
+    wsError,
   } = useFlowDiagram();
 
   const flowCanvasProps = useMemo(
@@ -48,6 +50,7 @@ const Canvas = () => {
       onDrop,
       onDragOver,
       reactFlowWrapper,
+      wsConnectionStatus,
     }),
     [
       nodes,
@@ -62,6 +65,7 @@ const Canvas = () => {
       onDrop,
       onDragOver,
       reactFlowWrapper,
+      wsConnectionStatus,
     ]
   );
 
@@ -88,6 +92,7 @@ const Canvas = () => {
 
   if (isLoading) return <LoadingScreen />;
   if (error) return <div style={{ color: 'red' }}>{error}</div>;
+  if (wsError) return <div style={{ color: 'red' }}>{wsError}</div>;
 
   return (
     <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)', width: '100%' }}>
