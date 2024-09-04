@@ -14,9 +14,13 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import { createGetItemSchema } from '../../utils/schemaUtils';
+import {
+  createDefaultValue,
+  createGetItemSchema,
+} from '../../utils/schemaUtils';
+import FieldRenderer from '../FieldRenderer'; // Ensure this component is created and imported
 
 const ArrayField = ({ fieldSchema, value, onChange, error }) => {
   const [expanded, setExpanded] = useState(null);
@@ -32,7 +36,69 @@ const ArrayField = ({ fieldSchema, value, onChange, error }) => {
   const fieldId = `field-${fieldSchema.title}`;
   const errorId = `${fieldId}-error`;
 
-  // ... (rest of the component logic remains the same)
+  const handleExpand = useCallback(
+    (index) => (event, isExpanded) => {
+      setExpanded(isExpanded ? index : false);
+    },
+    []
+  );
+
+  const handleItemChange = useCallback(
+    (index, newValue) => {
+      const newArrayValue = [...arrayValue];
+      newArrayValue[index] = newValue;
+      onChange(newArrayValue);
+    },
+    [arrayValue, onChange]
+  );
+
+  const handleAdd = useCallback(() => {
+    const newItemSchema = getItemSchema(arrayValue.length);
+    const newItem = createDefaultValue(newItemSchema);
+    onChange([...arrayValue, newItem]);
+  }, [arrayValue, getItemSchema, onChange]);
+
+  const handleRemove = useCallback(
+    (index) => {
+      const newArrayValue = arrayValue.filter((_, i) => i !== index);
+      onChange(newArrayValue);
+    },
+    [arrayValue, onChange]
+  );
+
+  const onDragEnd = useCallback(
+    (result) => {
+      if (!result.destination) return;
+      const items = Array.from(arrayValue);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+      onChange(items);
+    },
+    [arrayValue, onChange]
+  );
+
+  const getItemTitle = useCallback(
+    (item, index) => {
+      const itemSchema = getItemSchema(index);
+      return itemSchema.title || `Item ${index + 1}`;
+    },
+    [getItemSchema]
+  );
+
+  const renderArrayItem = useCallback(
+    (item, index) => {
+      const itemSchema = getItemSchema(index);
+      return (
+        <FieldRenderer
+          schema={itemSchema}
+          value={item}
+          onChange={(newValue) => handleItemChange(index, newValue)}
+          // Add other necessary props like error handling, etc.
+        />
+      );
+    },
+    [getItemSchema, handleItemChange]
+  );
 
   return (
     <Box sx={{ mb: 2 }}>

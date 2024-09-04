@@ -33,6 +33,7 @@ const useProjectsFetch = () => {
     async (projectId) => {
       try {
         const response = await projectsApiRef.current.get(projectId, token);
+        console.log('Project:', response.body);
         return response.body;
       } catch (err) {
         setError('Failed to load project details. Please try again later.');

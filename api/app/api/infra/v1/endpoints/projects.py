@@ -76,12 +76,12 @@ async def update_project(
     )
 
 
-@router.delete("/projects/{project_id}", response_model=Project)
+@router.delete("/projects/{project_id}")
 async def delete_project(
     project_id: UUID4, deps: dict = Depends(get_db_and_current_user)
 ):
     db = deps["db"]
-    project = await crud_project.get(db, project_id)
+    project = await crud_project.get(db, id=project_id)
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
     return await crud_project.delete_project(db, id=project_id)
