@@ -13,7 +13,6 @@ import React, {
   useEffect,
   useImperativeHandle,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import { useI18n } from '../context/I18nContext';
@@ -54,7 +53,6 @@ const JsonSchemaForm = forwardRef(
     const formTheme = useMemo(() => createTheme(theme), [theme]);
     const memoizedSchema = useMemo(() => schema, [schema]);
     const memoizedInitialData = useMemo(() => initialData, [initialData]);
-    const initialDataRef = useRef(memoizedInitialData);
     const [isInitialized, setIsInitialized] = useState(false);
 
     const {
@@ -74,26 +72,16 @@ const JsonSchemaForm = forwardRef(
 
     useEffect(() => {
       if (!isInitialized) {
-        setFormData(memoizedInitialData);
         setIsInitialized(true);
-      } else if (
-        JSON.stringify(initialDataRef.current) !==
-        JSON.stringify(memoizedInitialData)
-      ) {
-        setFormData(memoizedInitialData);
-        resetForm();
-        initialDataRef.current = memoizedInitialData;
       }
-    }, [memoizedInitialData, setFormData, resetForm, isInitialized]);
+    }, []);
 
     const memoizedHandleSubmit = useCallback(async () => {
       const validationResult = validateAllFields();
       if (validationResult.isValid) {
         return handleSubmit(formData);
-      } else {
-        console.log('Form validation failed:', validationResult.errors);
-        return false;
       }
+      return false;
     }, [handleSubmit, formData, validateAllFields]);
 
     const memoizedHandleChange = useCallback(
@@ -148,7 +136,7 @@ const JsonSchemaForm = forwardRef(
     );
 
     const handleFormSubmit = useCallback(
-      async (event) => {
+      (event) => {
         event.preventDefault();
         return memoizedHandleSubmit();
       },
@@ -156,7 +144,7 @@ const JsonSchemaForm = forwardRef(
     );
 
     if (!isInitialized) {
-      return null; // Or a loading indicator
+      return null;
     }
 
     return (

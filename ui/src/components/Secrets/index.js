@@ -15,6 +15,7 @@ import React, { useCallback, useEffect, useRef } from 'react';
 import JsonSchemaForm from 'react-json-schema-form';
 import RadDialog from '../RadDialog';
 import CreateSecretModal from './components/CreateSecretModal';
+import UpdateSecretModal from './components/UpdateSecretModal';
 import useCredentialModals from './hooks/useCredentialModals';
 import useCredentialOperations from './hooks/useCredentialOperations';
 import useCredentialsFetch from './hooks/useCredentialsFetch';
@@ -44,7 +45,6 @@ const Secrets = () => {
   const editFormRef = useRef(null);
   const deleteFormRef = useRef(null);
 
-  // Handle Create Credential Submission
   const handleCreateCredentialSubmit = useCallback(
     async (formData) => {
       try {
@@ -58,7 +58,6 @@ const Secrets = () => {
     [handleCreateCredential, setCreateCredentialModalOpen, setError]
   );
 
-  // Ensure the form resets when modal is closed
   useEffect(() => {
     if (!createCredentialModalOpen && createSecretFormRef.current) {
       createSecretFormRef.current.reset();
@@ -141,7 +140,6 @@ const Secrets = () => {
         </Grid>
       </Box>
 
-      {/* Create Secret Modal */}
       <CreateSecretModal
         ref={createSecretFormRef}
         isOpen={createCredentialModalOpen}
@@ -149,59 +147,14 @@ const Secrets = () => {
         onSubmit={handleCreateCredentialSubmit}
       />
 
-      {/* Edit Credential Dialog */}
-      <RadDialog
-        isOpen={editDialogOpen && editCredential !== null}
+      <UpdateSecretModal
+        ref={editFormRef}
+        isOpen={editDialogOpen}
         onClose={handleCloseEditDialog}
-        title="Edit Credential"
-        actions={
-          <>
-            <Button onClick={handleCloseEditDialog} color="primary">
-              Cancel
-            </Button>
-            <Button
-              onClick={async () => {
-                if (editFormRef.current) {
-                  const isValid = await editFormRef.current.submit();
-                  if (isValid) {
-                    const updatedData = editFormRef.current.getData();
-                    handleUpdateCredential(editCredential.id, updatedData);
-                  }
-                }
-              }}
-              color="primary"
-              variant="contained"
-            >
-              Save
-            </Button>
-          </>
-        }
-      >
-        <JsonSchemaForm
-          ref={editFormRef}
-          schema={{
-            type: 'object',
-            properties: {
-              name: {
-                type: 'string',
-                title: 'Credential Name',
-                readOnly: true,
-              },
-              credential_type: {
-                type: 'string',
-                title: 'Credential Type',
-                readOnly: true,
-              },
-              secret: { type: 'string', title: 'New Secret Value' },
-            },
-            required: ['secret'],
-          }}
-          initialData={editCredential || {}}
-          hideSubmitButton={true}
-        />
-      </RadDialog>
+        onSubmit={handleUpdateCredential}
+        credential={editCredential}
+      />
 
-      {/* Delete Credential Dialog */}
       <RadDialog
         isOpen={deleteDialogOpen}
         onClose={handleDeleteDialogClose}

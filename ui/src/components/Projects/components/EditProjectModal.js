@@ -22,7 +22,7 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }) => {
   }, [onSubmit, onClose, project]);
 
   if (!project) {
-    return null; // Return null if project is not loaded yet
+    return null;
   }
 
   const schema = {

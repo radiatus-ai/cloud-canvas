@@ -54,7 +54,6 @@ const CreateSecretModal = forwardRef(({ isOpen, onClose, onSubmit }, ref) => {
 
   const handleSubmit = useCallback(
     async (formData) => {
-      console.log('handleSubmit in CreateSecretModal', formData);
       await onSubmit({
         ...formData,
         organization_id: 'foo',
@@ -95,7 +94,6 @@ const CreateSecretModal = forwardRef(({ isOpen, onClose, onSubmit }, ref) => {
       }
     >
       <JsonSchemaForm
-        // it has a problem with this ref
         ref={formRef}
         schema={schema}
         uiSchema={uiSchema}

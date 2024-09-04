@@ -1,11 +1,9 @@
 import { Button } from '@mui/material';
-import React, { forwardRef, useCallback, useRef } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import JsonSchemaForm from 'react-json-schema-form';
 import RadDialog from '../../RadDialog';
 
 const CreateProjectModal = forwardRef(({ isOpen, onClose, onSubmit }, ref) => {
-  const formRef = useRef(null);
-
   const schema = {
     type: 'object',
     properties: {
@@ -21,7 +19,7 @@ const CreateProjectModal = forwardRef(({ isOpen, onClose, onSubmit }, ref) => {
   const uiSchema = {
     name: {
       'ui:autofocus': true,
-      'ui:placeholder': 'Name',
+      'ui:placeholder': 'Project Name',
     },
   };
 
@@ -44,7 +42,7 @@ const CreateProjectModal = forwardRef(({ isOpen, onClose, onSubmit }, ref) => {
             Cancel
           </Button>
           <Button
-            onClick={() => formRef.current && formRef.current.submit()}
+            onClick={() => ref.current?.submit()}
             color="primary"
             variant="contained"
           >
@@ -54,7 +52,7 @@ const CreateProjectModal = forwardRef(({ isOpen, onClose, onSubmit }, ref) => {
       }
     >
       <JsonSchemaForm
-        ref={formRef}
+        ref={ref}
         schema={schema}
         uiSchema={uiSchema}
         onSubmit={handleSubmit}

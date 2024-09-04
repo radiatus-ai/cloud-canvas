@@ -8,7 +8,7 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import JsonSchemaForm from 'react-json-schema-form';
 import RadDialog from '../../RadDialog';
 import CreatePackageModal from './CreatePackageModal';
@@ -16,7 +16,7 @@ import CreatePackageModal from './CreatePackageModal';
 const ModalsContainer = ({
   modalState,
   setModalState,
-  nodes = [],
+  nodes,
   onSubmitForm,
   handleNameSubmit,
   onDeploy,
@@ -66,7 +66,25 @@ const ModalsContainer = ({
     }
   }, [selectedNodeId, onDeploy, setModalState]);
 
-  const selectedNode = nodes.find((n) => n.id === selectedNodeId);
+  const closeNameModal = useCallback(() => {
+    setModalState((prev) => ({
+      ...prev,
+      isNameModalOpen: false,
+      droppedPackageInfo: null,
+    }));
+  }, [setModalState]);
+
+  const closeMissingConnectionsModal = useCallback(() => {
+    setModalState((prev) => ({
+      ...prev,
+      missingConnectionsModalOpen: false,
+    }));
+  }, [setModalState]);
+
+  const selectedNode = useMemo(
+    () => nodes.find((n) => n.id === selectedNodeId),
+    [nodes, selectedNodeId]
+  );
 
   return (
     <>
@@ -80,7 +98,7 @@ const ModalsContainer = ({
               Cancel
             </Button>
             <Button
-              onClick={() => formRef.current && formRef.current.submit()}
+              onClick={() => formRef.current?.submit()}
               color="primary"
               variant="contained"
             >
@@ -99,23 +117,12 @@ const ModalsContainer = ({
       </RadDialog>
       <CreatePackageModal
         open={isNameModalOpen}
-        onClose={() => {
-          setModalState((prev) => ({
-            ...prev,
-            isNameModalOpen: false,
-            droppedPackageInfo: null,
-          }));
-        }}
+        onClose={closeNameModal}
         onSubmit={handleNameSubmit}
       />
       <RadDialog
         open={missingConnectionsModalOpen}
-        onClose={() =>
-          setModalState((prev) => ({
-            ...prev,
-            missingConnectionsModalOpen: false,
-          }))
-        }
+        onClose={closeMissingConnectionsModal}
       >
         <DialogTitle>Missing Required Connections</DialogTitle>
         <DialogContent>
@@ -134,16 +141,7 @@ const ModalsContainer = ({
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() =>
-              setModalState((prev) => ({
-                ...prev,
-                missingConnectionsModalOpen: false,
-              }))
-            }
-          >
-            Cancel
-          </Button>
+          <Button onClick={closeMissingConnectionsModal}>Cancel</Button>
           <Button onClick={handleDeployWithMissingConnections} color="primary">
             Deploy Anyway
           </Button>
