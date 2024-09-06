@@ -39,7 +39,7 @@ const useNodeOperations = (
       setNodes(transformedNodes);
       setEdges(transformedEdges);
     }
-  }, [projectData, setNodes, reactFlowWrapper]);
+  }, [projectData, setNodes, setEdges, reactFlowWrapper]);
 
   const onOpenModal = useCallback(
     (nodeId) => {
@@ -49,7 +49,7 @@ const useNodeOperations = (
         return {
           selectedNodeId: nodeId,
           formData: node.data.parameter_data || {},
-          schema: node.data.parameters || {}, // Ensure we're passing the schema
+          schema: node.data.parameters || {},
         };
       }
       return null;
@@ -58,8 +58,9 @@ const useNodeOperations = (
   );
 
   const onSubmitForm = useCallback(
-    async (projectIdTwo, nodeId, newFormData) => {
+    async (nodeId, newFormData, onUpdateStart, onUpdateComplete) => {
       try {
+        onUpdateStart();
         console.log('useNodeOperations - Submitting form data:', newFormData);
         console.log('useNodeOperations - Node ID:', nodeId);
         console.log('useNodeOperations - Project ID:', projectId);
@@ -95,6 +96,8 @@ const useNodeOperations = (
       } catch (error) {
         console.error('useNodeOperations - Error updating package:', error);
         throw error;
+      } finally {
+        onUpdateComplete();
       }
     },
     [projectId, token, projectsApi, setNodes]
@@ -103,30 +106,31 @@ const useNodeOperations = (
   const onDeleteNode = useCallback(
     async (nodeId) => {
       try {
-        setNodes((nds) =>
-          nds.map((node) =>
-            node.id === nodeId
-              ? { ...node, data: { ...node.data, deploy_status: 'DEPLOYING' } }
-              : node
-          )
-        );
-        await projectsApi.deletePackage(projectId, nodeId, token);
+        const node = nodes.find((n) => n.id === nodeId);
+        if (node.data.deploy_status !== 'NOT_DEPLOYED') {
+          throw new Error(
+            'Cannot delete a deployed package. Please destroy it first.'
+          );
+        }
+        console.log('useNodeOperations - Deleting node:', nodeId);
+        console.log('useNodeOperations - Project ID:', projectId);
 
+        await projectsApi.deletePackage(projectId, nodeId, token);
+        console.log('useNodeOperations - Node deleted:', nodeId);
+
+        // Remove the node
         setNodes((nds) => nds.filter((node) => node.id !== nodeId));
+
+        // Remove edges where this node is the target
+        setEdges((eds) => eds.filter((edge) => edge.target !== nodeId));
+
         return true;
       } catch (error) {
         console.error('Error deleting node:', error);
-        setNodes((nds) =>
-          nds.map((node) =>
-            node.id === nodeId
-              ? { ...node, data: { ...node.data, deploy_status: 'FAILED' } }
-              : node
-          )
-        );
-        return false;
+        throw error;
       }
     },
-    [projectId, token, projectsApi, setNodes]
+    [projectId, token, projectsApi, setNodes, setEdges, nodes]
   );
 
   // todo: dedupe with CustomNode/NodeHeader.js
@@ -211,14 +215,11 @@ const useNodeOperations = (
         const response = await projectsApi.createPackage(
           projectId,
           {
-            // package_id: packageInfo.id,
             name: packageInfo.name,
             type: packageInfo.type,
             inputs: packageInfo.inputs,
             outputs: packageInfo.outputs,
             parameters: packageInfo.parameters,
-            // store position later, use smater layout algos, etc
-            // position: position,
             deploy_status: 'NOT_DEPLOYED',
           },
           token
@@ -241,14 +242,13 @@ const useNodeOperations = (
           },
         };
 
-        setNodes((nds) => nds.concat(newNode));
         return newNode;
       } catch (error) {
         console.error('Error creating package:', error);
         throw error;
       }
     },
-    [projectId, token, projectsApi, setNodes]
+    [projectId, token, projectsApi]
   );
 
   return {

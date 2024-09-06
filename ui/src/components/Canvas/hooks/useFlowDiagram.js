@@ -32,8 +32,8 @@ export const useFlowDiagram = () => {
 
   const {
     sendJsonMessage,
-    connectionStatus,
-    error: wsError,
+    // connectionStatus,
+    // error: wsError,
   } = useCanvasWebSocket(projectId, updateEdges);
 
   const {
@@ -81,8 +81,12 @@ export const useFlowDiagram = () => {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
+  const generateRandomSuffix = () => {
+    return Math.random().toString(36).substring(2, 6).toUpperCase();
+  };
+
   const onDrop = useCallback(
-    (event) => {
+    async (event) => {
       event.preventDefault();
 
       if (!reactFlowInstance) {
@@ -119,64 +123,91 @@ export const useFlowDiagram = () => {
           position,
           data: {
             ...packageInfo,
-            label: packageInfo.name || 'New Package',
+            label: `${packageInfo.type.replace(
+              /\//g,
+              '-'
+            )}-${generateRandomSuffix()}`,
             isTemp: true,
           },
         };
 
+        // Add temporary node
         setTempNodes((prev) => [...prev, tempNode]);
         setNodes((nds) => nds.concat(tempNode));
 
-        setModalState((prev) => ({
-          ...prev,
-          isNameModalOpen: true,
-          droppedPackageInfo: { ...packageInfo, position, tempId },
-        }));
+        // Create the actual node
+        try {
+          const newNode = await createNode(
+            {
+              ...packageInfo,
+              name: `${packageInfo.type.replace(
+                /\//g,
+                '-'
+              )}-${generateRandomSuffix()}`,
+            },
+            position
+          );
+
+          // Replace temp node with actual node
+          setNodes((nds) =>
+            nds.map((node) =>
+              node.id === tempId
+                ? { ...newNode, position: node.position }
+                : node
+            )
+          );
+          setTempNodes((temp) => temp.filter((node) => node.id !== tempId));
+        } catch (error) {
+          console.error('Error creating package:', error);
+          // Remove the temporary node if creation fails
+          setNodes((nds) => nds.filter((node) => node.id !== tempId));
+          setTempNodes((temp) => temp.filter((node) => node.id !== tempId));
+        }
       } catch (error) {
         console.error('Error parsing package data:', error);
       }
     },
-    [reactFlowInstance, setNodes]
+    [reactFlowInstance, createNode, setNodes]
   );
 
-  const handleNameSubmit = useCallback(
-    async (packageName) => {
-      setModalState((prev) => ({ ...prev, isNameModalOpen: false }));
-      if (!modalState.droppedPackageInfo) return;
+  // const handleNameSubmit = useCallback(
+  //   async (packageName) => {
+  //     setModalState((prev) => ({ ...prev, isNameModalOpen: false }));
+  //     if (!modalState.droppedPackageInfo) return;
 
-      try {
-        const { tempId, ...packageInfo } = modalState.droppedPackageInfo;
-        const newNode = await createNode(
-          {
-            ...packageInfo,
-            name: packageName,
-          },
-          packageInfo.position
-        );
+  //     try {
+  //       const { tempId, ...packageInfo } = modalState.droppedPackageInfo;
+  //       const newNode = await createNode(
+  //         {
+  //           ...packageInfo,
+  //           name: packageName,
+  //         },
+  //         packageInfo.position
+  //       );
 
-        setNodes((nds) =>
-          nds.map((node) =>
-            node.id === tempId ? { ...newNode, position: node.position } : node
-          )
-        );
-        setTempNodes((temp) => temp.filter((node) => node.id !== tempId));
-      } catch (error) {
-        console.error('Error creating package:', error);
-        // Remove the temporary node if creation fails
-        setNodes((nds) =>
-          nds.filter((node) => node.id !== modalState.droppedPackageInfo.tempId)
-        );
-        setTempNodes((temp) =>
-          temp.filter(
-            (node) => node.id !== modalState.droppedPackageInfo.tempId
-          )
-        );
-      } finally {
-        setModalState((prev) => ({ ...prev, droppedPackageInfo: null }));
-      }
-    },
-    [modalState.droppedPackageInfo, createNode, setNodes]
-  );
+  //       setNodes((nds) =>
+  //         nds.map((node) =>
+  //           node.id === tempId ? { ...newNode, position: node.position } : node
+  //         )
+  //       );
+  //       setTempNodes((temp) => temp.filter((node) => node.id !== tempId));
+  //     } catch (error) {
+  //       console.error('Error creating package:', error);
+  //       // Remove the temporary node if creation fails
+  //       setNodes((nds) =>
+  //         nds.filter((node) => node.id !== modalState.droppedPackageInfo.tempId)
+  //       );
+  //       setTempNodes((temp) =>
+  //         temp.filter(
+  //           (node) => node.id !== modalState.droppedPackageInfo.tempId
+  //         )
+  //       );
+  //     } finally {
+  //       setModalState((prev) => ({ ...prev, droppedPackageInfo: null }));
+  //     }
+  //   },
+  //   [modalState.droppedPackageInfo, createNode, setNodes]
+  // );
 
   const checkRequiredConnections = useCallback(
     (nodeId) => {
@@ -353,7 +384,7 @@ export const useFlowDiagram = () => {
     isLoading,
     error,
     reactFlowWrapper,
-    handleNameSubmit,
+    // handleNameSubmit,
     modalState,
     setModalState,
     handleOpenModal,
@@ -365,8 +396,6 @@ export const useFlowDiagram = () => {
     updateNodeData,
     checkRequiredConnections,
     validateConnection,
-    wsConnectionStatus: connectionStatus,
-    wsError,
   };
 };
 

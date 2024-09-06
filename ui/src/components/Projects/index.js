@@ -96,18 +96,6 @@ const Projects = () => {
           </Typography>
         )}
         <Grid container spacing={3}>
-          {creatingProjects.map((project) => (
-            <Grid item xs={12} sm={6} md={4} key={project.id}>
-              <Card sx={{ opacity: 0.7 }}>
-                <CardContent>
-                  <Typography variant="h6" component="h2">
-                    {project.name}
-                  </Typography>
-                  <CircularProgress size={24} />
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
           {projects.map((project) => (
             <Grid item xs={12} sm={6} md={4} key={project.id}>
               <Card
@@ -146,6 +134,18 @@ const Projects = () => {
                     <DeleteIcon />
                   </IconButton>
                 </CardActions>
+              </Card>
+            </Grid>
+          ))}
+          {creatingProjects.map((project) => (
+            <Grid item xs={12} sm={6} md={4} key={project.id}>
+              <Card sx={{ opacity: 0.7 }}>
+                <CardContent>
+                  <Typography variant="h6" component="h2">
+                    {project.name}
+                  </Typography>
+                  <CircularProgress size={24} />
+                </CardContent>
               </Card>
             </Grid>
           ))}

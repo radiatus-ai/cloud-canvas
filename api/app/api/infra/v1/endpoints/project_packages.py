@@ -17,6 +17,7 @@ from app.core.dependencies import (
 )
 from app.core.logger import get_logger
 from app.core.websocket_manager import ConnectionManager
+from app.crud.connection import connection as crud_connection
 from app.crud.project_package import project_package as crud_project_package
 from app.schemas.project_package import (
     ProjectPackage,
@@ -207,7 +208,7 @@ async def destroy_project_package(
     return package
 
 
-@router.delete("/{package_id}", response_model=ProjectPackage)
+@router.delete("/{package_id}")
 async def delete_project_package(
     project_id: UUID4 = Path(..., description="The ID of the project"),
     package_id: UUID4 = Path(..., description="The ID of the package"),
@@ -215,25 +216,37 @@ async def delete_project_package(
     websocket_manager: ConnectionManager = Depends(get_websocket_manager),
 ):
     db = deps["db"]
-    # pubsub.publish_message(
-    #     json.dumps(
-    #         {
-    #             "type": "package_update",
-    #             "data": {"id": str(package_id), "deploy_status": "DESTROYING"},
-    #         }
-    #     )
-    # )
-
+    await websocket_manager.broadcast_package_update(
+        package_id,
+        {
+            "id": str(package_id),
+            "deploy_status": "DELETING",
+        },
+    )
+    # Check if the package exists and is in the NOT_DEPLOYED state
     package = await crud_project_package.get_package(
         db, id=package_id, project_id=project_id
     )
-    if not package or package.project_id != project_id:
+    if not package:
         raise HTTPException(
             status_code=404, detail="ProjectPackage not found in this project"
         )
-    package = await crud_project_package.delete_package(
+
+    if package.deploy_status.value != "NOT_DEPLOYED":
+        raise HTTPException(
+            status_code=400,
+            detail="Cannot delete a deployed package. Please destroy it first.",
+        )
+
+    # Delete connections where this package is the target
+    await crud_connection.delete_connections_by_target(db, target_package_id=package_id)
+
+    # Delete the package
+    deleted_package = await crud_project_package.delete_package(
         db, id=package_id, project_id=project_id
     )
+
+    # Broadcast the deletion
     await websocket_manager.broadcast_package_update(
         package_id,
         {
@@ -241,4 +254,5 @@ async def delete_project_package(
             "deploy_status": "DELETED",
         },
     )
-    return package
+
+    return {"message": "Package and associated connections deleted"}

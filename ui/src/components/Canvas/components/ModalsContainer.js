@@ -11,19 +11,18 @@ import {
 import React, { useCallback, useMemo, useRef } from 'react';
 import JsonSchemaForm from 'react-json-schema-form';
 import RadDialog from '../../RadDialog';
-import CreatePackageModal from './CreatePackageModal';
 
 const ModalsContainer = ({
   modalState,
   setModalState,
   nodes,
   onSubmitForm,
-  handleNameSubmit,
+  // handleNameSubmit,
   onDeploy,
 }) => {
   const {
     isModalOpen,
-    isNameModalOpen,
+    // isNameModalOpen,
     missingConnectionsModalOpen,
     selectedNodeId,
     formData,
@@ -46,14 +45,23 @@ const ModalsContainer = ({
     async (formData) => {
       if (selectedNodeId && onSubmitForm) {
         try {
-          await onSubmitForm(selectedNodeId, formData);
+          const node = nodes.find((n) => n.id === selectedNodeId);
+          if (node && node.data.updateNodeData) {
+            node.data.updateNodeData({ isUpdating: true });
+          }
           handleCloseModal();
+          await onSubmitForm(selectedNodeId, formData);
         } catch (error) {
           console.error('Error submitting form:', error);
+        } finally {
+          const node = nodes.find((n) => n.id === selectedNodeId);
+          if (node && node.data.updateNodeData) {
+            node.data.updateNodeData({ isUpdating: false });
+          }
         }
       }
     },
-    [selectedNodeId, onSubmitForm, handleCloseModal]
+    [selectedNodeId, onSubmitForm, handleCloseModal, nodes]
   );
 
   const handleDeployWithMissingConnections = useCallback(async () => {
@@ -66,13 +74,13 @@ const ModalsContainer = ({
     }
   }, [selectedNodeId, onDeploy, setModalState]);
 
-  const closeNameModal = useCallback(() => {
-    setModalState((prev) => ({
-      ...prev,
-      isNameModalOpen: false,
-      droppedPackageInfo: null,
-    }));
-  }, [setModalState]);
+  // const closeNameModal = useCallback(() => {
+  //   setModalState((prev) => ({
+  //     ...prev,
+  //     // isNameModalOpen: false,
+  //     droppedPackageInfo: null,
+  //   }));
+  // }, [setModalState]);
 
   const closeMissingConnectionsModal = useCallback(() => {
     setModalState((prev) => ({
@@ -115,11 +123,11 @@ const ModalsContainer = ({
           hideSubmitButton={true}
         />
       </RadDialog>
-      <CreatePackageModal
+      {/* <CreatePackageModal
         open={isNameModalOpen}
         onClose={closeNameModal}
         onSubmit={handleNameSubmit}
-      />
+      /> */}
       <RadDialog
         open={missingConnectionsModalOpen}
         onClose={closeMissingConnectionsModal}

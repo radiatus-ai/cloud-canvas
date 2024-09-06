@@ -7,11 +7,13 @@ import { Box, IconButton, Tooltip, Typography } from '@mui/material';
 import { blue, grey, red, yellow } from '@mui/material/colors';
 import { styled } from '@mui/system';
 import React, { useCallback, useState } from 'react';
-import { useAuth } from '../../../contexts/Auth';
-import useApi from '../../../hooks/useAPI';
-import { validateConnections } from '../utils/validate';
-import ConfirmationDialog from './ConfirmationDialog';
-import DeploymentLogsModal from './DeploymentLogsModal';
+import { useAuth } from '../../../../contexts/Auth';
+import useApi from '../../../../hooks/useAPI';
+import ConfirmationDialog from '../ConfirmationDialog';
+import DeploymentLogsModal from '../DeploymentLogsModal';
+import { useConnectionManagement } from './hooks/useConnectionManagement';
+import { useNodeStatus } from './hooks/useNodeStatus';
+import { useValidation } from './hooks/useValidation';
 
 const successColor = '#0cc421';
 const editColor = grey[500];
@@ -22,6 +24,7 @@ const stateColors = {
   not_deployed: '#9e9e9e',
   deployed: successColor,
   failed: '#f44336',
+  deleting: yellow[500],
 };
 
 const NodeContainer = styled(Box)({
@@ -49,6 +52,8 @@ const StatusDot = styled('div')(({ theme, status }) => ({
         return stateColors.deployed;
       case 'FAILED':
         return stateColors.failed;
+      case 'DELETING':
+        return stateColors.deleting;
       default:
         return stateColors.not_deployed;
     }
@@ -78,44 +83,96 @@ const NodeHeader = ({
   onOpenModal,
   onDeleteNode,
   edges = [],
-  handleDeploy,
-  handleDestroy,
+  handleDeploy: parentHandleDeploy,
+  handleDestroy: parentHandleDestroy,
   onDeleteConnection,
 }) => {
   const { token } = useAuth();
   const { projects: projectsApi } = useApi();
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
-  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [commandOutputs, setCommandOutputs] = useState(data.output_data || '');
-  const [validationResult, setValidationResult] = useState(null);
   const [error, setError] = useState(null);
 
-  const handleOpenStatusModal = () => {
-    setIsStatusModalOpen(true);
-  };
+  const { status, isDeleting, handleDeploy, handleDestroy, handleDelete } =
+    useNodeStatus(data.deploy_status);
 
-  const handleCloseStatusModal = () => {
-    setIsStatusModalOpen(false);
-  };
+  const {
+    validationResult,
+    isConfirmDialogOpen,
+    setIsConfirmDialogOpen,
+    validateNode,
+    openConfirmDialog,
+    closeConfirmDialog,
+  } = useValidation();
 
-  const handleDeployClick = async () => {
-    const result = validateConnections(data, edges);
-    setValidationResult(result);
+  const { handleDeleteConnection } = useConnectionManagement(
+    projectId,
+    token,
+    projectsApi,
+    onDeleteConnection
+  );
 
-    if (result.valid) {
-      await handleDeploy();
+  const handleOpenStatusModal = () => setIsStatusModalOpen(true);
+  const handleCloseStatusModal = () => setIsStatusModalOpen(false);
+
+  const handleDeployClick = useCallback(async () => {
+    const isValid = validateNode(data, edges);
+    if (isValid) {
+      try {
+        await parentHandleDeploy();
+      } catch (error) {
+        setError('Failed to deploy. Please try again.');
+        console.error('Deployment failed:', error);
+      }
     } else {
-      setIsConfirmDialogOpen(true);
+      openConfirmDialog();
     }
-  };
+  }, [data, edges, validateNode, parentHandleDeploy, openConfirmDialog]);
 
-  const handleConfirmDeploy = async () => {
-    setIsConfirmDialogOpen(false);
-    await handleDeploy();
-  };
+  const handleConfirmDeploy = useCallback(async () => {
+    closeConfirmDialog();
+    try {
+      await parentHandleDeploy();
+    } catch (error) {
+      setError('Failed to deploy. Please try again.');
+      console.error('Deployment failed:', error);
+    }
+  }, [closeConfirmDialog, parentHandleDeploy]);
+
+  const handleDestroyClick = useCallback(async () => {
+    try {
+      await parentHandleDestroy();
+    } catch (error) {
+      setError('Failed to destroy. Please try again.');
+      console.error('Destruction failed:', error);
+    }
+  }, [parentHandleDestroy]);
+
+  const handleDeleteClick = useCallback(async () => {
+    try {
+      await handleDelete(onDeleteNode, data.id);
+    } catch (error) {
+      setError('Failed to delete. Please try again.');
+      console.error('Deletion failed:', error);
+    }
+  }, [handleDelete, onDeleteNode, data.id]);
 
   const renderActionButton = () => {
-    switch (data.deploy_status) {
+    if (isDeleting) {
+      return (
+        <Tooltip title="Deleting">
+          <StyledIconButton
+            size="small"
+            sx={{ ml: 0.5, p: 0.5, color: red[500] }}
+            disabled
+          >
+            <RotatingIcon fontSize="small" color={red[500]} />
+          </StyledIconButton>
+        </Tooltip>
+      );
+    }
+
+    switch (status) {
       case 'NOT_DEPLOYED':
       case 'FAILED':
         return (
@@ -134,7 +191,7 @@ const NodeHeader = ({
           <Tooltip title="Destroy">
             <StyledIconButton
               size="small"
-              onClick={handleDestroy}
+              onClick={handleDestroyClick}
               sx={{ ml: 0.5, p: 0.5, color: stateColors.destroying }}
             >
               <StopIcon fontSize="small" />
@@ -144,11 +201,7 @@ const NodeHeader = ({
       case 'DESTROYING':
       case 'DEPLOYING':
         return (
-          <Tooltip
-            title={
-              data.deploy_status === 'DESTROYING' ? 'Destroying' : 'Deploying'
-            }
-          >
+          <Tooltip title={status === 'DESTROYING' ? 'Destroying' : 'Deploying'}>
             <StyledIconButton
               size="small"
               sx={{ ml: 0.5, p: 0.5, color: stateColors.deployed }}
@@ -162,30 +215,6 @@ const NodeHeader = ({
         return null;
     }
   };
-
-  // todo: dedupe this with use edge operations
-  const handleDeleteConnection = useCallback(
-    async (connectionId) => {
-      try {
-        const idParts = connectionId.split('-');
-        const sourcePackageId = idParts.slice(0, 5).join('-');
-        const targetPackageId = idParts.slice(-5).join('-');
-        console.log('First ID:', sourcePackageId);
-        console.log('Second ID:', targetPackageId);
-        await projectsApi.deleteConnection(
-          projectId,
-          sourcePackageId,
-          targetPackageId,
-          token
-        );
-        onDeleteConnection(connectionId); // Callback to update parent component state
-      } catch (error) {
-        console.error('Failed to delete connection:', error);
-        setError('Failed to delete connection. Please try again.');
-      }
-    },
-    [projectId, token, projectsApi, onDeleteConnection]
-  );
 
   const renderConnectionDeleteButtons = () => {
     return edges.map((edge) => (
@@ -220,7 +249,7 @@ const NodeHeader = ({
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Tooltip title="Logs">
             <StatusDot
-              status={data.deploy_status}
+              status={isDeleting ? 'DELETING' : status}
               onClick={handleOpenStatusModal}
             />
           </Tooltip>
@@ -229,6 +258,7 @@ const NodeHeader = ({
               size="small"
               onClick={onOpenModal}
               sx={{ ml: 0.5, p: 0.5, color: editColor }}
+              disabled={isDeleting}
             >
               <EditIcon fontSize="small" />
             </StyledIconButton>
@@ -236,7 +266,7 @@ const NodeHeader = ({
           {renderActionButton()}
           <Tooltip
             title={
-              data.deploy_status === 'DEPLOYED'
+              status === 'DEPLOYED'
                 ? 'Package must be destroyed before deletion'
                 : 'Delete'
             }
@@ -244,9 +274,9 @@ const NodeHeader = ({
             <span>
               <StyledIconButton
                 size="small"
-                onClick={onDeleteNode}
+                onClick={handleDeleteClick}
                 sx={{ ml: 0.5, p: 0.5, color: red[500] }}
-                disabled={data.deploy_status === 'DEPLOYED'}
+                disabled={status === 'DEPLOYED' || isDeleting}
               >
                 <DeleteIcon fontSize="small" />
               </StyledIconButton>

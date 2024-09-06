@@ -1,5 +1,5 @@
-import { Collapse, Typography } from '@mui/material';
-import React, { memo, useCallback } from 'react';
+import { CircularProgress, Collapse, Typography } from '@mui/material';
+import React, { memo, useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import 'reactflow/dist/style.css';
 import NodeHandles from './components/NodeHandles';
@@ -10,13 +10,14 @@ import useNodeData from './hooks/useNodeData';
 import useNodeDeployment from './hooks/useNodeDeployment';
 import useNodeInteractions from './hooks/useNodeInteractions';
 import useRobustWebSocket from './hooks/useRobustWebSocket';
-// import useWebSocketEffect from './hooks/useWebSocketEffect';
 import { NodeContainer, StatusContainer } from './styles';
 
 const ProjectPackage = memo(({ data, isConnectable }) => {
   const { isTemp, inputs, outputs } = data;
   const { projectId } = useParams();
   const [nodeData, updateNodeData] = useNodeData(data);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { deployStatus, error, handleDeploy, handleDestroy } =
     useNodeDeployment(nodeData.id, data.deploy_status);
   const {
@@ -27,7 +28,6 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
   const { isDebugMode, isExpanded, toggleExpand, toggleDebugMode } =
     useNodeInteractions();
 
-  // useWebSocketEffect(messageHistory, updateNodeData);
   useConnectionEffect(connectionStatus, sendJsonMessage);
 
   const handleDeleteConnection = useCallback(
@@ -37,10 +37,30 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
         ...prevData,
         edges: prevData.edges.filter((edge) => edge.id !== connectionId),
       }));
-      // You might also want to trigger a refresh of the entire graph here
-      // or emit an event to a parent component to update the overall graph state
     },
     [nodeData, updateNodeData]
+  );
+
+  const handleUpdateStart = useCallback(() => {
+    setIsUpdating(true);
+  }, []);
+
+  const handleUpdateComplete = useCallback(() => {
+    setIsUpdating(false);
+  }, []);
+
+  const handleDeleteNode = useCallback(
+    async (nodeId) => {
+      setIsDeleting(true);
+      try {
+        await nodeData.onDelete(nodeId);
+      } catch (error) {
+        console.error('Error deleting node:', error);
+        setIsDeleting(false);
+        throw error;
+      }
+    },
+    [nodeData]
   );
 
   return (
@@ -52,15 +72,22 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
       ) : (
         <>
           <NodeHeader
-            data={{ ...nodeData, deploy_status: deployStatus }}
+            data={{
+              ...nodeData,
+              deploy_status: deployStatus,
+              isUpdating,
+              isDeleting,
+            }}
             projectId={projectId}
             updateNodeData={updateNodeData}
             onOpenModal={nodeData.onOpenModal}
-            onDeleteNode={nodeData.onDelete}
+            onDeleteNode={handleDeleteNode}
             handleDeploy={handleDeploy}
             handleDestroy={handleDestroy}
             edges={data.edges}
             onDeleteConnection={handleDeleteConnection}
+            onUpdateStart={handleUpdateStart}
+            onUpdateComplete={handleUpdateComplete}
           />
           <StatusContainer>
             <Typography variant="caption" color="text.secondary">
@@ -75,7 +102,18 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
             packageType={nodeData.type}
           />
           {error && <Typography color="error">{error}</Typography>}
-          <Collapse in={isExpanded}>
+          {(isUpdating || isDeleting) && (
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                padding: '10px',
+              }}
+            >
+              <CircularProgress size={24} />
+            </div>
+          )}
+          <Collapse in={isExpanded && !isUpdating && !isDeleting}>
             <NodeStatistics data={nodeData} />
           </Collapse>
         </>

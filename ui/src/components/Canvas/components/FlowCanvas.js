@@ -1,4 +1,4 @@
-import { Box, Chip } from '@mui/material';
+import { Box } from '@mui/material';
 import React from 'react';
 import ReactFlow, { Background, Controls } from 'reactflow';
 import ProjectPackage from '../../ProjectPackage';
@@ -25,7 +25,6 @@ const FlowCanvas = ({
   onDrop,
   onDragOver,
   reactFlowWrapper,
-  wsConnectionStatus,
 }) => {
   const defaultViewport = { x: 0, y: 0, zoom: 0.5 };
 
@@ -72,11 +71,6 @@ const FlowCanvas = ({
           <Background variant="dots" gap={12} size={1} />
         </ReactFlow>
       </div>
-      <Chip
-        label={`WebSocket: ${wsConnectionStatus}`}
-        color={wsConnectionStatus === 'Open' ? 'success' : 'error'}
-        sx={{ position: 'absolute', top: 10, right: 10 }}
-      />
     </Box>
   );
 };

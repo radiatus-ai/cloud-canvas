@@ -78,5 +78,18 @@ class CRUDConnection(CRUDBase[Connection, ConnectionCreate, ConnectionUpdate]):
             await db.commit()
         return connection
 
+    async def delete_connections_by_target(
+        self, db: AsyncSession, *, target_package_id: UUID
+    ) -> List[Connection]:
+        query = select(Connection).where(
+            Connection.target_package_id == target_package_id
+        )
+        result = await db.execute(query)
+        connections = result.scalars().all()
+        for connection in connections:
+            await db.delete(connection)
+        await db.commit()
+        return connections
+
 
 connection = CRUDConnection(Connection)
