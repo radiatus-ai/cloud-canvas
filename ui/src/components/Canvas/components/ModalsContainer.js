@@ -8,7 +8,7 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import JsonSchemaForm from 'react-json-schema-form';
 import RadDialog from '../../RadDialog';
 
@@ -17,12 +17,10 @@ const ModalsContainer = ({
   setModalState,
   nodes,
   onSubmitForm,
-  // handleNameSubmit,
   onDeploy,
 }) => {
   const {
     isModalOpen,
-    // isNameModalOpen,
     missingConnectionsModalOpen,
     selectedNodeId,
     formData,
@@ -31,6 +29,7 @@ const ModalsContainer = ({
   } = modalState;
 
   const formRef = useRef(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const handleCloseModal = useCallback(() => {
     setModalState((prev) => ({
@@ -45,6 +44,7 @@ const ModalsContainer = ({
     async (formData) => {
       if (selectedNodeId && onSubmitForm) {
         try {
+          setIsUpdating(true);
           const node = nodes.find((n) => n.id === selectedNodeId);
           if (node && node.data.updateNodeData) {
             node.data.updateNodeData({ isUpdating: true });
@@ -54,6 +54,7 @@ const ModalsContainer = ({
         } catch (error) {
           console.error('Error submitting form:', error);
         } finally {
+          setIsUpdating(false);
           const node = nodes.find((n) => n.id === selectedNodeId);
           if (node && node.data.updateNodeData) {
             node.data.updateNodeData({ isUpdating: false });
@@ -109,8 +110,9 @@ const ModalsContainer = ({
               onClick={() => formRef.current?.submit()}
               color="primary"
               variant="contained"
+              disabled={isUpdating}
             >
-              Submit
+              {isUpdating ? 'Updating...' : 'Submit'}
             </Button>
           </>
         }

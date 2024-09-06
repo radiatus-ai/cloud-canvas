@@ -58,9 +58,8 @@ const useNodeOperations = (
   );
 
   const onSubmitForm = useCallback(
-    async (nodeId, newFormData, onUpdateStart, onUpdateComplete) => {
+    async (nodeId, newFormData) => {
       try {
-        onUpdateStart();
         console.log('useNodeOperations - Submitting form data:', newFormData);
         console.log('useNodeOperations - Node ID:', nodeId);
         console.log('useNodeOperations - Project ID:', projectId);
@@ -96,8 +95,6 @@ const useNodeOperations = (
       } catch (error) {
         console.error('useNodeOperations - Error updating package:', error);
         throw error;
-      } finally {
-        onUpdateComplete();
       }
     },
     [projectId, token, projectsApi, setNodes]

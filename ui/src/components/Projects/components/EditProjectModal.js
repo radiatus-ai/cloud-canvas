@@ -1,10 +1,21 @@
 import { Button } from '@mui/material';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import JsonSchemaForm from 'react-json-schema-form';
 import RadDialog from '../../RadDialog';
 
 const EditProjectModal = ({ isOpen, onClose, onSubmit, project }) => {
   const formRef = useRef(null);
+  const [credentialOptions, setCredentialOptions] = useState([]);
+
+  useEffect(() => {
+    if (project && project.credentials) {
+      const options = project.credentials.map((cred) => ({
+        value: cred.id,
+        label: cred.name,
+      }));
+      setCredentialOptions(options);
+    }
+  }, [project]);
 
   const handleSubmit = useCallback(async () => {
     if (formRef.current && project) {
@@ -34,7 +45,7 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }) => {
         title: 'Project Credentials',
         items: {
           type: 'string',
-          enum: ['SERVICE_ACCOUNT_KEY', 'SECRET'],
+          enum: credentialOptions.map((option) => option.value),
         },
         uniqueItems: true,
       },
@@ -46,8 +57,19 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }) => {
       'ui:widget': 'checkboxes',
       'ui:options': {
         inline: true,
+        labels: credentialOptions.reduce((acc, option) => {
+          acc[option.value] = option.label;
+          return acc;
+        }, {}),
       },
     },
+  };
+
+  const initialData = {
+    name: project.name,
+    credentials: project.credentials
+      ? project.credentials.map((cred) => cred.id)
+      : [],
   };
 
   return (
@@ -70,10 +92,7 @@ const EditProjectModal = ({ isOpen, onClose, onSubmit, project }) => {
         ref={formRef}
         schema={schema}
         uiSchema={uiSchema}
-        initialData={{
-          name: project.name,
-          credentials: project.credentials || [],
-        }}
+        initialData={initialData}
         onSubmit={handleSubmit}
         hideSubmitButton={true}
       />

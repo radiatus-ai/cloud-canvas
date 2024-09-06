@@ -61,10 +61,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HTTPValidationError"
-  /projects/{project_id}/{source_package_id}/{target_package_id}:
+  /projects/{project_id}/source/{source_package_id}/target/{target_package_id}:
     delete:
       summary: Delete Connection
-      operationId: delete_connection_projects__project_id___source_package_id___target_package_id__delete
+      operationId: delete_connection_projects__project_id__source__source_package_id__target__target_package_id__delete
       parameters:
         - name: project_id
           in: path
@@ -84,6 +84,40 @@ paths:
           in: path
           required: true
           schema:
+            anyOf:
+              - type: string
+                format: uuid4
+              - type: "null"
+            title: Target Package Id
+      responses:
+        "200":
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Connection"
+        "422":
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HTTPValidationError"
+  /projects/{project_id}/connections/by-target/{target_package_id}:
+    delete:
+      summary: Delete Connections By Target
+      operationId: delete_connections_by_target_projects__project_id__connections_by_target__target_package_id__delete
+      parameters:
+        - name: project_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid4
+            title: Project Id
+        - name: target_package_id
+          in: path
+          required: true
+          schema:
             type: string
             format: uuid4
             title: Target Package Id
@@ -93,7 +127,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Connection"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Connection"
+                title:
+                  Response Delete Connections By Target Projects  Project Id  Connections
+                  By Target  Target Package Id  Delete
         "422":
           description: Validation Error
           content:
@@ -514,8 +553,7 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/ProjectPackage"
+              schema: {}
         "422":
           description: Validation Error
           content:
@@ -703,8 +741,7 @@ paths:
           description: Successful Response
           content:
             application/json:
-              schema:
-                $ref: "#/components/schemas/Project"
+              schema: {}
         "422":
           description: Validation Error
           content:

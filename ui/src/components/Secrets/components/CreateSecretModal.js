@@ -1,107 +1,93 @@
 import { Button } from '@mui/material';
-import React, {
-  forwardRef,
-  useCallback,
-  useImperativeHandle,
-  useRef,
-} from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import JsonSchemaForm from 'react-json-schema-form';
+import LoadingButton from '../../LoadingButton';
 import RadDialog from '../../RadDialog';
 
-const CreateSecretModal = forwardRef(({ isOpen, onClose, onSubmit }, ref) => {
-  const formRef = useRef(null);
+const CreateSecretModal = forwardRef(
+  ({ isOpen, onClose, onSubmit, isLoading }, ref) => {
+    const schema = {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+          title: 'Name',
+          minLength: 1,
+        },
+        credential_type: {
+          type: 'string',
+          title: 'Type',
+          enum: ['SERVICE_ACCOUNT_KEY', 'SECRET'],
+          default: 'SERVICE_ACCOUNT_KEY',
+        },
+        credential_value: {
+          type: 'string',
+          title: 'Value',
+          minLength: 1,
+        },
+      },
+      required: ['name', 'credential_type', 'credential_value'],
+    };
 
-  useImperativeHandle(ref, () => ({
-    submit: () => formRef.current && formRef.current.submit(),
-    getData: () => formRef.current && formRef.current.getData(),
-    reset: () => formRef.current && formRef.current.reset(),
-  }));
-
-  const schema = {
-    type: 'object',
-    properties: {
+    const uiSchema = {
       name: {
-        type: 'string',
-        title: 'Name',
-        minLength: 1,
+        'ui:autofocus': true,
+        'ui:placeholder': 'Secret Name',
       },
       credential_type: {
-        type: 'string',
-        title: 'Type',
-        enum: ['SERVICE_ACCOUNT_KEY', 'SECRET'],
-        default: 'SERVICE_ACCOUNT_KEY',
+        'ui:widget': 'select',
       },
       credential_value: {
-        type: 'string',
-        title: 'Value',
-        minLength: 1,
+        'ui:widget': 'textarea',
+        'ui:options': {
+          rows: 4,
+        },
       },
-    },
-    required: ['name', 'credential_type', 'credential_value'],
-  };
+    };
 
-  const uiSchema = {
-    credential_type: {
-      'ui:widget': 'select',
-    },
-    credential_value: {
-      'ui:widget': 'textarea',
-      'ui:options': {
-        rows: 4,
+    const handleSubmit = useCallback(
+      async (formData) => {
+        onClose(); // Close the modal immediately
+        await onSubmit({
+          ...formData,
+          organization_id: 'foo', // You might want to get this from a context or prop
+        });
       },
-    },
-  };
+      [onSubmit, onClose]
+    );
 
-  const handleSubmit = useCallback(
-    async (formData) => {
-      await onSubmit({
-        ...formData,
-        organization_id: 'foo',
-      });
-    },
-    [onSubmit]
-  );
-
-  const handleCreateClick = useCallback(async () => {
-    if (formRef.current) {
-      const isValid = await formRef.current.submit();
-      if (isValid) {
-        const formData = formRef.current.getData();
-        await handleSubmit(formData);
-      }
-    }
-  }, [handleSubmit]);
-
-  return (
-    <RadDialog
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Create Secret"
-      actions={
-        <>
-          <Button onClick={onClose} color="primary">
-            Cancel
-          </Button>
-          <Button
-            onClick={handleCreateClick}
-            color="primary"
-            variant="contained"
-            data-cy="submit-secret-button"
-          >
-            Create
-          </Button>
-        </>
-      }
-    >
-      <JsonSchemaForm
-        ref={formRef}
-        schema={schema}
-        uiSchema={uiSchema}
-        onSubmit={handleSubmit}
-        hideSubmitButton={true}
-      />
-    </RadDialog>
-  );
-});
+    return (
+      <RadDialog
+        isOpen={isOpen}
+        onClose={onClose}
+        title="New Secret"
+        actions={
+          <>
+            <Button onClick={onClose} color="primary" disabled={isLoading}>
+              Cancel
+            </Button>
+            <LoadingButton
+              onClick={() => ref.current?.submit()}
+              color="primary"
+              variant="contained"
+              loading={isLoading}
+              data-cy="submit-secret-button"
+            >
+              Create
+            </LoadingButton>
+          </>
+        }
+      >
+        <JsonSchemaForm
+          ref={ref}
+          schema={schema}
+          uiSchema={uiSchema}
+          onSubmit={handleSubmit}
+          hideSubmitButton={true}
+        />
+      </RadDialog>
+    );
+  }
+);
 
 export default CreateSecretModal;

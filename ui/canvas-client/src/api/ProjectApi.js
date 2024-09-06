@@ -101,7 +101,7 @@ export default class ProjectApi {
    * Callback function to receive the result of the deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete operation.
    * @callback module:api/ProjectApi~deleteProjectPackageProjectsProjectIdPackagesPackageIdDeleteCallback
    * @param {String} error Error message, if any.
-   * @param {module:model/ProjectPackage} data The data returned by the service call.
+   * @param {Object} data The data returned by the service call.
    * @param {String} response The complete HTTP response.
    */
 
@@ -110,7 +110,7 @@ export default class ProjectApi {
    * @param {String} projectId The ID of the project
    * @param {String} packageId The ID of the package
    * @param {module:api/ProjectApi~deleteProjectPackageProjectsProjectIdPackagesPackageIdDeleteCallback} callback The callback function, accepting three arguments: error, data, response
-   * data is of type: {@link module:model/ProjectPackage}
+   * data is of type: {@link Object}
    */
   deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete(
     projectId,
@@ -142,7 +142,7 @@ export default class ProjectApi {
     let authNames = [];
     let contentTypes = [];
     let accepts = ['application/json'];
-    let returnType = ProjectPackage;
+    let returnType = Object;
     return this.apiClient.callApi(
       '/projects/{project_id}/packages/{package_id}',
       'DELETE',

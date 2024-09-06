@@ -62,7 +62,7 @@ No authorization required
 
 ## deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete
 
-> ProjectPackage deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete(projectId, packageId)
+> Object deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete(projectId, packageId)
 
 Delete Project Package
 
@@ -96,7 +96,7 @@ apiInstance.deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete(
 
 ### Return type
 
-[**ProjectPackage**](ProjectPackage.md)
+**Object**
 
 ### Authorization
 

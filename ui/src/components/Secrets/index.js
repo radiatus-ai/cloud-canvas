@@ -1,7 +1,6 @@
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
 import {
   Box,
-  Button,
   Card,
   CardActions,
   CardContent,
@@ -11,8 +10,9 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import JsonSchemaForm from 'react-json-schema-form';
+import LoadingButton from '../LoadingButton';
 import RadDialog from '../RadDialog';
 import CreateSecretModal from './components/CreateSecretModal';
 import UpdateSecretModal from './components/UpdateSecretModal';
@@ -24,6 +24,8 @@ const Secrets = () => {
   const { credentials, setCredentials, isLoading, error, setError } =
     useCredentialsFetch();
   const {
+    creatingCredentials,
+    deletingCredentials,
     handleCreateCredential,
     handleUpdateCredential,
     handleDeleteCredential,
@@ -41,21 +43,55 @@ const Secrets = () => {
     handleDeleteDialogClose,
   } = useCredentialModals();
 
+  const [isCreating, setIsCreating] = useState(false);
+
   const createSecretFormRef = useRef(null);
   const editFormRef = useRef(null);
   const deleteFormRef = useRef(null);
 
   const handleCreateCredentialSubmit = useCallback(
     async (formData) => {
+      setIsCreating(true);
       try {
         await handleCreateCredential(formData);
-        setCreateCredentialModalOpen(false);
       } catch (error) {
         console.error('Error creating credential:', error);
         setError('Failed to create credential. Please try again.');
+      } finally {
+        setIsCreating(false);
       }
     },
-    [handleCreateCredential, setCreateCredentialModalOpen, setError]
+    [handleCreateCredential, setError]
+  );
+
+  const handleDeleteSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+      console.log('Delete submit triggered');
+      if (deleteFormRef.current) {
+        const isValid = await deleteFormRef.current.submit();
+        if (isValid) {
+          const { confirm } = deleteFormRef.current.getData();
+          if (confirm) {
+            try {
+              await handleDeleteCredential(credentialToDelete.id);
+              handleDeleteDialogClose();
+            } catch (error) {
+              console.error('Error deleting credential:', error);
+              setError('Failed to delete credential. Please try again.');
+            }
+          } else {
+            setError('You must confirm the deletion.');
+          }
+        }
+      }
+    },
+    [
+      handleDeleteCredential,
+      credentialToDelete,
+      handleDeleteDialogClose,
+      setError,
+    ]
   );
 
   useEffect(() => {
@@ -93,14 +129,15 @@ const Secrets = () => {
           <Typography variant="h4" component="h1">
             SECRETS
           </Typography>
-          <Button
+          <LoadingButton
             variant="contained"
             color="primary"
             data-cy="create-secret-button"
             onClick={() => setCreateCredentialModalOpen(true)}
+            loading={isCreating}
           >
             CREATE
-          </Button>
+          </LoadingButton>
         </Box>
         {error && (
           <Typography color="error" sx={{ mb: 2 }}>
@@ -110,7 +147,13 @@ const Secrets = () => {
         <Grid container spacing={3}>
           {credentials.map((credential) => (
             <Grid item xs={12} sm={6} md={4} key={credential.id}>
-              <Card>
+              <Card
+                sx={{
+                  opacity: deletingCredentials.includes(credential.id)
+                    ? 0.5
+                    : 1,
+                }}
+              >
                 <CardContent>
                   <Typography variant="h6" component="h2">
                     {credential.name}
@@ -124,16 +167,33 @@ const Secrets = () => {
                     onClick={() => handleEditCredential(credential)}
                     size="small"
                     color="primary"
+                    disabled={deletingCredentials.includes(credential.id)}
                   >
                     <EditIcon />
                   </IconButton>
                   <IconButton
                     onClick={() => handleDeleteDialogOpen(credential)}
                     size="small"
+                    disabled={deletingCredentials.includes(credential.id)}
                   >
                     <DeleteIcon />
                   </IconButton>
                 </CardActions>
+              </Card>
+            </Grid>
+          ))}
+          {creatingCredentials.map((credential) => (
+            <Grid item xs={12} sm={6} md={4} key={credential.id}>
+              <Card sx={{ opacity: 0.5 }}>
+                <CardContent>
+                  <Typography variant="h6" component="h2">
+                    {credential.name}
+                  </Typography>
+                  <Typography color="textSecondary">
+                    Type: {credential.credential_type}
+                  </Typography>
+                  <CircularProgress size={24} sx={{ mt: 1 }} />
+                </CardContent>
               </Card>
             </Grid>
           ))}
@@ -145,6 +205,7 @@ const Secrets = () => {
         isOpen={createCredentialModalOpen}
         onClose={() => setCreateCredentialModalOpen(false)}
         onSubmit={handleCreateCredentialSubmit}
+        isLoading={isCreating}
       />
 
       <UpdateSecretModal
@@ -161,28 +222,17 @@ const Secrets = () => {
         title="Delete Credential"
         actions={
           <>
-            <Button onClick={handleDeleteDialogClose} color="primary">
+            <LoadingButton onClick={handleDeleteDialogClose} color="primary">
               Cancel
-            </Button>
-            <Button
-              onClick={async () => {
-                if (deleteFormRef.current) {
-                  const isValid = await deleteFormRef.current.submit();
-                  if (isValid) {
-                    const { confirm } = deleteFormRef.current.getData();
-                    if (confirm) {
-                      handleDeleteCredential(credentialToDelete.id);
-                    } else {
-                      setError('You must confirm the deletion.');
-                    }
-                  }
-                }
-              }}
+            </LoadingButton>
+            <LoadingButton
+              onClick={handleDeleteSubmit}
               color="primary"
               variant="contained"
+              loading={deletingCredentials.includes(credentialToDelete?.id)}
             >
               Delete
-            </Button>
+            </LoadingButton>
           </>
         }
       >
@@ -197,6 +247,7 @@ const Secrets = () => {
                 default: false,
               },
             },
+            required: ['confirm'],
           }}
           initialData={{ confirm: false }}
           hideSubmitButton={true}

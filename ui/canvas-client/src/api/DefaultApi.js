@@ -303,8 +303,8 @@ export default class DefaultApi {
   }
 
   /**
-   * Callback function to receive the result of the deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete operation.
-   * @callback module:api/DefaultApi~deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDeleteCallback
+   * Callback function to receive the result of the deleteConnectionProjectsProjectIdSourceSourcePackageIdTargetTargetPackageIdDelete operation.
+   * @callback module:api/DefaultApi~deleteConnectionProjectsProjectIdSourceSourcePackageIdTargetTargetPackageIdDeleteCallback
    * @param {String} error Error message, if any.
    * @param {module:model/Connection} data The data returned by the service call.
    * @param {String} response The complete HTTP response.
@@ -315,10 +315,10 @@ export default class DefaultApi {
    * @param {String} projectId
    * @param {String} sourcePackageId
    * @param {String} targetPackageId
-   * @param {module:api/DefaultApi~deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDeleteCallback} callback The callback function, accepting three arguments: error, data, response
+   * @param {module:api/DefaultApi~deleteConnectionProjectsProjectIdSourceSourcePackageIdTargetTargetPackageIdDeleteCallback} callback The callback function, accepting three arguments: error, data, response
    * data is of type: {@link module:model/Connection}
    */
-  deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete(
+  deleteConnectionProjectsProjectIdSourceSourcePackageIdTargetTargetPackageIdDelete(
     projectId,
     sourcePackageId,
     targetPackageId,
@@ -328,19 +328,19 @@ export default class DefaultApi {
     // verify the required parameter 'projectId' is set
     if (projectId === undefined || projectId === null) {
       throw new Error(
-        "Missing the required parameter 'projectId' when calling deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete"
+        "Missing the required parameter 'projectId' when calling deleteConnectionProjectsProjectIdSourceSourcePackageIdTargetTargetPackageIdDelete"
       );
     }
     // verify the required parameter 'sourcePackageId' is set
     if (sourcePackageId === undefined || sourcePackageId === null) {
       throw new Error(
-        "Missing the required parameter 'sourcePackageId' when calling deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete"
+        "Missing the required parameter 'sourcePackageId' when calling deleteConnectionProjectsProjectIdSourceSourcePackageIdTargetTargetPackageIdDelete"
       );
     }
     // verify the required parameter 'targetPackageId' is set
     if (targetPackageId === undefined || targetPackageId === null) {
       throw new Error(
-        "Missing the required parameter 'targetPackageId' when calling deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete"
+        "Missing the required parameter 'targetPackageId' when calling deleteConnectionProjectsProjectIdSourceSourcePackageIdTargetTargetPackageIdDelete"
       );
     }
 
@@ -358,7 +358,70 @@ export default class DefaultApi {
     let accepts = ['application/json'];
     let returnType = Connection;
     return this.apiClient.callApi(
-      '/projects/{project_id}/{source_package_id}/{target_package_id}',
+      '/projects/{project_id}/source/{source_package_id}/target/{target_package_id}',
+      'DELETE',
+      pathParams,
+      queryParams,
+      headerParams,
+      formParams,
+      postBody,
+      authNames,
+      contentTypes,
+      accepts,
+      returnType,
+      null,
+      callback
+    );
+  }
+
+  /**
+   * Callback function to receive the result of the deleteConnectionsByTargetProjectsProjectIdConnectionsByTargetTargetPackageIdDelete operation.
+   * @callback module:api/DefaultApi~deleteConnectionsByTargetProjectsProjectIdConnectionsByTargetTargetPackageIdDeleteCallback
+   * @param {String} error Error message, if any.
+   * @param {Array.<module:model/Connection>} data The data returned by the service call.
+   * @param {String} response The complete HTTP response.
+   */
+
+  /**
+   * Delete Connections By Target
+   * @param {String} projectId
+   * @param {String} targetPackageId
+   * @param {module:api/DefaultApi~deleteConnectionsByTargetProjectsProjectIdConnectionsByTargetTargetPackageIdDeleteCallback} callback The callback function, accepting three arguments: error, data, response
+   * data is of type: {@link Array.<module:model/Connection>}
+   */
+  deleteConnectionsByTargetProjectsProjectIdConnectionsByTargetTargetPackageIdDelete(
+    projectId,
+    targetPackageId,
+    callback
+  ) {
+    let postBody = null;
+    // verify the required parameter 'projectId' is set
+    if (projectId === undefined || projectId === null) {
+      throw new Error(
+        "Missing the required parameter 'projectId' when calling deleteConnectionsByTargetProjectsProjectIdConnectionsByTargetTargetPackageIdDelete"
+      );
+    }
+    // verify the required parameter 'targetPackageId' is set
+    if (targetPackageId === undefined || targetPackageId === null) {
+      throw new Error(
+        "Missing the required parameter 'targetPackageId' when calling deleteConnectionsByTargetProjectsProjectIdConnectionsByTargetTargetPackageIdDelete"
+      );
+    }
+
+    let pathParams = {
+      project_id: projectId,
+      target_package_id: targetPackageId,
+    };
+    let queryParams = {};
+    let headerParams = {};
+    let formParams = {};
+
+    let authNames = [];
+    let contentTypes = [];
+    let accepts = ['application/json'];
+    let returnType = [Connection];
+    return this.apiClient.callApi(
+      '/projects/{project_id}/connections/by-target/{target_package_id}',
       'DELETE',
       pathParams,
       queryParams,
@@ -429,7 +492,7 @@ export default class DefaultApi {
    * Callback function to receive the result of the deleteProjectProjectsProjectIdDelete operation.
    * @callback module:api/DefaultApi~deleteProjectProjectsProjectIdDeleteCallback
    * @param {String} error Error message, if any.
-   * @param {module:model/Project} data The data returned by the service call.
+   * @param {Object} data The data returned by the service call.
    * @param {String} response The complete HTTP response.
    */
 
@@ -437,7 +500,7 @@ export default class DefaultApi {
    * Delete Project
    * @param {String} projectId
    * @param {module:api/DefaultApi~deleteProjectProjectsProjectIdDeleteCallback} callback The callback function, accepting three arguments: error, data, response
-   * data is of type: {@link module:model/Project}
+   * data is of type: {@link Object}
    */
   deleteProjectProjectsProjectIdDelete(projectId, callback) {
     let postBody = null;
@@ -458,7 +521,7 @@ export default class DefaultApi {
     let authNames = [];
     let contentTypes = [];
     let accepts = ['application/json'];
-    let returnType = Project;
+    let returnType = Object;
     return this.apiClient.callApi(
       '/projects/{project_id}',
       'DELETE',

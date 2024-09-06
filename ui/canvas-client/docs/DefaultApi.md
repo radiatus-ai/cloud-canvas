@@ -2,25 +2,26 @@
 
 All URIs are relative to _http://localhost_
 
-| Method                                                                                                                                                           | HTTP request                                                              | Description                     |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------- |
-| [**createConnectionProjectsProjectIdConnectionsPost**](DefaultApi.md#createConnectionProjectsProjectIdConnectionsPost)                                           | **POST** /projects/{project_id}/connections/                              | Create Connection               |
-| [**createCredentialCredentialsPost**](DefaultApi.md#createCredentialCredentialsPost)                                                                             | **POST** /credentials/                                                    | Create Credential               |
-| [**createGlobalPackagePackagesPost**](DefaultApi.md#createGlobalPackagePackagesPost)                                                                             | **POST** /packages                                                        | Create Global Package           |
-| [**createOrUpdateGlobalPackagePackagesCreateOrUpdatePost**](DefaultApi.md#createOrUpdateGlobalPackagePackagesCreateOrUpdatePost)                                 | **POST** /packages/create-or-update                                       | Create Or Update Global Package |
-| [**createProjectProjectsPost**](DefaultApi.md#createProjectProjectsPost)                                                                                         | **POST** /projects/                                                       | Create Project                  |
-| [**deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete**](DefaultApi.md#deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete) | **DELETE** /projects/{project_id}/{source_package_id}/{target_package_id} | Delete Connection               |
-| [**deleteCredentialCredentialsCredentialIdDelete**](DefaultApi.md#deleteCredentialCredentialsCredentialIdDelete)                                                 | **DELETE** /credentials/{credential_id}                                   | Delete Credential               |
-| [**deleteProjectProjectsProjectIdDelete**](DefaultApi.md#deleteProjectProjectsProjectIdDelete)                                                                   | **DELETE** /projects/{project_id}                                         | Delete Project                  |
-| [**getCredentialCredentialsCredentialIdGet**](DefaultApi.md#getCredentialCredentialsCredentialIdGet)                                                             | **GET** /credentials/{credential_id}                                      | Get Credential                  |
-| [**getProjectProjectsProjectIdGet**](DefaultApi.md#getProjectProjectsProjectIdGet)                                                                               | **GET** /projects/{project_id}                                            | Get Project                     |
-| [**listAllPackagesPackagesGet**](DefaultApi.md#listAllPackagesPackagesGet)                                                                                       | **GET** /packages                                                         | List All Packages               |
-| [**listConnectionsProjectsProjectIdConnectionsGet**](DefaultApi.md#listConnectionsProjectsProjectIdConnectionsGet)                                               | **GET** /projects/{project_id}/connections/                               | List Connections                |
-| [**listCredentialsCredentialsGet**](DefaultApi.md#listCredentialsCredentialsGet)                                                                                 | **GET** /credentials/                                                     | List Credentials                |
-| [**listProjectsProjectsGet**](DefaultApi.md#listProjectsProjectsGet)                                                                                             | **GET** /projects/                                                        | List Projects                   |
-| [**rootGet**](DefaultApi.md#rootGet)                                                                                                                             | **GET** /                                                                 | Root                            |
-| [**updateCredentialCredentialsCredentialIdPatch**](DefaultApi.md#updateCredentialCredentialsCredentialIdPatch)                                                   | **PATCH** /credentials/{credential_id}                                    | Update Credential               |
-| [**updateProjectProjectsProjectIdPatch**](DefaultApi.md#updateProjectProjectsProjectIdPatch)                                                                     | **PATCH** /projects/{project_id}                                          | Update Project                  |
+| Method                                                                                                                                                                                     | HTTP request                                                                            | Description                     |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- | ------------------------------- |
+| [**createConnectionProjectsProjectIdConnectionsPost**](DefaultApi.md#createConnectionProjectsProjectIdConnectionsPost)                                                                     | **POST** /projects/{project_id}/connections/                                            | Create Connection               |
+| [**createCredentialCredentialsPost**](DefaultApi.md#createCredentialCredentialsPost)                                                                                                       | **POST** /credentials/                                                                  | Create Credential               |
+| [**createGlobalPackagePackagesPost**](DefaultApi.md#createGlobalPackagePackagesPost)                                                                                                       | **POST** /packages                                                                      | Create Global Package           |
+| [**createOrUpdateGlobalPackagePackagesCreateOrUpdatePost**](DefaultApi.md#createOrUpdateGlobalPackagePackagesCreateOrUpdatePost)                                                           | **POST** /packages/create-or-update                                                     | Create Or Update Global Package |
+| [**createProjectProjectsPost**](DefaultApi.md#createProjectProjectsPost)                                                                                                                   | **POST** /projects/                                                                     | Create Project                  |
+| [**deleteConnectionProjectsProjectIdSourceSourcePackageIdTargetTargetPackageIdDelete**](DefaultApi.md#deleteConnectionProjectsProjectIdSourceSourcePackageIdTargetTargetPackageIdDelete)   | **DELETE** /projects/{project_id}/source/{source_package_id}/target/{target_package_id} | Delete Connection               |
+| [**deleteConnectionsByTargetProjectsProjectIdConnectionsByTargetTargetPackageIdDelete**](DefaultApi.md#deleteConnectionsByTargetProjectsProjectIdConnectionsByTargetTargetPackageIdDelete) | **DELETE** /projects/{project_id}/connections/by-target/{target_package_id}             | Delete Connections By Target    |
+| [**deleteCredentialCredentialsCredentialIdDelete**](DefaultApi.md#deleteCredentialCredentialsCredentialIdDelete)                                                                           | **DELETE** /credentials/{credential_id}                                                 | Delete Credential               |
+| [**deleteProjectProjectsProjectIdDelete**](DefaultApi.md#deleteProjectProjectsProjectIdDelete)                                                                                             | **DELETE** /projects/{project_id}                                                       | Delete Project                  |
+| [**getCredentialCredentialsCredentialIdGet**](DefaultApi.md#getCredentialCredentialsCredentialIdGet)                                                                                       | **GET** /credentials/{credential_id}                                                    | Get Credential                  |
+| [**getProjectProjectsProjectIdGet**](DefaultApi.md#getProjectProjectsProjectIdGet)                                                                                                         | **GET** /projects/{project_id}                                                          | Get Project                     |
+| [**listAllPackagesPackagesGet**](DefaultApi.md#listAllPackagesPackagesGet)                                                                                                                 | **GET** /packages                                                                       | List All Packages               |
+| [**listConnectionsProjectsProjectIdConnectionsGet**](DefaultApi.md#listConnectionsProjectsProjectIdConnectionsGet)                                                                         | **GET** /projects/{project_id}/connections/                                             | List Connections                |
+| [**listCredentialsCredentialsGet**](DefaultApi.md#listCredentialsCredentialsGet)                                                                                                           | **GET** /credentials/                                                                   | List Credentials                |
+| [**listProjectsProjectsGet**](DefaultApi.md#listProjectsProjectsGet)                                                                                                                       | **GET** /projects/                                                                      | List Projects                   |
+| [**rootGet**](DefaultApi.md#rootGet)                                                                                                                                                       | **GET** /                                                                               | Root                            |
+| [**updateCredentialCredentialsCredentialIdPatch**](DefaultApi.md#updateCredentialCredentialsCredentialIdPatch)                                                                             | **PATCH** /credentials/{credential_id}                                                  | Update Credential               |
+| [**updateProjectProjectsProjectIdPatch**](DefaultApi.md#updateProjectProjectsProjectIdPatch)                                                                                               | **PATCH** /projects/{project_id}                                                        | Update Project                  |
 
 ## createConnectionProjectsProjectIdConnectionsPost
 
@@ -245,9 +246,9 @@ No authorization required
 - **Content-Type**: application/json
 - **Accept**: application/json
 
-## deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete
+## deleteConnectionProjectsProjectIdSourceSourcePackageIdTargetTargetPackageIdDelete
 
-> Connection deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete(projectId, sourcePackageId, targetPackageId)
+> Connection deleteConnectionProjectsProjectIdSourceSourcePackageIdTargetTargetPackageIdDelete(projectId, sourcePackageId, targetPackageId)
 
 Delete Connection
 
@@ -260,7 +261,7 @@ let apiInstance = new CanvasApi.DefaultApi();
 let projectId = 'projectId_example'; // String |
 let sourcePackageId = 'sourcePackageId_example'; // String |
 let targetPackageId = 'targetPackageId_example'; // String |
-apiInstance.deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete(
+apiInstance.deleteConnectionProjectsProjectIdSourceSourcePackageIdTargetTargetPackageIdDelete(
   projectId,
   sourcePackageId,
   targetPackageId,
@@ -285,6 +286,53 @@ apiInstance.deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelet
 ### Return type
 
 [**Connection**](Connection.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+## deleteConnectionsByTargetProjectsProjectIdConnectionsByTargetTargetPackageIdDelete
+
+> [Connection] deleteConnectionsByTargetProjectsProjectIdConnectionsByTargetTargetPackageIdDelete(projectId, targetPackageId)
+
+Delete Connections By Target
+
+### Example
+
+```javascript
+import CanvasApi from 'canvas_api';
+
+let apiInstance = new CanvasApi.DefaultApi();
+let projectId = 'projectId_example'; // String |
+let targetPackageId = 'targetPackageId_example'; // String |
+apiInstance.deleteConnectionsByTargetProjectsProjectIdConnectionsByTargetTargetPackageIdDelete(
+  projectId,
+  targetPackageId,
+  (error, data, response) => {
+    if (error) {
+      console.error(error);
+    } else {
+      console.log('API called successfully. Returned data: ' + data);
+    }
+  }
+);
+```
+
+### Parameters
+
+| Name                | Type       | Description | Notes |
+| ------------------- | ---------- | ----------- | ----- |
+| **projectId**       | **String** |             |
+| **targetPackageId** | **String** |             |
+
+### Return type
+
+[**[Connection]**](Connection.md)
 
 ### Authorization
 
@@ -341,7 +389,7 @@ No authorization required
 
 ## deleteProjectProjectsProjectIdDelete
 
-> Project deleteProjectProjectsProjectIdDelete(projectId)
+> Object deleteProjectProjectsProjectIdDelete(projectId)
 
 Delete Project
 
@@ -372,7 +420,7 @@ apiInstance.deleteProjectProjectsProjectIdDelete(
 
 ### Return type
 
-[**Project**](Project.md)
+**Object**
 
 ### Authorization
 

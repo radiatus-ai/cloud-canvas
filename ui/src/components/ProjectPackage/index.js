@@ -1,4 +1,4 @@
-import { CircularProgress, Collapse, Typography } from '@mui/material';
+import { Collapse, Typography } from '@mui/material';
 import React, { memo, useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import 'reactflow/dist/style.css';
@@ -102,7 +102,7 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
             packageType={nodeData.type}
           />
           {error && <Typography color="error">{error}</Typography>}
-          {(isUpdating || isDeleting) && (
+          {/* {(isUpdating || isDeleting) && (
             <div
               style={{
                 display: 'flex',
@@ -112,7 +112,7 @@ const ProjectPackage = memo(({ data, isConnectable }) => {
             >
               <CircularProgress size={24} />
             </div>
-          )}
+          )} */}
           <Collapse in={isExpanded && !isUpdating && !isDeleting}>
             <NodeStatistics data={nodeData} />
           </Collapse>
