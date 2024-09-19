@@ -11,8 +11,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import React, { useCallback, useRef } from 'react';
-import JsonSchemaForm from 'react-json-schema-form';
+import React, { useCallback, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RadDialog from '../RadDialog';
 import CreateProjectModal from './components/CreateProjectModal';
@@ -47,23 +46,20 @@ const Projects = () => {
 
   const createProjectFormRef = useRef(null);
   const editFormRef = useRef(null);
-  const deleteFormRef = useRef(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleProjectClick = (projectId) => {
     navigate(`/canvas/${projectId}`);
   };
 
-  const handleDeleteSubmit = useCallback(
-    async (formData) => {
-      console.log('Delete form data:', formData);
-      if (formData.confirm) {
-        await handleDeleteProject(projectToDelete.id);
-      } else {
-        throw new Error('You must confirm the deletion.');
-      }
-    },
-    [handleDeleteProject, projectToDelete]
-  );
+  const handleDeleteConfirm = useCallback(async () => {
+    if (projectToDelete) {
+      setIsDeleting(true);
+      await handleDeleteProject(projectToDelete.id);
+      setIsDeleting(false);
+      handleDeleteDialogClose();
+    }
+  }, [handleDeleteProject, projectToDelete, handleDeleteDialogClose]);
 
   if (isLoading) {
     return (
@@ -187,48 +183,25 @@ const Projects = () => {
         title="Delete Project"
         actions={
           <>
-            <Button onClick={handleDeleteDialogClose} color="primary">
+            <Button
+              onClick={handleDeleteDialogClose}
+              color="primary"
+              disabled={isDeleting}
+            >
               Cancel
             </Button>
             <Button
-              onClick={async () => {
-                if (deleteFormRef.current) {
-                  const isValid = await deleteFormRef.current.submit();
-                  if (isValid) {
-                    // This part is no longer needed as it's handled in handleDeleteSubmit
-                    // const { confirm } = deleteFormRef.current.getData();
-                    // if (confirm) {
-                    //   handleDeleteProject(projectToDelete.id);
-                    // } else {
-                    //   setError('You must confirm the deletion.');
-                    // }
-                  }
-                }
-              }}
+              onClick={handleDeleteConfirm}
               color="primary"
               variant="contained"
+              disabled={isDeleting}
             >
-              Delete
+              {isDeleting ? <CircularProgress size={24} /> : 'Delete'}
             </Button>
           </>
         }
       >
-        <JsonSchemaForm
-          ref={deleteFormRef}
-          schema={{
-            type: 'object',
-            properties: {
-              confirm: {
-                type: 'boolean',
-                title: 'Are you sure you want to delete this project?',
-                default: false,
-              },
-            },
-          }}
-          initialData={{ confirm: false }}
-          onSubmit={handleDeleteSubmit}
-          hideSubmitButton={true}
-        />
+        <Typography>Are you sure you want to delete this project?</Typography>
       </RadDialog>
     </Container>
   );
