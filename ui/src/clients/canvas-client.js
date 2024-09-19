@@ -1,4 +1,5 @@
 import { ApiClient, DefaultApi, ProjectApi } from 'canvas-client';
+import { getSecureCookie } from '../utils/secureStorage';
 
 const getApiUrl = () => {
   switch (process.env.REACT_APP_ENV) {
@@ -12,7 +13,7 @@ const getApiUrl = () => {
 
 let apiClientInstance = null;
 
-const createApiClient = async (getValidToken) => {
+const createApiClient = async () => {
   if (apiClientInstance) {
     return apiClientInstance;
   }
@@ -35,7 +36,7 @@ const createApiClient = async (getValidToken) => {
     returnType,
     callback
   ) => {
-    const token = await getValidToken();
+    const token = getSecureCookie('authToken');
     const updatedHeaderParams = {
       ...headerParams,
       Authorization: token ? `Bearer ${token}` : undefined,
@@ -65,6 +66,11 @@ const createApiClient = async (getValidToken) => {
       }
     } catch (error) {
       console.error('API call failed:', error);
+      if (error.status === 401) {
+        // Token might be expired, trigger a refresh
+        // You might want to implement a token refresh mechanism here
+        console.warn('Authentication failed. Token might be expired.');
+      }
       throw error;
     }
   };
@@ -74,8 +80,8 @@ const createApiClient = async (getValidToken) => {
 };
 
 // Factory function to create API instances
-export const createApi = async (ApiClass, getValidToken) => {
-  const apiClient = await createApiClient(getValidToken);
+export const createApi = async (ApiClass) => {
+  const apiClient = await createApiClient();
   return new ApiClass(apiClient);
 };
 
@@ -94,3 +100,29 @@ export const handleApiError = (error) => {
 };
 
 export { DefaultApi, ProjectApi };
+
+// Utility function to create instances of specific APIs
+export const createDefaultApi = async () => createApi(DefaultApi);
+export const createProjectApi = async () => createApi(ProjectApi);
+
+// Example of how to use the API in your components:
+//
+// import { createDefaultApi, createProjectApi, handleApiError } from './canvas-client';
+//
+// const YourComponent = () => {
+//   const fetchData = async () => {
+//     try {
+//       const defaultApi = await createDefaultApi();
+//       const projectApi = await createProjectApi();
+//
+//       const projects = await defaultApi.listProjectsProjectsGet();
+//       const packages = await projectApi.listProjectPackagesProjectsProjectIdPackagesGet('your-project-id');
+//
+//       // Handle the responses...
+//     } catch (error) {
+//       handleApiError(error);
+//     }
+//   };
+//
+//   // ... rest of your component logic
+// };

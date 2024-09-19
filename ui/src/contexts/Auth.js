@@ -7,8 +7,15 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import {
+  getSecureCookie,
+  removeSecureCookie,
+  setSecureCookie,
+} from '../utils/secureStorage';
 
 const AuthContext = createContext();
+
+const TOKEN_EXPIRY_THRESHOLD = 5 * 60 * 1000; // 5 minutes in milliseconds
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -18,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     if (!token) return true;
     try {
       const decodedToken = jwtDecode(token);
-      return decodedToken.exp * 1000 < Date.now();
+      return decodedToken.exp * 1000 < Date.now() + TOKEN_EXPIRY_THRESHOLD;
     } catch (error) {
       console.error('Error decoding token:', error);
       return true;
@@ -26,27 +33,38 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = useCallback((userData, authToken) => {
-    localStorage.setItem('authToken', authToken);
-    localStorage.setItem('userData', JSON.stringify(userData));
+    setSecureCookie('authToken', authToken);
+    setSecureCookie('userData', JSON.stringify(userData));
     setToken(authToken);
     setUser(userData);
   }, []);
 
   const logout = useCallback(() => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userData');
+    removeSecureCookie('authToken');
+    removeSecureCookie('userData');
     setUser(null);
     setToken(null);
   }, []);
 
   const refreshToken = useCallback(async () => {
     try {
-      // Implement your token refresh logic here
+      const currentToken = getSecureCookie('authToken');
+      if (!currentToken) throw new Error('No token available for refresh');
+
       const response = await fetch('https://auth.dev.r7ai.net/refresh', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${currentToken}`,
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include', // Important for including cookies in the request
       });
-      if (!response.ok) throw new Error('Token refresh failed');
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Token refresh failed');
+      }
+
       const data = await response.json();
       login(data.user, data.token);
       return data.token;
@@ -55,28 +73,40 @@ export const AuthProvider = ({ children }) => {
       logout();
       return null;
     }
-  }, [token, login, logout]);
+  }, [login, logout]);
 
   const getValidToken = useCallback(async () => {
-    if (!token) return null;
-    if (isTokenExpired(token)) {
+    const currentToken = getSecureCookie('authToken');
+    if (!currentToken) return null;
+    if (isTokenExpired(currentToken)) {
       return await refreshToken();
     }
-    return token;
-  }, [token, isTokenExpired, refreshToken]);
+    return currentToken;
+  }, [isTokenExpired, refreshToken]);
 
-  // Initialize token from localStorage
+  // Initialize token from secure storage
   useEffect(() => {
-    const storedToken = localStorage.getItem('authToken');
-    if (storedToken && !isTokenExpired(storedToken)) {
-      setToken(storedToken);
-      // You might want to set the user here as well, if you have that information
-    }
-    const storedUser = localStorage.getItem('userData');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, [isTokenExpired]);
+    const initializeAuth = async () => {
+      const storedToken = getSecureCookie('authToken');
+      if (storedToken && !isTokenExpired(storedToken)) {
+        setToken(storedToken);
+        const storedUser = getSecureCookie('userData');
+        if (storedUser) {
+          try {
+            setUser(JSON.parse(storedUser));
+          } catch (error) {
+            console.error('Error parsing stored user data:', error);
+            logout(); // Clear potentially corrupted data
+          }
+        }
+      } else if (storedToken) {
+        // Token exists but is expired, attempt to refresh
+        await refreshToken();
+      }
+    };
+
+    initializeAuth();
+  }, [isTokenExpired, refreshToken, logout]);
 
   const value = useMemo(
     () => ({ user, token, login, logout, getValidToken }),

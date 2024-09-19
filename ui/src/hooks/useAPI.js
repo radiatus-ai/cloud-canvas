@@ -14,33 +14,38 @@ const useApi = () => {
 
   const apiCall = useCallback(
     async (ApiClass, method, params = [], parentSpan = null) => {
-      // let headers = {};
+      let headers = {};
 
       if (parentSpan) {
         const ctx = trace.setSpan(context.active(), parentSpan);
         const carrier = {};
         propagation.inject(ctx, carrier);
-        // headers = { ...carrier };
+        headers = { ...carrier };
       }
 
       try {
-        const api = await createApi(ApiClass, getValidToken);
+        const token = await getValidToken();
+        if (!token) {
+          throw new Error('No valid token available');
+        }
+
+        const api = await createApi(ApiClass, () => Promise.resolve(token));
         const apiMethod = api[method];
         if (typeof apiMethod !== 'function') {
           throw new Error(`Invalid method ${method} for ${ApiClass.name}`);
         }
 
-        const response = await apiMethod.apply(api, params);
+        const response = await apiMethod.apply(api, [...params, { headers }]);
         return response;
       } catch (err) {
-        // todo: bring back
-        // if (parentSpan) {
-        //   parentSpan.recordException(err);
-        // }
+        if (parentSpan) {
+          parentSpan.recordException(err);
+        }
         setError(err.message);
         handleApiError(err);
         if (err.response && err.response.status === 401) {
           logout();
+          throw new Error('Authentication failed. Please log in again.');
         }
         throw err;
       }
@@ -50,132 +55,99 @@ const useApi = () => {
 
   const projects = useMemo(
     () => ({
-      list: (token, parentSpan) =>
+      list: (parentSpan) =>
         apiCall(
           DefaultApi,
           'listProjectsProjectsGet',
           [{ skip: 0, limit: 100 }],
-          token,
           parentSpan
         ),
-      create: (data, token, parentSpan) =>
-        apiCall(
-          DefaultApi,
-          'createProjectProjectsPost',
-          [data],
-          token,
-          parentSpan
-        ),
-      get: (id, token, parentSpan) =>
-        apiCall(
-          DefaultApi,
-          'getProjectProjectsProjectIdGet',
-          [id],
-          token,
-          parentSpan
-        ),
-      update: (id, data, token, parentSpan) =>
+      create: (data, parentSpan) =>
+        apiCall(DefaultApi, 'createProjectProjectsPost', [data], parentSpan),
+      get: (id, parentSpan) =>
+        apiCall(DefaultApi, 'getProjectProjectsProjectIdGet', [id], parentSpan),
+      update: (id, data, parentSpan) =>
         apiCall(
           DefaultApi,
           'updateProjectProjectsProjectIdPatch',
           [id, data],
-          token,
           parentSpan
         ),
-      delete: (id, token, parentSpan) =>
+      delete: (id, parentSpan) =>
         apiCall(
           DefaultApi,
           'deleteProjectProjectsProjectIdDelete',
           [id],
-          token,
           parentSpan
         ),
-      // New methods for packages
-      listPackages: (token, parentSpan) =>
-        apiCall(
-          DefaultApi,
-          'listAllPackagesPackagesGet',
-          [],
-          token,
-          parentSpan
-        ),
-      listProjectPackages: (projectId, token, parentSpan) =>
+      listPackages: (parentSpan) =>
+        apiCall(DefaultApi, 'listAllPackagesPackagesGet', [], parentSpan),
+      listProjectPackages: (projectId, parentSpan) =>
         apiCall(
           ProjectApi,
           'listProjectPackagesProjectsProjectIdPackagesGet',
           [projectId],
-          token,
           parentSpan
         ),
-      createPackage: (projectId, data, token, parentSpan) =>
+      createPackage: (projectId, data, parentSpan) =>
         apiCall(
           ProjectApi,
           'createProjectPackageProjectsProjectIdPackagesPost',
           [projectId, data],
-          token,
           parentSpan
         ),
-      updatePackage: (projectId, packageId, data, token, parentSpan) =>
+      updatePackage: (projectId, packageId, data, parentSpan) =>
         apiCall(
           ProjectApi,
           'updateProjectPackageProjectsProjectIdPackagesPackageIdPatch',
           [projectId, packageId, data],
-          token,
           parentSpan
         ),
-      deletePackage: (projectId, packageId, token, parentSpan) =>
+      deletePackage: (projectId, packageId, parentSpan) =>
         apiCall(
           ProjectApi,
           'deleteProjectPackageProjectsProjectIdPackagesPackageIdDelete',
           [projectId, packageId],
-          token,
           parentSpan
         ),
-      deployPackage: (projectId, packageId, token, parentSpan) =>
+      deployPackage: (projectId, packageId, parentSpan) =>
         apiCall(
           ProjectApi,
           'deployProjectPackageProjectsProjectIdPackagesPackageIdDeployPost',
           [projectId, packageId],
-          token,
           parentSpan
         ),
-      destroyPackage: (projectId, packageId, token, parentSpan) =>
+      destroyPackage: (projectId, packageId, parentSpan) =>
         apiCall(
           ProjectApi,
           'destroyProjectPackageProjectsProjectIdPackagesPackageIdDestroyDelete',
           [projectId, packageId],
-          token,
           parentSpan
         ),
-      // New methods for connections
-      listConnections: (projectId, token, parentSpan) =>
+      listConnections: (projectId, parentSpan) =>
         apiCall(
           DefaultApi,
           'listConnectionsProjectsProjectIdConnectionsGet',
           [projectId],
-          token,
           parentSpan
         ),
-      createConnection: (projectId, data, token, parentSpan) =>
+      createConnection: (projectId, data, parentSpan) =>
         apiCall(
           DefaultApi,
           'createConnectionProjectsProjectIdConnectionsPost',
           [projectId, data],
-          token,
           parentSpan
         ),
       deleteConnection: (
         projectId,
         sourcePackageId,
         targetPackageId,
-        token,
         parentSpan
       ) =>
         apiCall(
           DefaultApi,
           'deleteConnectionProjectsProjectIdSourcePackageIdTargetPackageIdDelete',
           [projectId, sourcePackageId, targetPackageId],
-          token,
           parentSpan
         ),
     }),
@@ -184,44 +156,34 @@ const useApi = () => {
 
   const credentials = useMemo(
     () => ({
-      list: (token, parentSpan) =>
-        apiCall(
-          DefaultApi,
-          'listCredentialsCredentialsGet',
-          [],
-          token,
-          parentSpan
-        ),
-      create: (data, token, parentSpan) =>
+      list: (parentSpan) =>
+        apiCall(DefaultApi, 'listCredentialsCredentialsGet', [], parentSpan),
+      create: (data, parentSpan) =>
         apiCall(
           DefaultApi,
           'createCredentialCredentialsPost',
           [data],
-          token,
           parentSpan
         ),
-      get: (id, token, parentSpan) =>
+      get: (id, parentSpan) =>
         apiCall(
           DefaultApi,
           'getCredentialCredentialsCredentialIdGet',
           [id],
-          token,
           parentSpan
         ),
-      update: (id, data, token, parentSpan) =>
+      update: (id, data, parentSpan) =>
         apiCall(
           DefaultApi,
           'updateCredentialCredentialsCredentialIdPatch',
           [id, data],
-          token,
           parentSpan
         ),
-      delete: (id, token, parentSpan) =>
+      delete: (id, parentSpan) =>
         apiCall(
           DefaultApi,
           'deleteCredentialCredentialsCredentialIdDelete',
           [id],
-          token,
           parentSpan
         ),
     }),

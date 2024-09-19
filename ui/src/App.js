@@ -5,29 +5,56 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import React, { useCallback, useState } from 'react';
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  Navigate,
+  Route,
+  BrowserRouter as Router,
+  Routes,
+} from 'react-router-dom';
 import AuthenticationComponent from './components/Authentication';
 import Canvas from './components/Canvas';
 import Navigation from './components/Navigation';
 import Projects from './components/Projects';
 import Secrets from './components/Secrets';
 import { useAuth } from './contexts/Auth';
+import useApi from './hooks/useAPI';
 
 const App = () => {
-  const { token, login, logout } = useAuth();
-  const [isLoading, setIsLoading] = useState(false);
+  const { user, token, login, logout, getValidToken } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
+  const [authError, setAuthError] = useState(null);
   const theme = useTheme();
+  const api = useApi();
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        const validToken = await getValidToken();
+        setIsLoading(false);
+        if (!validToken) {
+          // If no valid token, user needs to log in
+          setAuthError(null);
+        }
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        setAuthError('Failed to initialize authentication. Please try again.');
+        setIsLoading(false);
+      }
+    };
+
+    initializeAuth();
+  }, [getValidToken]);
 
   const handleLogin = useCallback(
     async (decodedToken, authToken) => {
       setIsLoading(true);
       try {
-        // todo: add env var / config to set this
         const response = await fetch('https://auth.dev.r7ai.net/login/google', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ token: authToken }),
+          credentials: 'include', // Important for cookies
         });
 
         if (!response.ok) {
@@ -35,10 +62,11 @@ const App = () => {
         }
 
         const data = await response.json();
-        login(data.user, data.token);
-        console.log('Login successful:', data);
+        await login(data.user, data.token);
+        setAuthError(null);
       } catch (error) {
         console.error('Login error:', error);
+        setAuthError('Login failed. Please try again.');
       } finally {
         setIsLoading(false);
       }
@@ -46,12 +74,23 @@ const App = () => {
     [login]
   );
 
-  const handleLoginError = (error) => {
+  const handleLoginError = useCallback((error) => {
     console.error('Login Failed:', error);
-  };
-  // utility for using a token to upload packages, etc. todo: remove and add a hotkey to expose debug info in the UI.
-  // make the debug feature feel really cool.
-  console.log('token', token);
+    setAuthError('Login failed. Please try again.');
+  }, []);
+
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        height="100vh"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   if (!token) {
     return (
@@ -64,30 +103,24 @@ const App = () => {
         }}
       >
         <Container maxWidth="sm" sx={{ mt: 8, textAlign: 'center' }}>
-          <Typography variant="h4" component="h1" gutterBottom>
-            Welcome To
-          </Typography>
           <Typography variant="h3" component="h1" gutterBottom>
             CLOUD CANVAS
           </Typography>
-          {/* <Typography variant="body1" gutterBottom>
-          Please sign in to continue
-        </Typography> */}
+          {authError && (
+            <Typography variant="body2" color="error" gutterBottom>
+              {authError}
+            </Typography>
+          )}
           <Box mt={4}>
-            {isLoading ? (
-              <CircularProgress />
-            ) : (
-              <AuthenticationComponent
-                onLogin={handleLogin}
-                onError={handleLoginError}
-              />
-            )}
+            <AuthenticationComponent
+              onLogin={handleLogin}
+              onError={handleLoginError}
+            />
           </Box>
         </Container>
       </Box>
     );
   }
-  // debugger;
 
   return (
     <Router>
@@ -117,6 +150,7 @@ const App = () => {
             <Route path="/" element={<Projects />} />
             <Route path="/secrets" element={<Secrets />} />
             <Route path="/canvas/:projectId" element={<Canvas />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Box>
       </Box>
