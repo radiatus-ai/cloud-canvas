@@ -11,7 +11,7 @@ import {
   IconButton,
   Typography,
 } from '@mui/material';
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import JsonSchemaForm from 'react-json-schema-form';
 import { useNavigate } from 'react-router-dom';
 import RadDialog from '../RadDialog';
@@ -52,6 +52,18 @@ const Projects = () => {
   const handleProjectClick = (projectId) => {
     navigate(`/canvas/${projectId}`);
   };
+
+  const handleDeleteSubmit = useCallback(
+    async (formData) => {
+      console.log('Delete form data:', formData);
+      if (formData.confirm) {
+        await handleDeleteProject(projectToDelete.id);
+      } else {
+        throw new Error('You must confirm the deletion.');
+      }
+    },
+    [handleDeleteProject, projectToDelete]
+  );
 
   if (isLoading) {
     return (
@@ -183,12 +195,13 @@ const Projects = () => {
                 if (deleteFormRef.current) {
                   const isValid = await deleteFormRef.current.submit();
                   if (isValid) {
-                    const { confirm } = deleteFormRef.current.getData();
-                    if (confirm) {
-                      handleDeleteProject(projectToDelete.id);
-                    } else {
-                      setError('You must confirm the deletion.');
-                    }
+                    // This part is no longer needed as it's handled in handleDeleteSubmit
+                    // const { confirm } = deleteFormRef.current.getData();
+                    // if (confirm) {
+                    //   handleDeleteProject(projectToDelete.id);
+                    // } else {
+                    //   setError('You must confirm the deletion.');
+                    // }
                   }
                 }
               }}
@@ -213,6 +226,7 @@ const Projects = () => {
             },
           }}
           initialData={{ confirm: false }}
+          onSubmit={handleDeleteSubmit}
           hideSubmitButton={true}
         />
       </RadDialog>

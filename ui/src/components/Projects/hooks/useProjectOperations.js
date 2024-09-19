@@ -18,7 +18,7 @@ const useProjectOperations = (projects, setProjects, setError) => {
         setCreatingProjects((prev) => prev.filter((p) => p.id !== tempId));
       } catch (err) {
         setError('Failed to create project. Please try again.');
-        console.error('Error creating project:', err);
+        // console.error('Error creating project:', err);
         setCreatingProjects((prev) => prev.filter((p) => p.id !== tempId));
       }
     },
@@ -49,11 +49,14 @@ const useProjectOperations = (projects, setProjects, setError) => {
 
   const handleDeleteProject = useCallback(
     async (projectId) => {
+      console.log('Deleting project:', projectId);
       setDeletingProjects((prev) => [...prev, projectId]);
       try {
+        console.log('try Deleting project:', projectId);
         await projectsApi.delete(projectId, token);
         setProjects((prev) => prev.filter((p) => p.id !== projectId));
       } catch (err) {
+        console.log(err);
         setError('Failed to delete project. Please try again.');
         console.error('Error deleting project:', err);
       } finally {
